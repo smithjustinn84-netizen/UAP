@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors theme/Color.kt for the launcher icon and splash screen, which are drawn before Compose starts. -->
+    <color name="manila">#D9C9A3</color>
+    <color name="ink">#1F1B14</color>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed-icon layer: the folder silhouette with the stamp ring and disc cut out. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="55.5"
+        android:scaleX="0.92"
+        android:scaleY="0.92"
+        android:translateY="-1.5">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M26,38Q26,35 29,35L43,35Q45,35 46,36.5L48.5,40L79,40Q82,40 82,43L82,47.2L26,47.2Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M23.6,53Q23.2,50 26.2,50L81.8,50Q84.8,50 84.4,53L81.9,73.4Q81.6,76 79,76L29,76Q26.4,76 26.1,73.4ZM42.7,63a11.3,11.3 0,1 0,22.6 0a11.3,11.3 0,1 0,-22.6 0zM44.3,63a9.7,9.7 0,1 0,19.4 0a9.7,9.7 0,1 0,-19.4 0zM45.8,64.4a8.2,2.1 0,1 0,16.4 0a8.2,2.1 0,1 0,-16.4 0z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M50.4,62.6C50.6,57.8 57.4,57.8 57.6,62.6Q54,62 50.4,62.6Z" />
+    </group>
+</vector>

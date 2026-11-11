@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash icon: the artwork of ic_launcher_foreground on an ink disc filling the splash mask. Keep the two in step. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/ink"
+        android:pathData="M18,54a36,36 0,1 0,72 0a36,36 0,1 0,-72 0z" />
+    <group
+        android:pivotX="54"
+        android:pivotY="55.5"
+        android:scaleX="0.92"
+        android:scaleY="0.92"
+        android:translateY="-1.5">
+        <!-- Folder back and tab -->
+        <path
+            android:fillColor="#BFAE86"
+            android:pathData="M26,38Q26,35 29,35L43,35Q45,35 46,36.5L48.5,40L79,40Q82,40 82,43L82,73Q82,76 79,76L29,76Q26,76 26,73Z" />
+        <!-- Sheet showing above the front cover -->
+        <path
+            android:fillColor="#F5EFE0"
+            android:pathData="M31,39.5h46v20h-46z" />
+        <path
+            android:strokeColor="#7A6C4F"
+            android:strokeWidth="1.2"
+            android:pathData="M35,43.6h26M35,47.2h38" />
+        <!-- Front cover -->
+        <path
+            android:fillColor="#D9C9A3"
+            android:pathData="M23.6,53Q23.2,50 26.2,50L81.8,50Q84.8,50 84.4,53L81.9,73.4Q81.6,76 79,76L29,76Q26.4,76 26.1,73.4Z" />
+        <!-- Stamp -->
+        <path
+            android:strokeColor="#8A2B1D"
+            android:strokeWidth="1.6"
+            android:pathData="M43.5,63a10.5,10.5 0,1 0,21 0a10.5,10.5 0,1 0,-21 0z" />
+        <path
+            android:fillColor="#8A2B1D"
+            android:pathData="M45.8,64.4a8.2,2.1 0,1 0,16.4 0a8.2,2.1 0,1 0,-16.4 0z" />
+        <path
+            android:fillColor="#8A2B1D"
+            android:pathData="M50.4,63.4C50.4,57.6 57.6,57.6 57.6,63.4Z" />
+    </group>
+</vector>

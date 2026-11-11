@@ -111,7 +111,11 @@ sourceSets:
       compile: 'off'
   - androidx.core:core-ktx:1.18.0:
       compile: 'off'
+  - androidx.core:core-splashscreen:1.0.1:
+      compile: 'off'
   - androidx.core:core-viewtree:1.0.0:
+      compile: 'off'
+  - androidx.customview:customview:1.0.0:
       compile: 'off'
   - androidx.customview:customview-poolingcontainer:1.0.0:
       compile: 'off'
@@ -120,6 +124,8 @@ sourceSets:
   - androidx.dynamicanimation:dynamicanimation:1.0.0:
       compile: 'off'
   - androidx.emoji2:emoji2:1.4.0:
+      compile: 'off'
+  - androidx.exifinterface:exifinterface:1.3.6:
       compile: 'off'
   - androidx.graphics:graphics-path:1.0.1:
       compile: 'off'
@@ -169,6 +175,22 @@ sourceSets:
       compile: 'off'
   - androidx.localbroadcastmanager:localbroadcastmanager:1.0.0:
       compile: 'off'
+  - androidx.media3:media3-common:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-container:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-database:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-datasource:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-decoder:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-exoplayer:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-extractor:1.9.0:
+      compile: 'off'
+  - androidx.media3:media3-ui:1.9.0:
+      compile: 'off'
   - androidx.navigation3:navigation3-runtime:1.0.1:
       compile: 'off'
   - androidx.navigation3:navigation3-runtime-android:1.0.1:
@@ -186,6 +208,8 @@ sourceSets:
   - androidx.print:print:1.0.0:
       compile: 'off'
   - androidx.profileinstaller:profileinstaller:1.4.0:
+      compile: 'off'
+  - androidx.recyclerview:recyclerview:1.3.0:
       compile: 'off'
   - androidx.savedstate:savedstate:1.4.0:
       compile: 'off'
@@ -211,9 +235,15 @@ sourceSets:
       compile: 'off'
   - androidx.window:window-core-android:1.5.0:
       compile: 'off'
-  - com.google.guava:listenablefuture:1.0:
+  - com.google.guava:failureaccess:1.0.2:
+      compile: 'off'
+  - com.google.guava:guava:33.3.1-android:
+      compile: 'off'
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava:
       compile: 'off'
   - org.jetbrains:annotations:23.0.0:
+      compile: 'off'
+  - org.jetbrains.kotlin:kotlin-bom:1.8.0:
       compile: 'off'
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20:
       compile: 'off'
@@ -1381,7 +1411,7 @@ dependencies:
       cachePath: androidx/concurrent/concurrent-futures/1.2.0/concurrent-futures-1.2.0.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
-  - com.google.guava:listenablefuture:1.0
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
 - id: androidx.concurrent:concurrent-futures-ktx:1.2.0
   resolvedVersion: 1.2.0
   artifacts:
@@ -1428,7 +1458,7 @@ dependencies:
   - androidx.lifecycle:lifecycle-runtime:2.10.0
   - androidx.tracing:tracing:1.2.0
   - androidx.versionedparcelable:versionedparcelable:1.1.1
-  - com.google.guava:listenablefuture:1.0
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
   - org.jspecify:jspecify:1.0.0
@@ -1453,6 +1483,26 @@ dependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.core:core:1.18.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: androidx.core:core-splashscreen:1.0.1
+  requestedVersion: 1.0.1
+  resolvedVersion: 1.0.1
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.aar
+      sha256: 25c813ae7795c99dd20628527043f8d0425eb2e826e6c42cb77acbb6c01dde68
+      cachePath: androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.aar
+      extracted: androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.module
+      sha256: 0d02b8beee2ff62afd3a79393b4fd3ccb7c9f73266dbfdd29350875d5430abc7
+      cachePath: androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.pom
+      sha256: 91e5f474f9e569446ea35c5b1357ebef97b828b299eddaee4f9e1bbaca386629
+      cachePath: androidx/core/core-splashscreen/1.0.1/core-splashscreen-1.0.1.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
 - id: androidx.core:core-viewtree:1.0.0
   resolvedVersion: 1.0.0
   artifacts:
@@ -1471,6 +1521,21 @@ dependencies:
       cachePath: androidx/core/core-viewtree/1.0.0/core-viewtree-1.0.0.pom
   transitiveDependencies:
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: androidx.customview:customview:1.0.0
+  resolvedVersion: 1.0.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/customview/customview/1.0.0/customview-1.0.0.aar
+      sha256: 20e5b8f6526a34595a604f56718da81167c0b40a7a94a57daa355663f2594df2
+      cachePath: androidx/customview/customview/1.0.0/customview-1.0.0.aar
+      extracted: androidx/customview/customview/1.0.0/customview-1.0.0-exploded
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/customview/customview/1.0.0/customview-1.0.0.pom
+      sha256: ce9e47b87184f5bd5e139e9becd5b26476d42d78c31bf2fdedc37acb41b9ad49
+      cachePath: androidx/customview/customview/1.0.0/customview-1.0.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.core:core:1.18.0
 - id: androidx.customview:customview-poolingcontainer:1.0.0
   resolvedVersion: 1.0.0
   artifacts:
@@ -1542,6 +1607,24 @@ dependencies:
   - androidx.core:core:1.18.0
   - androidx.lifecycle:lifecycle-process:2.10.0
   - androidx.startup:startup-runtime:1.1.1
+- id: androidx.exifinterface:exifinterface:1.3.6
+  resolvedVersion: 1.3.6
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.aar
+      sha256: 1804105e9e05fdd8f760413bad5de498c381aa329f4f9d94c851bc891ac654c6
+      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.aar
+      extracted: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.module
+      sha256: 5e9fd84ca3fd3b7706f6856fa4383107de8676bf7c42b7d4b8108949414d6201
+      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.pom
+      sha256: 59cfe5bd98506c27617b778143eb09a6b986a5417a0b1b0fd8b875eaa8db4bab
+      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
 - id: androidx.graphics:graphics-path:1.0.1
   resolvedVersion: 1.0.1
   artifacts:
@@ -2014,6 +2097,176 @@ dependencies:
       cachePath: androidx/localbroadcastmanager/localbroadcastmanager/1.0.0/localbroadcastmanager-1.0.0.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
+- id: androidx.media3:media3-common:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-common/1.9.0/media3-common-1.9.0.aar
+      sha256: 714114bf8a56fe44f0f78b499ae7ea3bed52391313794c8abdc1b687700d42aa
+      cachePath: androidx/media3/media3-common/1.9.0/media3-common-1.9.0.aar
+      extracted: androidx/media3/media3-common/1.9.0/media3-common-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-common/1.9.0/media3-common-1.9.0.module
+      sha256: 02d42f8fd7cc53c385256f417df73a5cf30e8b7c5635ca5786148518ce711b75
+      cachePath: androidx/media3/media3-common/1.9.0/media3-common-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-common/1.9.0/media3-common-1.9.0.pom
+      sha256: aed17d81e85da98ea766f9232f2a09fa9f1ab1433fbb824a8a4892d0e82ac0fc
+      cachePath: androidx/media3/media3-common/1.9.0/media3-common-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.annotation:annotation-experimental:1.4.1
+  - com.google.guava:guava:33.3.1-android
+  - org.jetbrains.kotlin:kotlin-bom:1.8.0
+- id: androidx.media3:media3-container:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-container/1.9.0/media3-container-1.9.0.aar
+      sha256: f73cea4fe8a2bf9eb6462bfb7a547d1aaf55395d0007eed6fadb129b56927c0d
+      cachePath: androidx/media3/media3-container/1.9.0/media3-container-1.9.0.aar
+      extracted: androidx/media3/media3-container/1.9.0/media3-container-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-container/1.9.0/media3-container-1.9.0.module
+      sha256: 5a5f4d796aa34a3480ea75df73892d68eba7cd4bc239c116eee3816ce973d469
+      cachePath: androidx/media3/media3-container/1.9.0/media3-container-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-container/1.9.0/media3-container-1.9.0.pom
+      sha256: 0120edcd6ce534b59d9ad4f1c5d8e6683fac283fe1a99359616d21664d5a4fbe
+      cachePath: androidx/media3/media3-container/1.9.0/media3-container-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.media3:media3-common:1.9.0
+- id: androidx.media3:media3-database:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-database/1.9.0/media3-database-1.9.0.aar
+      sha256: de88a2ca8fd1efb1dbe7d8cd4c728fca15fafb629442514a689dea1788817637
+      cachePath: androidx/media3/media3-database/1.9.0/media3-database-1.9.0.aar
+      extracted: androidx/media3/media3-database/1.9.0/media3-database-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-database/1.9.0/media3-database-1.9.0.module
+      sha256: 3be0779238336f861850174d181fe9eb8d9febe181c713c8c16baa61a360a22d
+      cachePath: androidx/media3/media3-database/1.9.0/media3-database-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-database/1.9.0/media3-database-1.9.0.pom
+      sha256: 91da095561d363573dff03f2b280b61035b5f9355701f62094146f8cadcddcb7
+      cachePath: androidx/media3/media3-database/1.9.0/media3-database-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.media3:media3-common:1.9.0
+- id: androidx.media3:media3-datasource:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.aar
+      sha256: 8defec681a91380890ee8ae0c126ed24a4612fce6e13c1fb9e7909d943f78e08
+      cachePath: androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.aar
+      extracted: androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.module
+      sha256: a54de6ab48ad007f1166c038ead455de50afd5e03ca87042f6db41111fdc42f4
+      cachePath: androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.pom
+      sha256: 46b278e0d64156b6d2508a003ed0c6bc738b6bfbf9fcf42992e9561f81c5d9a1
+      cachePath: androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.exifinterface:exifinterface:1.3.6
+  - androidx.media3:media3-common:1.9.0
+  - androidx.media3:media3-database:1.9.0
+- id: androidx.media3:media3-decoder:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.aar
+      sha256: 2337461b4ed4ec3cd32330cd530d9b471d5d45b76410f6e0d66f1331c9a0bc08
+      cachePath: androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.aar
+      extracted: androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.module
+      sha256: eaef7e4469888759cdeec617b248cab7cc01b950ad9a536a1069d3f5942db9b2
+      cachePath: androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.pom
+      sha256: 8212e1f90e37555093f9542d8c65f6714fa2af1399e05cbcb810d1a92e578e9c
+      cachePath: androidx/media3/media3-decoder/1.9.0/media3-decoder-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.media3:media3-common:1.9.0
+- id: androidx.media3:media3-exoplayer:1.9.0
+  requestedVersion: 1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.aar
+      sha256: 9bd083eda563e9fd316128d8f271ae6a37809900874bbcc04d3100cb7892b4a4
+      cachePath: androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.aar
+      extracted: androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.module
+      sha256: 46535d7d1dae34bdedb6a18ba71dc2231afb7c0075e0f850927b024cb767545c
+      cachePath: androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.pom
+      sha256: 1511b271e2171c977314b1e48eef59f8be210d025c7c8ba09109bd86bbc6a423
+      cachePath: androidx/media3/media3-exoplayer/1.9.0/media3-exoplayer-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.collection:collection:1.5.0
+  - androidx.core:core:1.18.0
+  - androidx.exifinterface:exifinterface:1.3.6
+  - androidx.media3:media3-common:1.9.0
+  - androidx.media3:media3-container:1.9.0
+  - androidx.media3:media3-database:1.9.0
+  - androidx.media3:media3-datasource:1.9.0
+  - androidx.media3:media3-decoder:1.9.0
+  - androidx.media3:media3-extractor:1.9.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: androidx.media3:media3-extractor:1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.aar
+      sha256: 1c3e16892326cf92c63051e412baca66523710fbe3f41ca738928cd669e15dff
+      cachePath: androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.aar
+      extracted: androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.module
+      sha256: aaf5368ba677f479b345d64e43215bbbeb7e8b8e03c482702131428b12265c8b
+      cachePath: androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.pom
+      sha256: 4a582b5a26a243f92b62333421d995c9c9fbfe5d2da0e52b29ea2d9fc1d2b9ed
+      cachePath: androidx/media3/media3-extractor/1.9.0/media3-extractor-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.media3:media3-common:1.9.0
+  - androidx.media3:media3-container:1.9.0
+  - androidx.media3:media3-decoder:1.9.0
+- id: androidx.media3:media3-ui:1.9.0
+  requestedVersion: 1.9.0
+  resolvedVersion: 1.9.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.aar
+      sha256: 09219a66900a0c76fa4f20a5a99329977ae42d4e715791b10a3efe72c346dc03
+      cachePath: androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.aar
+      extracted: androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.module
+      sha256: 1e13495fb8df50e9d45217b09c252f8eb82c9b3bf64649347e1ca30e9933bd65
+      cachePath: androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.pom
+      sha256: da54a65d1832b5a59007be4cf8e833d2a8582e223b67a34088bc8ca5fdc2622b
+      cachePath: androidx/media3/media3-ui/1.9.0/media3-ui-1.9.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.media3:media3-common:1.9.0
+  - androidx.recyclerview:recyclerview:1.3.0
 - id: androidx.navigation3:navigation3-runtime:1.0.1
   requestedVersion: 1.0.1
   resolvedVersion: 1.0.1
@@ -2206,7 +2459,29 @@ dependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.concurrent:concurrent-futures:1.1.0
   - androidx.startup:startup-runtime:1.1.1
-  - com.google.guava:listenablefuture:1.0
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+- id: androidx.recyclerview:recyclerview:1.3.0
+  resolvedVersion: 1.3.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.aar
+      sha256: d65928a00f63589a49e21925412e0f48852f89254b07b03c030d560f91effc88
+      cachePath: androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.aar
+      extracted: androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.module
+      sha256: 7fa22bf1ab1a8d1544622076e2ad8454e2bef1402b3298b5b4079ab732e38845
+      cachePath: androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.pom
+      sha256: 234b2814e75a6aa947e1d0718b2a70dd1d3ab8a0c4b0ccecbb395df8468ed173
+      cachePath: androidx/recyclerview/recyclerview/1.3.0/recyclerview-1.3.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.collection:collection:1.5.0
+  - androidx.core:core:1.18.0
+  - androidx.customview:customview:1.0.0
+  - androidx.customview:customview-poolingcontainer:1.0.0
 - id: androidx.savedstate:savedstate:1.4.0
   resolvedVersion: 1.4.0
   artifacts:
@@ -2335,7 +2610,7 @@ dependencies:
   - androidx.lifecycle:lifecycle-common:2.10.0
   - androidx.test:monitor:1.8.0
   - androidx.tracing:tracing:1.2.0
-  - com.google.guava:listenablefuture:1.0
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0
 - id: androidx.test:monitor:1.8.0
@@ -2396,7 +2671,7 @@ dependencies:
   - androidx.test.services:storage:1.6.0
   - com.google.code.findbugs:jsr305:3.0.2
   - com.google.errorprone:error_prone_annotations:2.30.0
-  - com.google.guava:listenablefuture:1.0
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
   - javax.inject:javax.inject:1
   - junit:junit:4.13.2
   - org.hamcrest:hamcrest-core:1.3
@@ -2582,17 +2857,46 @@ dependencies:
       url: https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.30.0/error_prone_annotations-2.30.0.pom
       sha256: f713849c23b34953e854565dce8aa795cae0c1416611b720c21461322c795f86
       cachePath: com/google/errorprone/error_prone_annotations/2.30.0/error_prone_annotations-2.30.0.pom
-- id: com.google.guava:listenablefuture:1.0
-  resolvedVersion: '1.0'
+- id: com.google.guava:failureaccess:1.0.2
+  resolvedVersion: 1.0.2
   artifacts:
     jar:
-      url: https://repo1.maven.org/maven2/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.jar
-      sha256: e4ad7607e5c0477c6f890ef26a49cb8d1bb4dffb650bab4502afee64644e3069
-      cachePath: com/google/guava/listenablefuture/1.0/listenablefuture-1.0.jar
+      url: https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar
+      sha256: 8a8f81cf9b359e3f6dfa691a1e776985c061ef2f223c9b2c80753e1b458e8064
+      cachePath: com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar
     pom:
-      url: https://repo1.maven.org/maven2/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.pom
-      sha256: 53873caf26bc1ed8a567ea6c939ab2aaa3f47a5e32d5cade95ddf5080d23238a
-      cachePath: com/google/guava/listenablefuture/1.0/listenablefuture-1.0.pom
+      url: https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.pom
+      sha256: 19ebc6f4bdb4edbb3d07b6ee994f846b54ef295582a9b5634719ffa9f31d03b2
+      cachePath: com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.pom
+- id: com.google.guava:guava:33.3.1-android
+  resolvedVersion: 33.3.1-android
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/com/google/guava/guava/33.3.1-android/guava-33.3.1-android.jar
+      sha256: 2c3e41d1b380f2044d257947a3aa82dabf3ae4b978622745254aa18b6cf89ab0
+      cachePath: com/google/guava/guava/33.3.1-android/guava-33.3.1-android.jar
+    module:
+      url: https://repo1.maven.org/maven2/com/google/guava/guava/33.3.1-android/guava-33.3.1-android.module
+      sha256: 6971614ddeee003e54d2b69c6b0c94ce8a5b5eba980d16455c81df9089a7acb7
+      cachePath: com/google/guava/guava/33.3.1-android/guava-33.3.1-android.module
+    pom:
+      url: https://repo1.maven.org/maven2/com/google/guava/guava/33.3.1-android/guava-33.3.1-android.pom
+      sha256: c728db6f2705ca3ea6a3cf2cf1260dbeff3a4524249a1b1b900edcfe9d72142f
+      cachePath: com/google/guava/guava/33.3.1-android/guava-33.3.1-android.pom
+  transitiveDependencies:
+  - com.google.guava:failureaccess:1.0.2
+  - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+- id: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+  resolvedVersion: 9999.0-empty-to-avoid-conflict-with-guava
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+      sha256: b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99
+      cachePath: com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+    pom:
+      url: https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom
+      sha256: 18d4b1db26153d4e55079ce1f76bb1fe05cdb862ef9954a88cbcc4ff38b8679b
+      cachePath: com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom
 - id: javax.inject:javax.inject:1
   resolvedVersion: '1'
   artifacts:
@@ -2653,6 +2957,14 @@ dependencies:
       url: https://repo1.maven.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom
       sha256: c9490f655132328df2cfbcfdf743f53fc3916d6c1d10437175a6ca6e3a67771c
       cachePath: org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom
+- id: org.jetbrains.kotlin:kotlin-bom:1.8.0
+  resolvedVersion: 1.8.0
+  artifacts:
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-bom/1.8.0/kotlin-bom-1.8.0.pom
+      sha256: 681f9878548c0a149c678092fd8b1f4cc7c5c41ba1b24397101c1073a6c76dda
+      cachePath: org/jetbrains/kotlin/kotlin-bom/1.8.0/kotlin-bom-1.8.0.pom
+  isPlatform: true
 - id: org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   resolvedVersion: 2.3.20
   artifacts:
