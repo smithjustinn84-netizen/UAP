@@ -34,6 +34,7 @@ private val statusTerms =
 @Composable
 fun MethodScreen() {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    StatusBarSpacer()
     Column(
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 28.dp, bottom = 16.dp),
       verticalArrangement = Arrangement.spacedBy(10.dp),

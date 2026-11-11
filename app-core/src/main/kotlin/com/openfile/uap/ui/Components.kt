@@ -9,7 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,16 +65,38 @@ import com.openfile.uap.theme.TypewriterFamily
 
 val ScreenPadding = 20.dp
 
-/** The manila desk every screen sits on, with the three section tabs pinned to the bottom. */
+/**
+ * Leading spacer for a screen's scrolling content, as tall as the status bar. Placing it inside the scroll area lets
+ * content draw behind the transparent status bar and scroll under it, rather than being clipped beneath it.
+ */
+@Composable
+fun StatusBarSpacer() {
+  Spacer(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars))
+}
+
+/**
+ * The manila desk every screen sits on, with the section tabs pinned to the bottom.
+ *
+ * The app draws edge to edge: the desk and the tab strip extend behind the system bars, side cutouts and the keyboard
+ * are respected here, and each screen handles the status bar itself with [StatusBarSpacer].
+ */
 @Composable
 fun AppFrame(current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -> Unit) {
-  Column(Modifier.fillMaxSize().background(Manila).windowInsetsPadding(WindowInsets.safeDrawing)) {
+  Column(
+    Modifier.fillMaxSize()
+      .background(Manila)
+      .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+      .imePadding()
+  ) {
     Box(Modifier.weight(1f).fillMaxWidth()) { content() }
     Box(Modifier.fillMaxWidth().height(2.dp).background(Ink))
-    Row(Modifier.fillMaxWidth().height(56.dp).background(Paper)) {
-      listOf(Files to "Files", EventMap to "Map", Timeline to "Timeline", Method to "Method").forEachIndexed { index, (key, label) ->
-        if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-        TabCell(label = label.uppercase(), selected = key == current, onClick = { onTab(key) }, modifier = Modifier.weight(1f))
+    // The strip's paper extends behind the navigation bar; the tabs themselves sit above it.
+    Column(Modifier.fillMaxWidth().background(Paper).windowInsetsPadding(WindowInsets.navigationBars)) {
+      Row(Modifier.fillMaxWidth().height(56.dp)) {
+        listOf(Files to "Files", EventMap to "Map", Timeline to "Timeline", Method to "Method").forEachIndexed { index, (key, label) ->
+          if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
+          TabCell(label = label.uppercase(), selected = key == current, onClick = { onTab(key) }, modifier = Modifier.weight(1f))
+        }
       }
     }
   }

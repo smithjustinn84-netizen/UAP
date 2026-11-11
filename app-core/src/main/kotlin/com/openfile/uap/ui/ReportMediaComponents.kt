@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -234,7 +235,11 @@ private fun ArchivalPhotoExhibit(media: ReportMedia) {
 /** Full-screen viewer with pinch-to-zoom and pan, for reading scans on a phone. */
 @Composable
 private fun ZoomableImageDialog(@DrawableRes resId: Int, description: String, onDismiss: () -> Unit) {
-  Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+  Dialog(
+    onDismissRequest = onDismiss,
+    // Full-screen viewer: draw behind the system bars and keep the controls clear of them.
+    properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+  ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     Box(Modifier.fillMaxSize().background(Ink)) {
@@ -265,6 +270,7 @@ private fun ZoomableImageDialog(@DrawableRes resId: Int, description: String, on
       )
       Box(
         Modifier.align(Alignment.TopEnd)
+          .safeDrawingPadding()
           .padding(16.dp)
           .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
           .clickable(role = Role.Button, onClickLabel = "Close", onClick = onDismiss)
@@ -278,7 +284,7 @@ private fun ZoomableImageDialog(@DrawableRes resId: Int, description: String, on
       MonoLabel(
         "PINCH TO ZOOM · DOUBLE-TAP TO RESET",
         color = Paper,
-        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
+        modifier = Modifier.align(Alignment.BottomCenter).safeDrawingPadding().padding(bottom = 32.dp),
       )
     }
   }

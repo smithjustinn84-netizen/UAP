@@ -37,6 +37,7 @@ import com.openfile.uap.theme.Paper
 @Composable
 fun TimelineScreen(onOpenCase: (String) -> Unit) {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    StatusBarSpacer()
     Column(
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 28.dp, bottom = 16.dp),
       verticalArrangement = Arrangement.spacedBy(10.dp),

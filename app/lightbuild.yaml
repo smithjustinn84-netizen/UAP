@@ -14,7 +14,7 @@ android:
   targetSdk:
     version:
       release:
-        apiLevel: 34
+        apiLevel: 35
   applicationId: com.openfile.uap
   dependencies:
     module:

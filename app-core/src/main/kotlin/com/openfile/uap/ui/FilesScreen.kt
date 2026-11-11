@@ -37,6 +37,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.data.Archive
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBars
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -48,10 +51,11 @@ fun FilesScreen(onOpenCase: (String) -> Unit) {
   var query by rememberSaveable { mutableStateOf("") }
   var decade by rememberSaveable { mutableStateOf<Int?>(null) }
   val results = remember(query, decade) { Archive.search(query, decade) }
+  val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
   LazyColumn(
     modifier = Modifier.fillMaxSize(),
-    contentPadding = PaddingValues(bottom = 28.dp),
+    contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     item(key = "header") {

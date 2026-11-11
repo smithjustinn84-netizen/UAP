@@ -61,6 +61,7 @@ fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
   val section = Section.entries[sectionIndex.coerceIn(0, Section.entries.lastIndex)]
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    StatusBarSpacer()
     Row(
       Modifier.fillMaxWidth().padding(start = 8.dp, end = ScreenPadding, top = 8.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
