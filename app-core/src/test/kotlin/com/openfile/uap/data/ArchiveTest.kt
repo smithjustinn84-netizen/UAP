@@ -14,9 +14,13 @@ class ArchiveTest {
   @Test
   fun decadeFilterKeepsOnlyThatDecade() {
     assertEquals(listOf("OF-1947-01", "OF-1947-02"), Archive.search("", 1940).map { it.id })
-    assertEquals(listOf("OF-1965-01", "OF-1967-01"), Archive.search("", 1960).map { it.id })
-    assertEquals(listOf("OF-1974-01"), Archive.search("", 1970).map { it.id })
+    assertEquals(listOf("OF-1965-01", "OF-1966-01", "OF-1967-01"), Archive.search("", 1960).map { it.id })
+    assertEquals(listOf("OF-1974-01", "OF-1976-01", "OF-1978-01"), Archive.search("", 1970).map { it.id })
+    assertEquals(listOf("OF-1980-01"), Archive.search("", 1980).map { it.id })
+    assertEquals(listOf("OF-1997-01"), Archive.search("", 1990).map { it.id })
+    assertEquals(listOf("OF-2004-01"), Archive.search("", 2000).map { it.id })
     assertEquals(listOf("OF-2015-01"), Archive.search("", 2010).map { it.id })
+    assertEquals(listOf("OF-2026-01"), Archive.search("", 2020).map { it.id })
   }
 
   @Test
@@ -26,6 +30,8 @@ class ArchiveTest {
     assertEquals(listOf("OF-2004-01"), Archive.search("  NIMITZ ", null).map { it.id })
     assertEquals(listOf("OF-1967-01"), Archive.search("shag harbour", null).map { it.id })
     assertEquals(listOf("OF-1965-01"), Archive.search("kecksburg", null).map { it.id })
+    assertEquals(listOf("OF-1966-01", "OF-1978-01"), Archive.search("melbourne", null).map { it.id })
+    assertEquals(listOf("OF-1976-01", "OF-2026-01"), Archive.search("tehran", null).map { it.id })
   }
 
   @Test
@@ -121,6 +127,13 @@ class ArchiveTest {
     val years = Archive.timeline.map { it.year }
     assertEquals(years.sorted(), years)
     assertEquals(TimelineKind.entries.toSet(), Archive.timeline.map { it.kind }.toSet())
+  }
+
+  @Test
+  fun timelineEntriesAreDistinctByYearAndTitle() {
+    // The timeline list keys its rows on year and title.
+    val keys = Archive.timeline.map { it.year to it.title }
+    assertEquals(keys.distinct(), keys)
   }
 
   @Test

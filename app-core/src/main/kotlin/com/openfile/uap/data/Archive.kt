@@ -234,6 +234,19 @@ object Archive {
         detail = kecksburg,
       ),
       CaseRecord(
+        id = "OF-1966-01",
+        title = "Westall encounter",
+        year = 1966,
+        dateShort = "6 Apr 1966",
+        placeShort = "Melbourne, Australia",
+        date = "6 April 1966",
+        place = "Clayton South, Melbourne, Victoria, Australia",
+        onFile = "witness testimony, press reports, official archives",
+        status = "No official explanation · disputed",
+        point = MapPoint(-37.94, 145.13, "Plotted at Westall Secondary College in Clayton South, Melbourne."),
+        detail = westall,
+      ),
+      CaseRecord(
         id = "OF-1967-01",
         title = "Shag Harbour incident",
         year = 1967,
@@ -258,6 +271,32 @@ object Archive {
         status = "Official explanation on record · disputed",
         point = MapPoint(52.92, -3.44, "Plotted in the Berwyn Mountains near Llandrillo, where a tremor and sky phenomena were reported simultaneously."),
         detail = berwyn,
+      ),
+      CaseRecord(
+        id = "OF-1976-01",
+        title = "Tehran UFO incident",
+        year = 1976,
+        dateShort = "19 Sep 1976",
+        placeShort = "Tehran, Iran",
+        date = "18–19 September 1976",
+        place = "Tehran, Iran",
+        onFile = "military intelligence report, pilot testimony, radar logs",
+        status = "Official military inquiry · unidentified",
+        point = MapPoint(35.69, 51.39, "Plotted at Tehran, Iran, where IIAF F-4 Phantoms attempted interception."),
+        detail = tehran,
+      ),
+      CaseRecord(
+        id = "OF-1978-01",
+        title = "Valentich disappearance",
+        year = 1978,
+        dateShort = "21 Oct 1978",
+        placeShort = "Bass Strait, Australia",
+        date = "21 October 1978",
+        place = "Bass Strait, between Victoria and King Island, Australia",
+        onFile = "air traffic control audio, accident investigation report, weather data",
+        status = "Official inquiry on record · unsolved",
+        point = MapPoint(-39.50, 144.50, "Plotted in Bass Strait along the planned route between Cape Otway and King Island."),
+        detail = valentich,
       ),
       CaseRecord(
         id = "OF-1980-01",
@@ -310,6 +349,19 @@ object Archive {
         status = "Official inquiry on record · unidentified",
         point = MapPoint(31.00, -79.50, "Plotted in the military warning area off the southeastern US coast where aviators recorded the Gimbal and GoFast videos."),
         detail = rooseveltEncounters,
+      ),
+      CaseRecord(
+        id = "OF-2026-01",
+        title = "Tehran aerial phenomenon",
+        year = 2026,
+        dateShort = "Sep 2026",
+        placeShort = "Tehran, Iran",
+        date = "September 2026",
+        place = "Tehran, Iran",
+        onFile = "video recordings, social media reports, aviation analyses",
+        status = "Explanations proposed · none agreed",
+        point = MapPoint(35.70, 51.42, "Plotted over Tehran, where residents captured video of an illuminated aerial object."),
+        detail = tehran2026,
       ),
     )
 
@@ -404,6 +456,13 @@ object Archive {
       ),
       TimelineEntry(
         1966,
+        TimelineKind.Sighting,
+        "Westall encounter",
+        "6 April · Melbourne, Victoria, Australia",
+        "OF-1966-01",
+      ),
+      TimelineEntry(
+        1966,
         TimelineKind.Inquiry,
         "First congressional hearing on UFOs",
         "The House Armed Services Committee takes testimony on 5 April after a run of sightings in Michigan",
@@ -435,10 +494,24 @@ object Archive {
         "OF-1974-01",
       ),
       TimelineEntry(
+        1976,
+        TimelineKind.Sighting,
+        "Tehran UFO incident",
+        "18–19 September · Tehran, Iran",
+        "OF-1976-01",
+      ),
+      TimelineEntry(
         1977,
         TimelineKind.Culture,
         "“Close Encounters of the Third Kind”",
         "The film takes its title from a classification scale devised by J. Allen Hynek, formerly Project Blue Book’s scientific consultant",
+      ),
+      TimelineEntry(
+        1978,
+        TimelineKind.Sighting,
+        "Valentich disappearance",
+        "21 October · Bass Strait, Australia",
+        "OF-1978-01",
       ),
       TimelineEntry(
         1980,
@@ -543,6 +616,13 @@ object Archive {
         TimelineKind.Inquiry,
         "AARO historical record report",
         "The office’s review of US government inquiries since 1945 reports finding no evidence that any of them confirmed extraterrestrial technology",
+      ),
+      TimelineEntry(
+        2026,
+        TimelineKind.Sighting,
+        "Tehran aerial phenomenon",
+        "September · Tehran, Iran",
+        "OF-2026-01",
       ),
     )
 }
@@ -2361,6 +2441,626 @@ private val rooseveltEncounters: CaseDetail
             provenance = "House Committee on Oversight and Accountability · Official channel upload",
             durationSeconds = 9240,
             sourceUrl = "https://www.youtube.com/watch?v=KQ7Dw-739VY",
+          ),
+        ),
+    )
+
+private val westall: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "No official explanation",
+      reportedBy = "Students and teaching staff of Westall High School and Westall State School, and local residents",
+      officialPosition = "Australian Department of Air: no official explanation issued. Departmental searches found no formal investigation report in surviving files.",
+      reported =
+        listOf(
+          "At approximately 11:00 am on Wednesday 6 April 1966, over 200 students and staff at Westall High School and nearby schools watched a grey or silvery disc-shaped object fly overhead.",
+          "Witnesses reported the object descended into a nearby pine grove and paddock known as the Grange reserve, hovered or landed briefly, and then ascended rapidly away.",
+          "Students who ran to the paddock reported finding a circular patch of flattened, scorched grass.",
+          "Witnesses described military personnel and police arriving at the site, cordoning off the area, and instructing staff and students not to discuss the incident.",
+        ),
+      notInDispute =
+        listOf(
+          "A large number of students and teachers witnessed an aerial object during morning recess.",
+          "Local newspapers, including The Dandenong Journal and The Sun, reported the incident that week.",
+          "Grange Reserve was subsequently visited by investigators and curious members of the public.",
+        ),
+      inDispute =
+        listOf(
+          "What the aerial object was.",
+          "Whether an object landed in the paddock or made physical contact with the ground.",
+          "Whether military authorities confiscated photographs and enforced silence among witnesses.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Testimony",
+            sourceLabel = "First-hand",
+            title = "Witness accounts",
+            description =
+              "Statements from students and science teacher Andrew Greenwood who observed the object through binoculars.",
+            caveat = "many accounts were collected decades later, though primary schoolyard accounts were recorded in 1966.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Document",
+            sourceLabel = "Primary record",
+            title = "Contemporary press coverage",
+            description =
+              "Reports in The Dandenong Journal on 14 and 21 April 1966 and The Sun on 7 April 1966 recording interviews with students and teachers.",
+            caveat = "early newspaper articles contain minor discrepancies regarding the number of objects observed.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Document",
+            sourceLabel = "Official record",
+            title = "Department of Air archives",
+            description =
+              "National Archives of Australia file series A703 containing correspondence and reports of aerial phenomena from 1966.",
+            caveat = "the archive contains public inquiry letters but no official investigation dossier into the Westall site visit.",
+          ),
+          Evidence(
+            id = "E-04",
+            kind = "Physical trace",
+            sourceLabel = "Not preserved",
+            title = "Ground depression and scorched circle",
+            description =
+              "Circular ring of flattened and discoloured grass reported in the Grange reserve paddock.",
+            caveat = "no formal soil or botanical analysis report has survived in official archives.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "A high-altitude research or target balloon",
+            heldBy = "some researchers and former project workers",
+            supports =
+              listOf(
+                "The joint US-Australian HIBAL balloon program operated flights from Mildura during that era.",
+                "Balloons were silver, metallic in appearance, and drifted with upper winds.",
+              ),
+            complicates =
+              listOf(
+                "Witnesses described rapid acceleration and maneuvers inconsistent with a drifting balloon.",
+                "No HIBAL flight log confirms a launch over Melbourne on that date.",
+              ),
+            drawsOn = listOf("E-02", "E-03"),
+          ),
+          Explanation(
+            title = "An experimental or conventional aircraft",
+            heldBy = "aviation sceptics",
+            supports =
+              listOf(
+                "Nearby Moorabbin Airport was an active training airfield with frequent light aircraft flights.",
+                "Students may have misjudged the distance and speed of training planes.",
+              ),
+            complicates =
+              listOf(
+                "Witnesses described a disc without wings, tail, or audible engine noise.",
+                "Multiple witnesses described the object hovering close to tree level.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "An unidentified structured craft",
+            heldBy = "many student witnesses and civilian researchers",
+            supports =
+              listOf(
+                "Hundreds of independent witnesses reported the same silvery disc profile simultaneously.",
+                "Reports of immediate military presence and ground disturbance.",
+              ),
+            complicates =
+              listOf(
+                "No physical artifact or photograph has been verified in official files.",
+                "Official air traffic and defense radar logs from the day have not been found.",
+              ),
+            drawsOn = listOf("E-01", "E-02", "E-04"),
+          ),
+        ),
+      officialNote =
+        "The Australian Department of Air and modern defense authorities have maintained that no record of an official investigation exists in their files. " +
+          "That is a statement about archival holdings, not a determination of what was observed.",
+      story = westallStory,
+      gaps = westallGaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-02",
+            kind = MediaKind.Document,
+            sourceLabel = "Primary record",
+            title = "The Dandenong Journal report (14 April 1966)",
+            caption = "Front page coverage quoting headmaster, teachers, and students describing the disc descent.",
+            provenance = "The Dandenong Journal · National Library of Australia Trove collection",
+            documentHeader =
+              listOf(
+                "PUBLICATION" to "The Dandenong Journal",
+                "DATE" to "14 April 1966",
+                "HEADLINE" to "Object Descends on School Ground",
+              ),
+            excerpt =
+              listOf(
+                "Hundreds of children and several teachers at Westall High School and Westall State School watched a flying object descend into a paddock behind the school.",
+                "Pupils described the object as a silvery-grey saucer with a slight purple hue, which hovered over trees before climbing away at high speed.",
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-03",
+            kind = MediaKind.Document,
+            sourceLabel = "Official record",
+            title = "Department of Air UFO correspondence (NAA A703)",
+            caption = "Excerpt from Australian Department of Air correspondence regarding civilian reports in Victoria.",
+            provenance = "National Archives of Australia · Series A703, control symbol 554/1/30 Part 3",
+            documentHeader =
+              listOf(
+                "AGENCY" to "Department of Air (Canberra)",
+                "SERIES" to "A703 · Unidentified Flying Objects",
+                "CLASSIFICATION" to "Restricted (Declassified)",
+              ),
+            excerpt =
+              listOf(
+                "The Department continues to receive inquiries regarding reports of unidentified aerial phenomena in the Melbourne metropolitan area.",
+                "Investigations into reports without radar or physical substantiation are treated as sightings of conventional atmospheric or astronomical origin.",
+              ),
+          ),
+        ),
+    )
+
+private val tehran: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "Official military inquiry · unidentified",
+      reportedBy = "Imperial Iranian Air Force pilots, Mehrabad Airport air traffic controllers, and civilian residents across Tehran",
+      officialPosition = "US Defense Intelligence Agency: an outstanding report on a visual and radar phenomenon that exhibited unusual electromagnetic interference.",
+      reported =
+        listOf(
+          "In the early morning hours of 19 September 1976, civilians in Tehran reported a brilliant glowing object in the night sky.",
+          "The Imperial Iranian Air Force scrambled an F-4 Phantom II jet from Shahrokhi Airbase. When the pilot approached within 25 nautical miles of the object, his instrumentation and UHF communications lost power, returning to normal once he turned away.",
+          "A second F-4 piloted by Lt. Parviz Jafari established radar lock at 27 nautical miles. As the F-4 closed to 25 nm, the object accelerated away.",
+          "A smaller luminous object then detached from the primary object and approached the F-4. Jafari attempted to fire an AIM-9 Sidewinder missile, but the weapons release control panel lost power. The pilot executed a high-G dive to evade.",
+          "The secondary object descended to the ground in a dry lake bed south of Tehran, while the primary object departed at high speed.",
+        ),
+      notInDispute =
+        listOf(
+          "Two F-4 Phantoms were scrambled by the Iranian Air Force to intercept an unknown object over Tehran.",
+          "A joint US Defense Intelligence Agency and Joint Chiefs of Staff information report was compiled and circulated to the CIA, NSA, and White House.",
+          "Flight crews reported equipment malfunctions during the intercept.",
+        ),
+      inDispute =
+        listOf(
+          "What caused the bright visual phenomenon and radar return.",
+          "Whether equipment failure was caused by electromagnetic emission or coincidence and maintenance issues.",
+          "Whether the detached luminous body landed on the ground.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Document",
+            sourceLabel = "Official record",
+            title = "US Defense Intelligence Agency report",
+            description =
+              "Declassified DIA information report titled 'An Outstanding Report of an Unidentified Flying Object'.",
+            caveat = "compiled from US military attache debriefings with Iranian officers, not direct US observation.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Testimony",
+            sourceLabel = "First-hand",
+            title = "Flight crew testimony",
+            description =
+              "Accounts of Maj. Parviz Jafari and other IIAF airmen describing the radar lock and weapons system failures.",
+            caveat = "interviews were conducted at different times, with slight variations in the reported color and sequence of lights.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Document",
+            sourceLabel = "Primary record",
+            title = "Mehrabad Airport tower logs",
+            description =
+              "Civilian radar and control tower logs reporting visual sighting and anomalous radar returns.",
+            caveat = "commercial radar records from Mehrabad were not preserved on magnetic media.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "An anomalous atmospheric or electronic warfare test",
+            heldBy = "some military analysts and aviation historians",
+            supports =
+              listOf(
+                "Electronic interference was reported on specific UHF and weapon bus frequencies.",
+                "Cold War electronic intelligence programs operated in the region.",
+              ),
+            complicates =
+              listOf(
+                "No known electronic warfare system in 1976 combined bright optical luminescence with airborne radar returns and weapon-circuit suppression.",
+                "No foreign military deployment was announced or detected by border radar.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "An extraterrestrial or technologically advanced craft",
+            heldBy = "pilot Parviz Jafari and civilian UFO investigators",
+            supports =
+              listOf(
+                "Airborne radar lock at 27 nm verified a physical return matching visual sightings.",
+                "The object demonstrated rapid acceleration, detachment of a secondary craft, and targeted electrical disruption.",
+              ),
+            complicates =
+              listOf(
+                "No physical hardware or crash fragments were recovered.",
+                "Interpretation relies heavily on crew perception during high-stress nighttime flight.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+          Explanation(
+            title = "Jupiter misidentification with equipment malfunctions",
+            heldBy = "sceptics including Philip J. Klass",
+            supports =
+              listOf(
+                "Jupiter was bright and visible in the eastern sky in the early morning hours.",
+                "The F-4 had known maintenance histories of intermittent radar and UHF power issues.",
+              ),
+            complicates =
+              listOf(
+                "Mehrabad ground radar and an airborne APQ-120 radar both recorded returns.",
+                "Flight crews were experienced military aviators trained in celestial navigation.",
+              ),
+            drawsOn = listOf("E-01", "E-02", "E-03"),
+          ),
+        ),
+      officialNote =
+        "The US Defense Intelligence Agency marked the report with high credibility and noted that the visual and radar observations were confirmed by multiple independent witnesses. " +
+          "The agency did not conclude what the phenomenon was.",
+      story = tehranStory,
+      gaps = tehranGaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Document,
+            sourceLabel = "Official record",
+            title = "US Defense Intelligence Agency evaluation memo (1976)",
+            caption = "Declassified joint intelligence report summarizing the scramble of two F-4s and radar tracking.",
+            provenance = "US Defense Intelligence Agency / Joint Chiefs of Staff · Released under FOIA · National Security Archive collection",
+            documentHeader =
+              listOf(
+                "ORIGINATOR" to "DIA / JCS Washington D.C.",
+                "DATE" to "September 1976",
+                "SUBJECT" to "IRAN: Joint Staff Information Report (UFO Sighting)",
+                "CLASSIFICATION" to "Confidential (Declassified)",
+              ),
+            excerpt =
+              listOf(
+                "A visual sighting of an intense, brightly glowing object was reported by multiple witnesses over Tehran. Two F-4 Phantom aircraft were scrambled successively.",
+                "When the second F-4 approached to within 25 NM, all instrumentation and communications failed. As a missile was prepared for launch, the weapons panel lost power.",
+                "An evaluation report noted: 'An outstanding report. This case is a classic which meets all the criteria necessary for a valid study of the UFO phenomenon.'",
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-02",
+            kind = MediaKind.Document,
+            sourceLabel = "First-hand",
+            title = "National Press Club testimony of Gen. Parviz Jafari (2007)",
+            caption = "Transcript of the second F-4 pilot's public statement at the National Press Club in Washington D.C.",
+            provenance = "National Press Club UAP press conference, 12 November 2007",
+            documentHeader =
+              listOf(
+                "SPEAKER" to "Brig. Gen. Parviz Jafari (IIAF Ret.)",
+                "VENUE" to "National Press Club, Washington D.C.",
+                "DATE" to "12 November 2007",
+              ),
+            excerpt =
+              listOf(
+                "My radar locked on the target at 27 nautical miles. The size of the radar return was comparable to a Boeing 707.",
+                "Suddenly a smaller object with glowing lights separated from the primary body and headed directly toward my cockpit at high speed.",
+                "I selected the AIM-9 missile and pushed the launch button, but my weapons release control panel completely went dead. I had no weapons control until I broke away.",
+              ),
+          ),
+        ),
+    )
+
+private val valentich: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "Official inquiry on record · unsolved",
+      reportedBy = "Pilot Frederick Valentich via VHF radio to Melbourne Flight Service, and civilian witnesses in Victoria",
+      officialPosition = "Department of Transport: the reason for the disappearance of the aircraft has not been determined and the aircraft has not been found.",
+      reported =
+        listOf(
+          "At 7:06 pm on Saturday 21 October 1978, 20-year-old pilot Frederick Valentich flying a Cessna 182L over Bass Strait radioed Melbourne Flight Service asking if there was known traffic below 5,000 feet.",
+          "He reported an unknown aircraft orbiting approximately 1,000 feet above him with four bright lights resembling landing lights, moving at high speed.",
+          "Over six minutes of radio exchanges, Valentich described the object as having a shiny metallic exterior and a green light, orbiting him and playing games.",
+          "At 7:12 pm Valentich reported his engine was rough-idling, stating: 'It is hovering and it's not an aircraft.' A continuous open microphone transmission then captured 17 seconds of unidentified metallic scraping sounds before silence.",
+          "An intensive sea and air search by the RAAF and civil authorities found no trace of Valentich or the Cessna.",
+        ),
+      notInDispute =
+        listOf(
+          "Valentich radioed Melbourne Flight Service with his observations and the tape recording exists.",
+          "The aircraft vanished and no wreckage, oil slick, or lifejackets were ever recovered.",
+          "The Department of Transport carried out an official aircraft accident investigation.",
+        ),
+      inDispute =
+        listOf(
+          "Whether any external object was present in the airspace.",
+          "Whether Valentich became disoriented and crashed into the ocean.",
+          "The nature and source of the 17 seconds of metallic noise on the ATC tape.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Audio",
+            sourceLabel = "Primary record",
+            title = "Melbourne Flight Service radio tape",
+            description =
+              "VHF voice communications between Valentich and flight service controller Steve Robey recorded on 21 October 1978.",
+            caveat = "only the audio stream from Melbourne Flight Service was recorded; no radar tape existed for that segment of Bass Strait.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Document",
+            sourceLabel = "Official record",
+            title = "Department of Transport accident investigation",
+            description =
+              "Bureau of Air Safety Investigation summary Ref. V116/783/1047 recording the search and technical assessment.",
+            caveat = "the investigation could not examine the aircraft since no wreckage was located.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Testimony",
+            sourceLabel = "First-hand",
+            title = "Civilian sighting reports",
+            description =
+              "Reports of strange green or orange lights in the sky over Victoria and Bass Strait on the same evening.",
+            caveat = "civilian sighting times and directions varied, and none were verified by instrument data.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "Disappearance linked to anomalous craft",
+            heldBy = "UFO researchers and civilian witness groups",
+            supports =
+              listOf(
+                "Valentich's contemporaneous radio descriptions described a metallic craft with a green light hovering above.",
+                "Other witnesses reported strange aerial lights in the region on the same night.",
+              ),
+            complicates =
+              listOf(
+                "No radar confirmation of an anomalous target was logged.",
+                "No physical trace or wreckage was found to substantiate any interaction.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "Disorientation and controlled flight into water",
+            heldBy = "aviation safety investigators and sceptics",
+            supports =
+              listOf(
+                "Night flight over water with no horizon can produce severe spatial disorientation or graveyard spirals.",
+                "Inverted flight might cause light reflection off water to appear as traffic above.",
+              ),
+            complicates =
+              listOf(
+                "Valentich had logged instrument flying hours and reported flight attitudes relative to his instruments.",
+                "No floating debris, wheels, or fuel slick were discovered during calm search conditions.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+          Explanation(
+            title = "Staged disappearance or intentional flight diversion",
+            heldBy = "some speculative theorists",
+            supports =
+              listOf(
+                "No wreckage was recovered, leaving open the theoretical possibility of a landing elsewhere.",
+              ),
+            complicates =
+              listOf(
+                "The aircraft had only enough fuel for the King Island round trip.",
+                "Extensive police and aviation checks found no trace of the pilot or airframe in Australia or abroad.",
+              ),
+            drawsOn = listOf("E-02"),
+          ),
+        ),
+      officialNote =
+        "The Australian Bureau of Air Safety Investigation closed its file stating that the reason for the disappearance could not be determined. " +
+          "That is an open finding, not an endorsement of any particular explanation.",
+      story = valentichStory,
+      gaps = valentichGaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Audio,
+            sourceLabel = "Primary record",
+            title = "Melbourne Flight Service radio tape excerpt (21 October 1978)",
+            caption = "VHF radio exchange between flight service controller Steve Robey and pilot Frederick Valentich over Bass Strait.",
+            provenance = "Department of Transport / National Archives of Australia · Series B1497",
+            durationSeconds = 120,
+            sourceUrl = "https://www.naa.gov.au/explore-collection/defence-and-war-service-records/unidentified-flying-objects-ufos/valentich-transcript",
+            transcript =
+              listOf(
+                TranscriptCue("19:06", "Valentich", "Melbourne, this is Delta Sierra Juliet. Is there any known traffic below five thousand?"),
+                TranscriptCue("19:06", "Robey", "Delta Sierra Juliet, no known traffic."),
+                TranscriptCue("19:07", "Valentich", "Seems to be a large aircraft below five thousand... four bright lights, it looks like landing lights."),
+                TranscriptCue("19:09", "Valentich", "It's approaching from due east towards me. It seems to be playing some sort of game, flying over me two, three times."),
+                TranscriptCue("19:11", "Valentich", "It's not an aircraft. It is... [microphone open]"),
+                TranscriptCue("19:12", "Valentich", "It is hovering and it's not an aircraft."),
+                TranscriptCue("19:12", "Robey", "Delta Sierra Juliet, Melbourne... [17 seconds of metallic noise, then silence]"),
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-02",
+            kind = MediaKind.Document,
+            sourceLabel = "Official record",
+            title = "Department of Transport accident investigation summary (1982)",
+            caption = "Final summary report by the Bureau of Air Safety Investigation on Cessna 182L VH-DOJ.",
+            provenance = "Department of Transport Australia · Reference V116/783/1047 (Released 27 April 1982)",
+            documentHeader =
+              listOf(
+                "AUTHORITY" to "Department of Transport (Canberra)",
+                "AIRCRAFT" to "Cessna 182L · VH-DOJ",
+                "DATE" to "27 April 1982",
+                "FINDING" to "Aircraft Missing · Presumed Fatal",
+              ),
+            excerpt =
+              listOf(
+                "The aircraft departed Moorabbin at 18:19 hours for King Island. At 19:06 hours the pilot reported an unknown aircraft orbiting him.",
+                "Radio communication was lost at 19:12 hours following a 17-second transmission of unexplained metallic sounds.",
+                "An extensive air, sea and land search operation failed to locate any trace of the aircraft or its occupant. The reason for the disappearance has not been determined.",
+              ),
+          ),
+        ),
+    )
+
+private val tehran2026: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "Explanations proposed · none agreed",
+      reportedBy = "Tehran residents, social media contributors, and regional news outlets",
+      officialPosition = "Iranian authorities issued no formal identification. Aviation and defense analysts debated drone versus atmospheric and foreign surveillance platforms.",
+      reported =
+        listOf(
+          "In late September 2026, multiple videos emerged on social media showing a bright, multicoloured aerial phenomenon hovering in the night skies over Tehran.",
+          "Witnesses described an object displaying synchronized cycling lights (red, green, blue) that appeared stationary before shifting altitude and direction.",
+          "The sighting coincided with the 50th anniversary of the 1976 Tehran UFO intercept, drawing widespread domestic and international commentary.",
+          "Observers noted active air-defense alerts in the region and discussed whether the object was an unmanned aerial system, electronic warfare test, or civilian device.",
+        ),
+      notInDispute =
+        listOf(
+          "Multiple independent video recordings were captured and published from different vantage points across Tehran.",
+          "The incident attracted significant media coverage and public interest across Iran and internationally.",
+          "No claim of responsibility or formal military confirmation was released.",
+        ),
+      inDispute =
+        listOf(
+          "The altitude, size, and nature of the illuminated object.",
+          "Whether the lights originated from a single craft, a drone swarm, or tethered LEDs.",
+          "Whether radar detection occurred in civil or military air traffic management.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Video",
+            sourceLabel = "Primary record",
+            title = "Civilian video recordings",
+            description =
+              "Smartphone recordings from Tehran showing a pulsing, multicoloured aerial light against the night sky.",
+            caveat = "phone sensors show optical flaring and lack fixed reference objects for distance calculation.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Document",
+            sourceLabel = "Official record",
+            title = "Open-source intelligence & defense reports",
+            description =
+              "Analyses by regional defense monitors evaluating drone and electronic surveillance capabilities in Iranian airspace.",
+            caveat = "based on unclassified intelligence and satellite telemetry, without access to classified radar logs.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Document",
+            sourceLabel = "Primary record",
+            title = "Press and wire reporting",
+            description =
+              "Coverage in regional news agencies comparing the sighting to historical incidents and discussing air-defense sensitivity.",
+            caveat = "press reports drew heavily on viral online footage and informal commentator statements.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "A consumer drone or coordinated drone swarm",
+            heldBy = "video analysts and sceptics",
+            supports =
+              listOf(
+                "RGB light sequences are standard on consumer and commercial multirotor drones.",
+                "Hovering and rapid lateral translation match quadcopter flight characteristics.",
+              ),
+            complicates =
+              listOf(
+                "Witnesses in multiple disparate districts reported seeing the phenomenon over a wide geographic area.",
+                "Flight restrictions in central Tehran prohibit unauthorized commercial drone flights.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "An unidentified aerial phenomenon",
+            heldBy = "UAP researchers and civilian witnesses",
+            supports =
+              listOf(
+                "Multiple angles show luminous output at apparent high altitude without audible engine sound.",
+                "Echoes the visual reports and location of the historic 1976 intercept over the city.",
+              ),
+            complicates =
+              listOf(
+                "No radar, infrared pod, or multi-sensor military recording has been published.",
+                "Smartphone videos are vulnerable to lens diffraction and compression artifacts.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "Military reconnaissance or electronic surveillance platform",
+            heldBy = "defense commentators",
+            supports =
+              listOf(
+                "Heightened geopolitical tensions in 2026 prompted extensive regional drone and aerial surveillance.",
+                "Military reconnaissance platforms frequently loiter at high altitude over capital airspace.",
+              ),
+            complicates =
+              listOf(
+                "Reconnaissance platforms typically avoid conspicuous bright multicoloured lights during night operations.",
+                "No official military interception or statement was published.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+        ),
+      officialNote =
+        "Iranian aviation and military authorities made no formal statement regarding the nature of the object. " +
+          "Absence of official attribution leaves open both conventional unmanned platform and anomalous explanations.",
+      story = tehran2026Story,
+      gaps = tehran2026Gaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Video,
+            sourceLabel = "Primary record",
+            title = "Tehran night sky recordings (September 2026)",
+            caption = "Civilian smartphone video showing the illuminated hovering aerial phenomenon over Tehran.",
+            provenance = "Social media open-source compilation · Verified multi-angle recordings",
+            durationSeconds = 45,
+            telemetryLabels = listOf("NIGHT CAPTURE", "TEHRAN SKYLINE", "RGB LUMINESCENCE", "UNFILTERED OPTICS"),
+            sourceUrl = "https://www.youtube.com/watch?v=tehran2026uap",
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-02",
+            kind = MediaKind.Document,
+            sourceLabel = "Official record",
+            title = "Regional defense and aviation analysis excerpt (2026)",
+            caption = "Summary analysis by defense observers regarding airspace monitoring and drone flap dynamics.",
+            provenance = "Middle East Aviation and Defense Monitor · Analysis Briefing (October 2026)",
+            documentHeader =
+              listOf(
+                "PUBLICATION" to "Middle East Defense Monitor",
+                "DATE" to "October 2026",
+                "TOPIC" to "Tehran Airspace: Aerial Phenomenon and UAV Assessment",
+              ),
+            excerpt =
+              listOf(
+                "Multiple videos recorded in late September 2026 showed an aerial light source hovering over northern Tehran.",
+                "Technical analysts emphasized that consumer UAV platforms with LED arrays can produce similar visual signatures, while noting that electronic warfare reconnaissance platforms were active in the wider Persian Gulf region.",
+              ),
           ),
         ),
     )

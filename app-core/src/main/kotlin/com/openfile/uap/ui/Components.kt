@@ -1,6 +1,5 @@
 package com.openfile.uap.ui
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -67,6 +67,8 @@ import com.openfile.uap.theme.TypewriterFamily
 
 val ScreenPadding = 20.dp
 
+private val BottomTabs: List<Pair<NavKey, String>> = listOf(Files to "FILES", EventMap to "MAP", Timeline to "TIMELINE", Method to "METHOD")
+
 /**
  * Leading spacer for a screen's scrolling content, as tall as the status bar. Placing it inside the scroll area lets
  * content draw behind the transparent status bar and scroll under it, rather than being clipped beneath it.
@@ -95,9 +97,9 @@ fun AppFrame(current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -
     // The strip's paper extends behind the navigation bar; the tabs themselves sit above it.
     Column(Modifier.fillMaxWidth().background(Paper).windowInsetsPadding(WindowInsets.navigationBars)) {
       Row(Modifier.fillMaxWidth().height(56.dp)) {
-        listOf(Files to "Files", EventMap to "Map", Timeline to "Timeline", Method to "Method").forEachIndexed { index, (key, label) ->
+        BottomTabs.forEachIndexed { index, (key, label) ->
           if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-          TabCell(label = label.uppercase(), selected = key == current, onClick = { onTab(key) }, modifier = Modifier.weight(1f))
+          TabCell(label = label, selected = key == current, onClick = { onTab(key) }, modifier = Modifier.weight(1f))
         }
       }
     }
@@ -158,14 +160,17 @@ fun PaperSheet(modifier: Modifier = Modifier, dashed: Boolean = false, content: 
 }
 
 fun Modifier.dashedBorder(color: Color, width: Dp = 1.dp): Modifier =
-  drawBehind {
+  drawWithCache {
     val stroke = width.toPx()
-    drawRect(
-      color = color,
-      topLeft = Offset(stroke / 2, stroke / 2),
-      size = size.copy(width = size.width - stroke, height = size.height - stroke),
-      style = Stroke(width = stroke, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))),
-    )
+    val style = Stroke(width = stroke, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx())))
+    onDrawBehind {
+      drawRect(
+        color = color,
+        topLeft = Offset(stroke / 2, stroke / 2),
+        size = size.copy(width = size.width - stroke, height = size.height - stroke),
+        style = style,
+      )
+    }
   }
 
 @Composable
@@ -176,14 +181,17 @@ fun SolidRule(modifier: Modifier = Modifier, color: Color = Rule) {
 @Composable
 fun DashedRule(modifier: Modifier = Modifier) {
   Box(
-    modifier.fillMaxWidth().height(1.dp).drawBehind {
-      drawLine(
-        color = Dash,
-        start = Offset(0f, size.height / 2),
-        end = Offset(size.width, size.height / 2),
-        strokeWidth = size.height,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx())),
-      )
+    modifier.fillMaxWidth().height(1.dp).drawWithCache {
+      val dash = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))
+      onDrawBehind {
+        drawLine(
+          color = Dash,
+          start = Offset(0f, size.height / 2),
+          end = Offset(size.width, size.height / 2),
+          strokeWidth = size.height,
+          pathEffect = dash,
+        )
+      }
     },
   )
 }
@@ -240,16 +248,16 @@ fun SourceRow(source: Citation, modifier: Modifier = Modifier) {
 /** A small drawn chevron: pointing right for "go to", down for "open or close". */
 @Composable
 fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, color: Color = Ink) {
-  Canvas(modifier.padding(top = 4.dp).size(14.dp)) {
-    val w = size.width
-    val stroke = 2.dp.toPx()
-    val points =
-      if (down) {
-        listOf(Offset(w * 0.15f, w * 0.35f), Offset(w * 0.5f, w * 0.7f), Offset(w * 0.85f, w * 0.35f))
-      } else {
-        listOf(Offset(w * 0.35f, w * 0.15f), Offset(w * 0.7f, w * 0.5f), Offset(w * 0.35f, w * 0.85f))
-      }
-    drawLine(color, points[0], points[1], strokeWidth = stroke, cap = StrokeCap.Round)
-    drawLine(color, points[1], points[2], strokeWidth = stroke, cap = StrokeCap.Round)
-  }
+  Spacer(
+    modifier.padding(top = 4.dp).size(14.dp).drawBehind {
+      val w = size.width
+      val stroke = 2.dp.toPx()
+      // The down chevron is the right one with x and y swapped.
+      val tip = Offset(w * 0.7f, w * 0.5f).let { if (down) Offset(it.y, it.x) else it }
+      val from = Offset(w * 0.35f, w * 0.15f).let { if (down) Offset(it.y, it.x) else it }
+      val to = Offset(w * 0.35f, w * 0.85f).let { if (down) Offset(it.y, it.x) else it }
+      drawLine(color, from, tip, strokeWidth = stroke, cap = StrokeCap.Round)
+      drawLine(color, tip, to, strokeWidth = stroke, cap = StrokeCap.Round)
+    },
+  )
 }

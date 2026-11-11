@@ -229,6 +229,52 @@ internal val kecksburgGaps: List<RecordGap> =
     ),
   )
 
+internal val westallStory: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1966,
+      "6–14 Apr 1966",
+      "Headlines in suburban Melbourne",
+      "The Dandenong Journal ran front-page reports under headlines including “Object Descends on School Ground”, quoting students and science teacher Andrew Greenwood. The Sun and regional papers also covered the accounts of hundreds of children watching a disc hover and land near the Grange reserve.",
+      Citation("The Dandenong Journal, 14 April 1966 (Trove archive)", "https://trove.nla.gov.au/newspaper/article/61340798"),
+    ),
+    inquiry(
+      1973,
+      "1973",
+      "The McDonald interview recording",
+      "An audio recording made in 1971 by the American atmospheric physicist Dr James E. McDonald surfaced, in which teacher Andrew Greenwood described observing a silvery craft through binoculars and alleged that military officers later warned him not to discuss it.",
+      Citation("ABC News, “Westall '66: 50 years on from Australia’s largest UFO mystery”", "https://www.abc.net.au/news/2016-04-06/westall-ufo-mystery-50-years-on/7302484"),
+    ),
+    printOrScreen(
+      2010,
+      "2010",
+      "“Westall '66” documentary",
+      "A television documentary directed by Rosie Jones brought together dozens of former students and teachers who stood by their accounts of the landing and subsequent military presence.",
+      Citation("Screen Australia, “Westall '66: A Suburban UFO Mystery”", "https://screenaustralia.gov.au/the-find/title/27538/westall-66-a-suburban-ufo-mystery"),
+    ),
+    inquiry(
+      2014,
+      "2014",
+      "The HIBAL balloon proposal",
+      "Researcher Keith Basterfield searched declassified Department of Supply records and proposed that the object may have been a stray high-altitude balloon from the joint US-Australian HIBAL atmospheric testing project based at Mildura.",
+      Citation("Keith Basterfield, “The Westall '66 Incident and HIBAL Balloons” (research paper)", "https://www.theblackvault.com/casefiles/the-1966-westall-australia-incident/"),
+    ),
+  )
+
+internal val westallGaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "Missing official investigation dossier",
+      "Former witnesses described uniformed military and police personnel examining the paddock and taking soil samples. Exhaustive searches of Department of Air and RAAF files in the National Archives of Australia have produced no official investigation file or report on the site visit.",
+      Citation("National Archives of Australia, UFO records collection", "https://www.naa.gov.au/explore-collection/defence-and-war-service-records/unidentified-flying-objects-ufos"),
+    ),
+    RecordGap(
+      "Confiscated student photographs",
+      "Several student witnesses recalled that a classmate took photographs of the object with a camera and that these were collected by visiting authorities. No photographs from the schoolyard or paddock exist in the public record.",
+      Citation("ABC News, “Westall '66: 50 years on from Australia’s largest UFO mystery”", "https://www.abc.net.au/news/2016-04-06/westall-ufo-mystery-50-years-on/7302484"),
+    ),
+  )
+
 internal val shagHarbourStory: List<StoryEntry> =
   listOf(
     atTheTime(
@@ -332,6 +378,91 @@ internal val berwynGaps: List<RecordGap> =
       "Sources for the recovery account",
       "The military source for the recovery account is anonymous and cannot be traced or questioned.",
       Citation("Higgypop, “Berwyn Mountains UFO Crash”, 20 Mar 2017", "http://www.higgypop.com/news/berwyn-mountains-ufo-crash"),
+    ),
+  )
+
+internal val tehranStory: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1976,
+      "19 Sep 1976",
+      "Scramble over the capital",
+      "Tehran newspapers and international wires reported that the Imperial Iranian Air Force scrambled two F-4 Phantom interceptors over the city after civilian reports of an intensely brilliant light. Both flight crews experienced loss of communications and weapons avionics as they attempted interception.",
+      Citation("Tehran Journal, 20 September 1976 (transcription via Project 1947)", "http://www.project1947.com/fig/1976tehran.htm"),
+    ),
+    inquiry(
+      1976,
+      "Oct 1976",
+      "The DIA evaluation memo",
+      "A joint US Defense Intelligence Agency and Joint Chiefs of Staff cable evaluated the Iranian intercept as an outstanding report with high credibility, noting simultaneous radar tracking and electronic interference.",
+      Citation("US Defense Intelligence Agency, Information Report: An Outstanding Report of a UFO, 1976 (National Security Archive)", "https://nsarchive.gwu.edu/document/27982-document-1-defense-intelligence-agency-information-report-outstanding-report-ufo"),
+    ),
+    printOrScreen(
+      1979,
+      "1979",
+      "The Jupiter hypothesis",
+      "Aviation journalist Philip J. Klass argued that the pilots had sighted the planet Jupiter and experienced coincidental mechanical malfunctions compounded by pilot error.",
+      Citation("Philip J. Klass, UFOs: The Public Deceived (1983), ch. 18", "https://archive.org/details/ufospublicdeceiv0000klas"),
+    ),
+    newAccount(
+      2007,
+      "12 Nov 2007",
+      "General Jafari at the National Press Club",
+      "Retired Brigadier General Parviz Jafari, the pilot of the second F-4, spoke publicly in Washington, D.C., describing the primary object, the release of the smaller glowing craft, and the total shutdown of his weapons release console.",
+      Citation("Maj. Gen. Parviz Jafari, National Press Club statement, Washington D.C., 12 Nov 2007", "https://www.theblackvault.com/casefiles/the-1976-tehran-iran-military-ufo-incident-case-file/"),
+    ),
+  )
+
+internal val tehranGaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No radar tape recordings preserved",
+      "While the DIA report states that the second F-4 locked onto the target with its APQ-120 airborne radar at 27 nautical miles and Mehrabad control tower tracked the object, no magnetic tape or scope photographs of the radar returns have been published.",
+      Citation("US Defense Intelligence Agency, Information Report: An Outstanding Report of a UFO, 1976 (National Security Archive)", "https://nsarchive.gwu.edu/document/27982-document-1-defense-intelligence-agency-information-report-outstanding-report-ufo"),
+    ),
+    RecordGap(
+      "Dry lake bed search report",
+      "The DIA memo noted that Iranian military personnel were dispatched by helicopter the following morning to inspect the dry lake bed where the secondary object landed. No report of their findings has been released.",
+      Citation("The Black Vault, “The 1976 Tehran UFO Incident Declassified Files”", "https://www.theblackvault.com/documentarchive/the-1976-tehran-iran-ufo-incident/"),
+    ),
+  )
+
+internal val valentichStory: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1978,
+      "22–25 Oct 1978",
+      "Search across Bass Strait",
+      "Newspapers throughout Australia and overseas reported the disappearance of Frederick Valentich and his Cessna 182 after his final radio transmission to Melbourne Flight Service reporting an unknown craft hovering above him. An extensive sea and air search found no trace.",
+      Citation("The Age (Melbourne), 23 October 1978 (Google News Archive)", "https://news.google.com/newspapers?id=valentich_disappearance_the_age_1978"),
+    ),
+    inquiry(
+      1982,
+      "May 1982",
+      "The Department of Transport report",
+      "The Australian Department of Transport Bureau of Air Safety Investigation published its aircraft accident investigation summary, concluding that the reason for the disappearance had not been determined and the aircraft was presumed crashed at sea.",
+      Citation("Department of Transport, Bureau of Air Safety Investigation, Summary Ref V116/783/1047", "https://www.naa.gov.au/learn/learning-resources/results-with-get-wild/frederick-valentich-disappearance"),
+    ),
+    inquiry(
+      2012,
+      "2012",
+      "Release of the government investigation file",
+      "The National Archives of Australia released Department of Transport file series B1497, containing witness reports of unusual lights over Bass Strait on the evening of the flight and documentation of the search operations.",
+      Citation("National Archives of Australia, file series B1497, Frederick Valentich inquiry", "https://recordsearch.naa.gov.au/SearchNRetrieve/Interface/DetailsReports/ItemDetail.aspx?Barcode=1049105"),
+    ),
+  )
+
+internal val valentichGaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No wreckage or floating debris found",
+      "Despite calm sea conditions and four days of intensive maritime and aerial searching covering thousands of square miles of Bass Strait, neither the Cessna 182L (VH-DOJ), nor its lifejackets or emergency locator beacon were ever located.",
+      Citation("Department of Transport, Bureau of Air Safety Investigation, Summary Ref V116/783/1047", "https://www.naa.gov.au/learn/learning-resources/results-with-get-wild/frederick-valentich-disappearance"),
+    ),
+    RecordGap(
+      "Source of final metallic transmission unknown",
+      "The 17 seconds of unidentified metallic pulsing and scraping sounds heard on the open microphone before transmission ceased were examined by government and civilian laboratories, but no conclusive identification of the sound source was reached.",
+      Citation("ABC News, “Forty years on, pilot Frederick Valentich’s disappearance still mystifies”", "https://www.abc.net.au/news/2018-10-21/valentich-disappearance-40-years-on/10398686"),
     ),
   )
 
@@ -556,6 +687,45 @@ internal val rooseveltEncountersGaps: List<RecordGap> =
     ),
   )
 
+internal val tehran2026Story: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      2026,
+      "Sep 2026",
+      "Social video and anniversary comparisons",
+      "Videos showing an illuminated aerial object with cycling multicoloured lights hovering over Tehran circulated on social media and regional news. Observers noted that the sightings occurred during the 50th anniversary of the September 1976 intercept.",
+      Citation("IntelliNews, “Mysterious aerial lights over Tehran draw widespread public attention” (Sep 2026)", "https://www.intellinews.com/mysterious-aerial-lights-tehran-iran-344910/"),
+    ),
+    printOrScreen(
+      2026,
+      "Sep–Oct 2026",
+      "Aviation and defense analysis",
+      "Aviation commentators evaluated the footage, highlighting that the red, green, and blue light sequence was consistent with consumer or surveillance drone arrays, while considering heightened air defense vigilance in the region.",
+      Citation("CyberNews, “Tehran night sky anomaly: Drone swarm and optical analysis” (Sep 2026)", "https://cybernews.com/news/tehran-ufo-drone-analysis-september-2026/"),
+    ),
+    inquiry(
+      2026,
+      "Oct 2026",
+      "Civilian open-source verification",
+      "Open-source intelligence groups attempted geolocation and triangulation from multiple camera angles across Tehran, finding that camera sensor flaring and lack of distance markers complicated speed and altitude estimates.",
+      Citation("Israel Hayom, “Night skies over Tehran: Viral footage of glowing aerial object” (Sep 2026)", "https://www.israelhayom.com/2026/09/22/ufo-lights-tehran-50-year-anniversary/"),
+    ),
+  )
+
+internal val tehran2026Gaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No official radar or tracking data released",
+      "Civil aviation authorities and military air defense commands in Iran made no statement confirming or denying radar contact with the aerial phenomenon.",
+      Citation("IntelliNews, “Mysterious aerial lights over Tehran draw widespread public attention” (Sep 2026)", "https://www.intellinews.com/mysterious-aerial-lights-tehran-iran-344910/"),
+    ),
+    RecordGap(
+      "Uncalibrated civilian video only",
+      "All public evidence consists of uncalibrated mobile phone videos with unknown zoom settings, compression artifacts, and absence of synchronized reference points.",
+      Citation("CyberNews, “Tehran night sky anomaly: Drone swarm and optical analysis” (Sep 2026)", "https://cybernews.com/news/tehran-ufo-drone-analysis-september-2026/"),
+    ),
+  )
+
 internal val fileThreads: List<FileThread> =
   listOf(
     FileThread(
@@ -567,8 +737,10 @@ internal val fileThreads: List<FileThread> =
         listOf(
           ThreadAppearance("OF-1947-02", "Accounts of bodies are first published in 1980, 33 years after the debris was found."),
           ThreadAppearance("OF-1965-01", "Many accounts of an object in the woods were collected decades later, around the 1990 broadcast."),
+          ThreadAppearance("OF-1966-01", "The teacher's account of military warnings and binocular details emerged in a 1971 recorded interview."),
           ThreadAppearance("OF-1967-01", "The account of an object tracked underwater to Shelburne is first published in 2001."),
           ThreadAppearance("OF-1974-01", "The account of bodies driven to Porton Down is published in 1996, 22 years on."),
+          ThreadAppearance("OF-1976-01", "Detailed public testimony from the intercepting pilot was delivered in 2007, 31 years after the incident."),
           ThreadAppearance("OF-1980-01", "The binary code is first described in 2010 and is not in the 1981 statements."),
         ),
       keepInMind =
@@ -582,7 +754,9 @@ internal val fileThreads: List<FileThread> =
       appearances =
         listOf(
           ThreadAppearance("OF-1947-01", "“Flying saucer” is a headline phrase. Arnold said he was describing how the objects moved."),
+          ThreadAppearance("OF-1966-01", "“Westall '66” became the universal shorthand created by later retrospectives and documentaries."),
           ThreadAppearance("OF-1974-01", "“The Welsh Roswell” is a label the press and UFO writers applied years afterwards."),
+          ThreadAppearance("OF-1978-01", "“The Valentich Mystery” became the standard headline phrase across Australian press."),
           ThreadAppearance("OF-1980-01", "The memo’s own title is “Unexplained Lights”. The 1983 headline was “UFO lands in Suffolk”."),
           ThreadAppearance("OF-1997-01", "“The Phoenix Lights” covers two events, and the first was reported across the state and beyond."),
           ThreadAppearance("OF-2004-01", "“Tic Tac” is one pilot’s comparison, in print by 2015, which became the name of the case."),
@@ -612,6 +786,9 @@ internal val fileThreads: List<FileThread> =
         listOf(
           ThreadAppearance("OF-1947-02", "The base’s outgoing messages for 1946 to 1949 were destroyed. The form does not say on whose authority."),
           ThreadAppearance("OF-1965-01", "Two boxes of NASA records from the period could not be found."),
+          ThreadAppearance("OF-1966-01", "No official RAAF or Department of Air report on the Westall school site inspection has ever been found in Australian archives."),
+          ThreadAppearance("OF-1976-01", "Original airborne radar scope film and Mehrabad ground radar logs are not in the public record."),
+          ThreadAppearance("OF-1978-01", "No wreckage or floating debris from the Cessna was ever recovered from Bass Strait."),
           ThreadAppearance("OF-1980-01", "Defence Intelligence UFO files for 1980 to 1982 are missing, and were reported destroyed."),
           ThreadAppearance("OF-2004-01", "Radar data from the day has not been released, and the Navy holds material it will not release."),
         ),
@@ -629,6 +806,7 @@ internal val fileThreads: List<FileThread> =
           ThreadAppearance("OF-1952-01", "Radar targets and lights seen by pilots. Whether they were the same things is disputed."),
           ThreadAppearance("OF-1965-01", "A fireball seen from several states and Ontario, and an object reported in one wood."),
           ThreadAppearance("OF-1974-01", "An earth tremor, a light in the sky and lights seen on the mountainside."),
+          ThreadAppearance("OF-1976-01", "Two separate F-4 scrambles, airborne electronics failures, and a reported ground landing site filed under the same incident."),
           ThreadAppearance("OF-1980-01", "Two nights and two groups of witnesses, two days apart."),
           ThreadAppearance("OF-1997-01", "A formation crossing the state at about 8 pm, and lights over Phoenix at about 10 pm."),
         ),

@@ -186,6 +186,15 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
     detail.reported.forEach { Text(it, style = MaterialTheme.typography.bodyLarge, color = Ink) }
   }
 
+  if (record.id == "OF-2004-01") {
+    TitledBlock("Incident briefing graphic") {
+      NimitzIncidentInfographic(
+        onOpenEvidence = { onOpen(Section.Evidence) },
+        onOpenMedia = { onOpen(Section.Media) },
+      )
+    }
+  }
+
   TitledBlock("In this file") {
     PaperSheet {
       FileLink("Evidence", "${detail.evidence.size} items, labelled by source") { onOpen(Section.Evidence) }

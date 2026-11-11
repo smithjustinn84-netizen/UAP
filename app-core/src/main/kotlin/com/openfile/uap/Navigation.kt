@@ -22,30 +22,27 @@ fun MainNavigation() {
 
   val openThreads: () -> Unit = { backStack.add(Threads) }
 
-  NavDisplay(
-    backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
-    entryProvider =
-      entryProvider {
-        entry<Files> { AppFrame(current = Files, onTab = switchTab) { FilesScreen(onOpenCase = openCase, onOpenThreads = openThreads) } }
-        entry<EventMap> { AppFrame(current = EventMap, onTab = switchTab) { MapScreen(onOpenCase = openCase) } }
-        entry<Timeline> { AppFrame(current = Timeline, onTab = switchTab) { TimelineScreen(onOpenCase = openCase) } }
-        entry<Method> { AppFrame(current = Method, onTab = switchTab) { MethodScreen() } }
-        entry<Threads> {
-          AppFrame(current = backStack.firstOrNull() ?: Files, onTab = switchTab) {
-            ThreadsScreen(onOpenCase = openCase, onBack = { backStack.removeLastOrNull() })
-          }
-        }
-        entry<CaseFile> { key ->
-          // A file belongs to whichever section it was opened from, so that tab stays lit and Back names it.
-          val origin = backStack.firstOrNull() ?: Files
-          val backLabel = if (Threads in backStack) "Threads" else sectionLabel(origin)
-          AppFrame(current = origin, onTab = switchTab) {
+  // The frame sits outside NavDisplay so the desk and tab strip are composed once, not once per destination.
+  // A file or the threads belong to whichever section they were opened from, so that tab stays lit.
+  AppFrame(current = backStack.firstOrNull() ?: Files, onTab = switchTab) {
+    NavDisplay(
+      backStack = backStack,
+      onBack = { backStack.removeLastOrNull() },
+      entryProvider =
+        entryProvider {
+          entry<Files> { FilesScreen(onOpenCase = openCase, onOpenThreads = openThreads) }
+          entry<EventMap> { MapScreen(onOpenCase = openCase) }
+          entry<Timeline> { TimelineScreen(onOpenCase = openCase) }
+          entry<Method> { MethodScreen() }
+          entry<Threads> { ThreadsScreen(onOpenCase = openCase, onBack = { backStack.removeLastOrNull() }) }
+          entry<CaseFile> { key ->
+            // Back names where the file was opened from.
+            val backLabel = if (Threads in backStack) "Threads" else sectionLabel(backStack.firstOrNull() ?: Files)
             CaseFileScreen(caseId = key.id, backLabel = backLabel, onBack = { backStack.removeLastOrNull() })
           }
-        }
-      },
-  )
+        },
+    )
+  }
 }
 
 private fun sectionLabel(key: NavKey): String =

@@ -15,6 +15,8 @@ sourceSets:
       compile: 'off'
   - androidx.annotation:annotation-jvm:1.9.1:
       compile: 'off'
+  - androidx.appcompat:appcompat-resources:1.7.1:
+      compile: 'off'
   - androidx.arch.core:core-common:2.2.0:
       compile: 'off'
   - androidx.arch.core:core-runtime:2.2.0:
@@ -125,7 +127,7 @@ sourceSets:
       compile: 'off'
   - androidx.emoji2:emoji2:1.4.0:
       compile: 'off'
-  - androidx.exifinterface:exifinterface:1.3.6:
+  - androidx.exifinterface:exifinterface:1.4.1:
       compile: 'off'
   - androidx.graphics:graphics-path:1.0.1:
       compile: 'off'
@@ -207,7 +209,7 @@ sourceSets:
       compile: 'off'
   - androidx.print:print:1.0.0:
       compile: 'off'
-  - androidx.profileinstaller:profileinstaller:1.4.0:
+  - androidx.profileinstaller:profileinstaller:1.4.1:
       compile: 'off'
   - androidx.recyclerview:recyclerview:1.3.0:
       compile: 'off'
@@ -227,6 +229,10 @@ sourceSets:
       compile: 'off'
   - androidx.transition:transition:1.6.0:
       compile: 'off'
+  - androidx.vectordrawable:vectordrawable:1.1.0:
+      compile: 'off'
+  - androidx.vectordrawable:vectordrawable-animated:1.1.0:
+      compile: 'off'
   - androidx.versionedparcelable:versionedparcelable:1.1.1:
       compile: 'off'
   - androidx.window:window:1.5.0:
@@ -235,13 +241,73 @@ sourceSets:
       compile: 'off'
   - androidx.window:window-core-android:1.5.0:
       compile: 'off'
+  - com.google.accompanist:accompanist-drawablepainter:0.37.3:
+      compile: 'off'
   - com.google.guava:failureaccess:1.0.2:
       compile: 'off'
   - com.google.guava:guava:33.3.1-android:
       compile: 'off'
   - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava:
       compile: 'off'
+  - com.squareup.okio:okio:3.15.0:
+      compile: 'off'
+  - com.squareup.okio:okio-jvm:3.15.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-android:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-compose-android:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-compose-core:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-compose-core-android:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-core:3.3.0:
+      compile: 'off'
+  - io.coil-kt.coil3:coil-core-android:3.3.0:
+      compile: 'off'
   - org.jetbrains:annotations:23.0.0:
+      compile: 'off'
+  - org.jetbrains.androidx.lifecycle:lifecycle-common:2.9.5:
+      compile: 'off'
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.9.5:
+      compile: 'off'
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.9.5:
+      compile: 'off'
+  - org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.9.5:
+      compile: 'off'
+  - org.jetbrains.androidx.savedstate:savedstate:1.3.5:
+      compile: 'off'
+  - org.jetbrains.androidx.savedstate:savedstate-compose:1.3.5:
+      compile: 'off'
+  - org.jetbrains.compose.animation:animation:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.animation:animation-core:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.collection-internal:collection:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.foundation:foundation:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.foundation:foundation-layout:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.runtime:runtime:1.9.2:
+      compile: 'off'
+  - org.jetbrains.compose.runtime:runtime-saveable:1.9.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui-graphics:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui-text:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui-unit:1.8.2:
+      compile: 'off'
+  - org.jetbrains.compose.ui:ui-util:1.8.2:
       compile: 'off'
   - org.jetbrains.kotlin:kotlin-bom:1.8.0:
       compile: 'off'
@@ -249,13 +315,13 @@ sourceSets:
       compile: 'off'
   - org.jetbrains.kotlin:kotlin-stdlib-common:2.3.20:
       compile: 'off'
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0:
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2:
       compile: 'off'
-  - org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0:
+  - org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2:
       compile: 'off'
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0:
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2:
       compile: 'off'
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0:
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2:
       compile: 'off'
   - org.jetbrains.kotlinx:kotlinx-serialization-bom:1.7.3:
       compile: 'off'
@@ -291,11 +357,11 @@ dependencies:
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
   - androidx.navigationevent:navigationevent:1.0.2
-  - androidx.profileinstaller:profileinstaller:1.4.0
+  - androidx.profileinstaller:profileinstaller:1.4.1
   - androidx.savedstate:savedstate:1.4.0
   - androidx.tracing:tracing:1.2.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.activity:activity-compose:1.13.0
   requestedVersion: 1.13.0
   resolvedVersion: 1.13.0
@@ -326,7 +392,7 @@ dependencies:
   - androidx.navigationevent:navigationevent-compose:1.0.2
   - androidx.savedstate:savedstate:1.4.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.activity:activity-ktx:1.13.0
   resolvedVersion: 1.13.0
   artifacts:
@@ -397,6 +463,28 @@ dependencies:
       cachePath: androidx/annotation/annotation-jvm/1.9.1/annotation-jvm-1.9.1.pom
   transitiveDependencies:
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: androidx.appcompat:appcompat-resources:1.7.1
+  resolvedVersion: 1.7.1
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.aar
+      sha256: 8e2db31224ca53b108c784da2b361959062716d416b210cfef3d5a3828306df0
+      cachePath: androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.aar
+      extracted: androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.module
+      sha256: 163cc5e0f249433ddb0016fbd011ab8de07cf23e07e618c74644688e26cd18e8
+      cachePath: androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.pom
+      sha256: 2faf922e8c3d706f29d862b3fbb3aa1347705c21c6eae18586d2bb1f7366ea01
+      cachePath: androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.collection:collection:1.5.0
+  - androidx.core:core:1.18.0
+  - androidx.vectordrawable:vectordrawable:1.1.0
+  - androidx.vectordrawable:vectordrawable-animated:1.1.0
 - id: androidx.arch.core:core-common:2.2.0
   resolvedVersion: 2.2.0
   artifacts:
@@ -574,7 +662,7 @@ dependencies:
   - androidx.compose.ui:ui-unit:1.10.4
   - androidx.compose.ui:ui-util:1.10.4
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.compose.foundation:foundation:1.10.4
   resolvedVersion: 1.10.4
   artifacts:
@@ -820,8 +908,8 @@ dependencies:
   - androidx.collection:collection:1.5.0
   - androidx.compose.runtime:runtime-annotation:1.10.4
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.compose.runtime:runtime-annotation:1.10.4
   resolvedVersion: 1.10.4
   artifacts:
@@ -886,7 +974,7 @@ dependencies:
   - androidx.collection:collection:1.5.0
   - androidx.compose.runtime:runtime:1.10.4
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.compose.runtime:runtime-saveable:1.10.4
   resolvedVersion: 1.10.4
   artifacts:
@@ -974,14 +1062,14 @@ dependencies:
   - androidx.lifecycle:lifecycle-runtime-compose:2.10.0
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0
-  - androidx.profileinstaller:profileinstaller:1.4.0
+  - androidx.profileinstaller:profileinstaller:1.4.1
   - androidx.savedstate:savedstate-compose:1.4.0
   - androidx.savedstate:savedstate-ktx:1.4.0
   - androidx.transition:transition:1.6.0
   - androidx.window:window:1.5.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.compose.ui:ui-geometry:1.10.4
   resolvedVersion: 1.10.4
@@ -1100,8 +1188,8 @@ dependencies:
   - androidx.test.espresso:espresso-core:3.7.0
   - androidx.test.espresso:espresso-idling-resource:3.7.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2
 - id: androidx.compose.ui:ui-test-junit4:1.10.4
   requestedVersion: 1.10.4
   resolvedVersion: 1.10.4
@@ -1146,8 +1234,8 @@ dependencies:
   - androidx.test.ext:junit:1.3.0
   - junit:junit:4.13.2
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2
 - id: androidx.compose.ui:ui-test-manifest:1.10.4
   requestedVersion: 1.10.4
   resolvedVersion: 1.10.4
@@ -1208,7 +1296,7 @@ dependencies:
   - androidx.core:core:1.18.0
   - androidx.emoji2:emoji2:1.4.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.compose.ui:ui-tooling:1.10.4
   requestedVersion: 1.10.4
   resolvedVersion: 1.10.4
@@ -1430,7 +1518,7 @@ dependencies:
   transitiveDependencies:
   - androidx.concurrent:concurrent-futures:1.2.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.core:core:1.18.0
   resolvedVersion: 1.18.0
   artifacts:
@@ -1460,7 +1548,7 @@ dependencies:
   - androidx.versionedparcelable:versionedparcelable:1.1.1
   - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.core:core-ktx:1.18.0
   requestedVersion: 1.18.0
@@ -1607,24 +1695,25 @@ dependencies:
   - androidx.core:core:1.18.0
   - androidx.lifecycle:lifecycle-process:2.10.0
   - androidx.startup:startup-runtime:1.1.1
-- id: androidx.exifinterface:exifinterface:1.3.6
-  resolvedVersion: 1.3.6
+- id: androidx.exifinterface:exifinterface:1.4.1
+  resolvedVersion: 1.4.1
   artifacts:
     aar:
-      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.aar
-      sha256: 1804105e9e05fdd8f760413bad5de498c381aa329f4f9d94c851bc891ac654c6
-      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.aar
-      extracted: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6-exploded
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.aar
+      sha256: 17e17a6b86bb54074d3a7ecfa695ab920eaff4cf667a8371ed82e377580cfcf6
+      cachePath: androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.aar
+      extracted: androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1-exploded
     module:
-      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.module
-      sha256: 5e9fd84ca3fd3b7706f6856fa4383107de8676bf7c42b7d4b8108949414d6201
-      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.module
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.module
+      sha256: daa541df49e2f7978078cfa3a0f9f16272417aa91f3e2e003b5bda11e585a83f
+      cachePath: androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.module
     pom:
-      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.pom
-      sha256: 59cfe5bd98506c27617b778143eb09a6b986a5417a0b1b0fd8b875eaa8db4bab
-      cachePath: androidx/exifinterface/exifinterface/1.3.6/exifinterface-1.3.6.pom
+      url: https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.pom
+      sha256: 944e867584e20748613cc7610bd5fa10a968cc98cb59fdfdb863e9f0201df289
+      cachePath: androidx/exifinterface/exifinterface/1.4.1/exifinterface-1.4.1.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
+  - org.jspecify:jspecify:1.0.0
 - id: androidx.graphics:graphics-path:1.0.1
   resolvedVersion: 1.0.1
   artifacts:
@@ -1726,7 +1815,7 @@ dependencies:
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.lifecycle:lifecycle-livedata-core:2.10.0
   resolvedVersion: 2.10.0
@@ -1806,9 +1895,9 @@ dependencies:
   - androidx.arch.core:core-runtime:2.2.0
   - androidx.core:core-viewtree:1.0.0
   - androidx.lifecycle:lifecycle-common:2.10.0
-  - androidx.profileinstaller:profileinstaller:1.4.0
+  - androidx.profileinstaller:profileinstaller:1.4.1
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.lifecycle:lifecycle-runtime-compose:2.10.0
   requestedVersion: 2.10.0
@@ -1882,7 +1971,7 @@ dependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.lifecycle:lifecycle-runtime:2.10.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
 - id: androidx.lifecycle:lifecycle-viewmodel:2.10.0
   resolvedVersion: 2.10.0
   artifacts:
@@ -1916,8 +2005,8 @@ dependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.core:core-viewtree:1.0.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0
   requestedVersion: 2.10.0
   resolvedVersion: 2.10.0
@@ -1977,7 +2066,7 @@ dependencies:
   transitiveDependencies:
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
 - id: androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0
   requestedVersion: 2.10.0
   resolvedVersion: 2.10.0
@@ -2058,8 +2147,8 @@ dependencies:
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - androidx.savedstate:savedstate:1.4.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3
 - id: androidx.loader:loader:1.0.0
   resolvedVersion: 1.0.0
@@ -2081,7 +2170,7 @@ dependencies:
   - androidx.lifecycle:lifecycle-livedata-core:2.10.0
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0
   resolvedVersion: 1.0.0
@@ -2174,7 +2263,7 @@ dependencies:
       cachePath: androidx/media3/media3-datasource/1.9.0/media3-datasource-1.9.0.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
-  - androidx.exifinterface:exifinterface:1.3.6
+  - androidx.exifinterface:exifinterface:1.4.1
   - androidx.media3:media3-common:1.9.0
   - androidx.media3:media3-database:1.9.0
 - id: androidx.media3:media3-decoder:1.9.0
@@ -2217,7 +2306,7 @@ dependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.collection:collection:1.5.0
   - androidx.core:core:1.18.0
-  - androidx.exifinterface:exifinterface:1.3.6
+  - androidx.exifinterface:exifinterface:1.4.1
   - androidx.media3:media3-common:1.9.0
   - androidx.media3:media3-container:1.9.0
   - androidx.media3:media3-database:1.9.0
@@ -2388,8 +2477,8 @@ dependencies:
   - androidx.compose.runtime:runtime-annotation:1.10.4
   - androidx.core:core-viewtree:1.0.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.navigationevent:navigationevent-compose:1.0.2
   resolvedVersion: 1.0.2
   artifacts:
@@ -2424,7 +2513,7 @@ dependencies:
   - androidx.compose.ui:ui:1.10.4
   - androidx.navigationevent:navigationevent:1.0.2
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: androidx.print:print:1.0.0
   resolvedVersion: 1.0.0
   artifacts:
@@ -2439,22 +2528,22 @@ dependencies:
       cachePath: androidx/print/print/1.0.0/print-1.0.0.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
-- id: androidx.profileinstaller:profileinstaller:1.4.0
-  resolvedVersion: 1.4.0
+- id: androidx.profileinstaller:profileinstaller:1.4.1
+  resolvedVersion: 1.4.1
   artifacts:
     aar:
-      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.aar
-      sha256: d502141fcce902430f62b674c32aecd0f75262e7ee2cd15c74adb617cd13130a
-      cachePath: androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.aar
-      extracted: androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0-exploded
+      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.aar
+      sha256: b519f9317ded1e2c1c2993038c0692e30da326ca99097d9331ff2d3a5861a428
+      cachePath: androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.aar
+      extracted: androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1-exploded
     module:
-      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.module
-      sha256: 39bf997a28d8eed2cb319819f6f352a1ba3a78b9c979004fbe05e26b8f7d160b
-      cachePath: androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.module
+      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.module
+      sha256: 6f11cf65e4bf8444995cc73e5aa3f81b082d66e720c0592bc5fc80d3f73850f7
+      cachePath: androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.module
     pom:
-      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.pom
-      sha256: d5fe39981a3b4b7c39585130da0bfc93835054c834a438d3e63e065e5f78be55
-      cachePath: androidx/profileinstaller/profileinstaller/1.4.0/profileinstaller-1.4.0.pom
+      url: https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.pom
+      sha256: 6dde43827b40535e4053d1c52d4b227a411556c289e65400c9a1cc61e2b41ce3
+      cachePath: androidx/profileinstaller/profileinstaller/1.4.1/profileinstaller-1.4.1.pom
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
   - androidx.concurrent:concurrent-futures:1.1.0
@@ -2517,7 +2606,7 @@ dependencies:
   - androidx.core:core-viewtree:1.0.0
   - androidx.lifecycle:lifecycle-common:2.10.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
   - org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3
 - id: androidx.savedstate:savedstate-compose:1.4.0
   resolvedVersion: 1.4.0
@@ -2612,7 +2701,7 @@ dependencies:
   - androidx.tracing:tracing:1.2.0
   - com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2
 - id: androidx.test:monitor:1.8.0
   resolvedVersion: 1.8.0
   artifacts:
@@ -2764,6 +2853,38 @@ dependencies:
   - androidx.core:core:1.18.0
   - androidx.dynamicanimation:dynamicanimation:1.0.0
   - org.jspecify:jspecify:1.0.0
+- id: androidx.vectordrawable:vectordrawable:1.1.0
+  resolvedVersion: 1.1.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.aar
+      sha256: 46fd633ac01b49b7fcabc263bf098c5a8b9e9a69774d234edcca04fb02df8e26
+      cachePath: androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.aar
+      extracted: androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0-exploded
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.pom
+      sha256: 5b0e2d5b2179e54804785cbc21ce5f473b5e1ddd55a57da482e94dcd39492bb2
+      cachePath: androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.collection:collection:1.5.0
+  - androidx.core:core:1.18.0
+- id: androidx.vectordrawable:vectordrawable-animated:1.1.0
+  resolvedVersion: 1.1.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.aar
+      sha256: 76da2c502371d9c38054df5e2b248d00da87809ed058f3363eae87ce5e2403f8
+      cachePath: androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.aar
+      extracted: androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0-exploded
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.pom
+      sha256: 276a20116b705fb75b9003ee9496c56f6fd3b32375fb232472811eba60a040bd
+      cachePath: androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.pom
+  transitiveDependencies:
+  - androidx.collection:collection:1.5.0
+  - androidx.interpolator:interpolator:1.0.0
+  - androidx.vectordrawable:vectordrawable:1.1.0
 - id: androidx.versionedparcelable:versionedparcelable:1.1.1
   resolvedVersion: 1.1.1
   artifacts:
@@ -2801,7 +2922,7 @@ dependencies:
   - androidx.core:core:1.18.0
   - androidx.window:window-core:1.5.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
   - org.jspecify:jspecify:1.0.0
 - id: androidx.window:window-core:1.5.0
   resolvedVersion: 1.5.0
@@ -2835,6 +2956,26 @@ dependencies:
   transitiveDependencies:
   - androidx.annotation:annotation:1.9.1
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: com.google.accompanist:accompanist-drawablepainter:0.37.3
+  resolvedVersion: 0.37.3
+  artifacts:
+    aar:
+      url: https://repo1.maven.org/maven2/com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.aar
+      sha256: 0453c4c54ec3ef13ae18b83300f1d2a078b1ca92d3a3781437516630e3b850df
+      cachePath: com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.aar
+      extracted: com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3-exploded
+    module:
+      url: https://repo1.maven.org/maven2/com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.module
+      sha256: 33f3b5ff498a4aca7453735c731ef3a3e5f714191d1232a28de83f76d342d556
+      cachePath: com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.module
+    pom:
+      url: https://repo1.maven.org/maven2/com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.pom
+      sha256: 6a66cfb00a281e84070172254913ef20a37f5b8411d22ebd04bc805a71e4d2df
+      cachePath: com/google/accompanist/accompanist-drawablepainter/0.37.3/accompanist-drawablepainter-0.37.3.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui:1.10.4
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
 - id: com.google.code.findbugs:jsr305:3.0.2
   resolvedVersion: 3.0.2
   artifacts:
@@ -2897,6 +3038,177 @@ dependencies:
       url: https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom
       sha256: 18d4b1db26153d4e55079ce1f76bb1fe05cdb862ef9954a88cbcc4ff38b8679b
       cachePath: com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom
+- id: com.squareup.okio:okio:3.15.0
+  resolvedVersion: 3.15.0
+  artifacts:
+    module:
+      url: https://repo1.maven.org/maven2/com/squareup/okio/okio/3.15.0/okio-3.15.0.module
+      sha256: 116826066ceb4d3336a74e7172a33751617ec344bc50a34f99b0d24959a4a39d
+      cachePath: com/squareup/okio/okio/3.15.0/okio-3.15.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/com/squareup/okio/okio/3.15.0/okio-3.15.0.pom
+      sha256: 2d73785411404eeac32f0473a2e07ab1516b9850a9280cc61a08b479790cccf8
+      cachePath: com/squareup/okio/okio/3.15.0/okio-3.15.0.pom
+  transitiveDependencies:
+  - com.squareup.okio:okio-jvm:3.15.0
+- id: com.squareup.okio:okio-jvm:3.15.0
+  resolvedVersion: 3.15.0
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.jar
+      sha256: 483dc383b1049d220892322a0d6a4308425f09bb05b48c43d4eaa9ff82b1cd16
+      cachePath: com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.jar
+    module:
+      url: https://repo1.maven.org/maven2/com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.module
+      sha256: 989454a94aefbc297032888f135acda14a9ffb46960e7d84603925d269241ee7
+      cachePath: com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.pom
+      sha256: 078e42f68ca4613ff2597fbc5541c5ce578cdcc48839da89da7ca760518bfb79
+      cachePath: com/squareup/okio/okio-jvm/3.15.0/okio-jvm-3.15.0.pom
+  transitiveDependencies:
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: io.coil-kt.coil3:coil:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil/3.3.0/coil-3.3.0.module
+      sha256: e02228711537732781131e28d9e8fb8b10f6196a050c416ff20b5676524ca30b
+      cachePath: io/coil-kt/coil3/coil/3.3.0/coil-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil/3.3.0/coil-3.3.0.pom
+      sha256: 53c21028ff8106a75441bc3c6dd9e579f77da8245a3a172a36bc1d3c8a49c51e
+      cachePath: io/coil-kt/coil3/coil/3.3.0/coil-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil-android:3.3.0
+- id: io.coil-kt.coil3:coil-android:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    aar:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.aar
+      sha256: 1acd5a6598c51c46659296fbed7ab2615fc9e6f54fa37ca7b31a08d226296c13
+      cachePath: io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.aar
+      extracted: io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0-exploded
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.module
+      sha256: 0a79f040be4eb55200a4e86664f11c436a459d4c1860dbd5efe430c2aa18a7d4
+      cachePath: io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.pom
+      sha256: b7508c9ffa65e7dcda033099978bfe83a98c652a1655a402b4f54440af3a9b3b
+      cachePath: io/coil-kt/coil3/coil-android/3.3.0/coil-android-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil-core:3.3.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: io.coil-kt.coil3:coil-compose:3.3.0
+  requestedVersion: 3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose/3.3.0/coil-compose-3.3.0.module
+      sha256: cc47e467fcf78e4beefdc77b242385c2e447d8eb08d37dd7cca87ddb806f50a0
+      cachePath: io/coil-kt/coil3/coil-compose/3.3.0/coil-compose-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose/3.3.0/coil-compose-3.3.0.pom
+      sha256: ddebee184c5ae9ad9f1958d41fad881bf4ca5f8d8e2b32dad482a530ea6cf46b
+      cachePath: io/coil-kt/coil3/coil-compose/3.3.0/coil-compose-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil-compose-android:3.3.0
+- id: io.coil-kt.coil3:coil-compose-android:3.3.0
+  requestedVersion: 3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    aar:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.aar
+      sha256: 487beefb453c6d4057652819f3366424ba9cd95075acc146a78f3781c7dc6a31
+      cachePath: io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.aar
+      extracted: io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0-exploded
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.module
+      sha256: 31a80f40452246e8b0ea8c0b28334007bc6189439a8f2125114fe841ecce2f2c
+      cachePath: io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.pom
+      sha256: 459bcdf8df502491ceb0567b7df089afe5dffeb48a734fb3d12532777e929c6b
+      cachePath: io/coil-kt/coil3/coil-compose-android/3.3.0/coil-compose-android-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil:3.3.0
+  - io.coil-kt.coil3:coil-compose-core:3.3.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: io.coil-kt.coil3:coil-compose-core:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-core/3.3.0/coil-compose-core-3.3.0.module
+      sha256: 2286d355fd5ab60f23239e056da387ed91d30f17343abcaccc9c7abd592f4dbd
+      cachePath: io/coil-kt/coil3/coil-compose-core/3.3.0/coil-compose-core-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-core/3.3.0/coil-compose-core-3.3.0.pom
+      sha256: dd9cdaea77bc26a605580a3aec983d028ccb2112ba6217b679e1b57d24344439
+      cachePath: io/coil-kt/coil3/coil-compose-core/3.3.0/coil-compose-core-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil-compose-core-android:3.3.0
+- id: io.coil-kt.coil3:coil-compose-core-android:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    aar:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.aar
+      sha256: e2090a3e00e7278cc6245f9bf2a5613af392f0e30fc8b4477d2f594da5fded3e
+      cachePath: io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.aar
+      extracted: io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0-exploded
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.module
+      sha256: 3f607513ca29f1b09140d2997a526be71d3078013915d8c30de7a8eeb164c217
+      cachePath: io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.pom
+      sha256: 5069d8aa813320fd27827eb705275f657639fc3588c17cea041e1e07c70e810b
+      cachePath: io/coil-kt/coil3/coil-compose-core-android/3.3.0/coil-compose-core-android-3.3.0.pom
+  transitiveDependencies:
+  - com.google.accompanist:accompanist-drawablepainter:0.37.3
+  - io.coil-kt.coil3:coil-core:3.3.0
+  - org.jetbrains.compose.foundation:foundation:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: io.coil-kt.coil3:coil-core:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-core/3.3.0/coil-core-3.3.0.module
+      sha256: 73628d48360685d402adac571f306d5ed4f28c4c203daf912240931edd60d2a4
+      cachePath: io/coil-kt/coil3/coil-core/3.3.0/coil-core-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-core/3.3.0/coil-core-3.3.0.pom
+      sha256: d0be864de842d35ce4239b42fb3bec0fe58e44043c478d47318b9bd276884131
+      cachePath: io/coil-kt/coil3/coil-core/3.3.0/coil-core-3.3.0.pom
+  transitiveDependencies:
+  - io.coil-kt.coil3:coil-core-android:3.3.0
+- id: io.coil-kt.coil3:coil-core-android:3.3.0
+  resolvedVersion: 3.3.0
+  artifacts:
+    aar:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.aar
+      sha256: b57fcf001178db5ff84683e7d11818bcda6c115d9d530443d382b3a8b3f6806b
+      cachePath: io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.aar
+      extracted: io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0-exploded
+    module:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.module
+      sha256: 6c0e4b79037245dfb370b68817a613718eb15ca2c66d373cd1ba2ad1db8d73cd
+      cachePath: io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.module
+    pom:
+      url: https://repo1.maven.org/maven2/io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.pom
+      sha256: cd627afd3e4d4a60f04c7a782168d57fee470c6ae7aa87408f1a644f4172516f
+      cachePath: io/coil-kt/coil3/coil-core-android/3.3.0/coil-core-android-3.3.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.appcompat:appcompat-resources:1.7.1
+  - androidx.core:core-ktx:1.18.0
+  - androidx.exifinterface:exifinterface:1.4.1
+  - androidx.lifecycle:lifecycle-runtime:2.10.0
+  - androidx.profileinstaller:profileinstaller:1.4.1
+  - com.squareup.okio:okio:3.15.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
 - id: javax.inject:javax.inject:1
   resolvedVersion: '1'
   artifacts:
@@ -2957,6 +3269,428 @@ dependencies:
       url: https://repo1.maven.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom
       sha256: c9490f655132328df2cfbcfdf743f53fc3916d6c1d10437175a6ca6e3a67771c
       cachePath: org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom
+- id: org.jetbrains.androidx.lifecycle:lifecycle-common:2.9.5
+  resolvedVersion: 2.9.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.jar
+      sha256: b21a149fe28cccc7ece37b55098d10027aba3d2e0db31d12d3cdc907ded2368a
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.module
+      sha256: 1525fbe1eec1ecab1ac8973c99371694df03a3a8147836f998b96fd0588a93ff
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.pom
+      sha256: 104cc8808bcc835376820c9dd4687928d04580fa1590b0d31eaa910d14c4282c
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-common/2.9.5/lifecycle-common-2.9.5.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-common:2.10.0
+- id: org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.9.5
+  resolvedVersion: 2.9.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.jar
+      sha256: 9dd583b709136e0aafe60e1b90249bf63bc80cd7ba6e0641ce74a1ab3613c64f
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.module
+      sha256: d4db6e5057e6afa0156e49b5f15dcd248bb488afcdf772bc7f804c12348381be
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.pom
+      sha256: 440da125c7681c6e2d6e298a30a290d7cc5f408a34a4923cdc2e8c328e4be490
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime/2.9.5/lifecycle-runtime-2.9.5.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-runtime:2.10.0
+- id: org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.9.5
+  resolvedVersion: 2.9.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.jar
+      sha256: 64f4a647f40b64cd728612712a86f88e13dd9d663bc68afaacc226b2b904ff24
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.module
+      sha256: c122317b9012d3296fa32710f8d3471ba1c597d9f659ede443890b35f19b85d9
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.pom
+      sha256: 4b05f96722cf3024aa891ad995eb9f077b93536b0bd234dbe0b05064f2570da2
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-runtime-compose/2.9.5/lifecycle-runtime-compose-2.9.5.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-runtime-compose:2.10.0
+  - org.jetbrains.androidx.lifecycle:lifecycle-common:2.9.5
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.9.5
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+- id: org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.9.5
+  resolvedVersion: 2.9.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.jar
+      sha256: 9ecd2bc61365fb4fa3f6f284aba92148dbfd3d1aca38662ad54bcecac2ab5546
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.module
+      sha256: 2e4e850091eaa36e3f91064c6d530fc4157412013f7e5621289d83d6a06cc5dc
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.pom
+      sha256: a9be31f9db93557e1731da9620d348fca6f54d6450d2305d50a19bfe1802b34c
+      cachePath: org/jetbrains/androidx/lifecycle/lifecycle-viewmodel/2.9.5/lifecycle-viewmodel-2.9.5.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-viewmodel:2.10.0
+- id: org.jetbrains.androidx.savedstate:savedstate:1.3.5
+  resolvedVersion: 1.3.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.jar
+      sha256: 0741a750940978c7e8b1605f117be62e399fd57a7625ab1ae80a28a2ca0f3415
+      cachePath: org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.module
+      sha256: 37ad372fa514ce70a2013a44e5affefb17fa05a1e8ed7b247941a95125cae74c
+      cachePath: org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.pom
+      sha256: 2cb64cadd91f731c433edfd18469644c56f90f8198680b428b509f08d75b8cd2
+      cachePath: org/jetbrains/androidx/savedstate/savedstate/1.3.5/savedstate-1.3.5.pom
+  transitiveDependencies:
+  - androidx.savedstate:savedstate:1.4.0
+- id: org.jetbrains.androidx.savedstate:savedstate-compose:1.3.5
+  resolvedVersion: 1.3.5
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.jar
+      sha256: 61b8b51d04b4d992e8e1b618ad4cf117324301e492ad06a058fc96cdf861b780
+      cachePath: org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.module
+      sha256: 131b08cd6f3a699191942cbdc65081a7795dae37d87a55ba29d8df1d9b968206
+      cachePath: org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.pom
+      sha256: 6c40cea485805f2c53db7fab90209b1a595e61965b65a3289c3000bd82ef6aea
+      cachePath: org/jetbrains/androidx/savedstate/savedstate-compose/1.3.5/savedstate-compose-1.3.5.pom
+  transitiveDependencies:
+  - androidx.savedstate:savedstate-compose:1.4.0
+  - org.jetbrains.androidx.savedstate:savedstate:1.3.5
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+- id: org.jetbrains.compose.animation:animation:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.jar
+      sha256: 62627757461b2e54e8cfd0153df26e40010c8b67e90aeb9da8f94d2c8cfc9a9e
+      cachePath: org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.module
+      sha256: ed1bd6bce69f7e79d077066a528d6a29b1fcf7f961f02c534791eb325f814661
+      cachePath: org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.pom
+      sha256: 2cd4613a0fac7f24f97dbb42737513ca07b436708d9cf832815b7ef765c27828
+      cachePath: org/jetbrains/compose/animation/animation/1.8.2/animation-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.animation:animation:1.10.4
+  - org.jetbrains.compose.animation:animation-core:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.foundation:foundation-layout:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui:1.8.2
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.animation:animation-core:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.jar
+      sha256: 87987039cb1baed0da2c81c6cd97516572d4c76c7a10f8929edc05405c9ac335
+      cachePath: org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.module
+      sha256: b5119bcbbfd328c0dc0fcc8a4729d793a837bf3e276923f56d10adbe27c648c9
+      cachePath: org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.pom
+      sha256: 4525f9ff48101301c83dff381c8f87adef8862e2007662d4430803046f2d3a40
+      cachePath: org/jetbrains/compose/animation/animation-core/1.8.2/animation-core-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.animation:animation-core:1.10.4
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui:1.8.2
+  - org.jetbrains.compose.ui:ui-unit:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+- id: org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.jar
+      sha256: ce7b11dd5c682d723f8d9eb07bc83f9ef745b823320e3414a35bdb464c170a36
+      cachePath: org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.module
+      sha256: ead43d4e6c7446e4371fc2a91918412942572820296216ec13f8403a3d30f56c
+      cachePath: org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.pom
+      sha256: 1924b77a64d4aafc8ec25afa9945ead8c4664d2246aca994d2fabad02c5bb031
+      cachePath: org/jetbrains/compose/annotation-internal/annotation/1.8.2/annotation-1.8.2.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+- id: org.jetbrains.compose.collection-internal:collection:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.jar
+      sha256: ed73891406046b98739f34f4befe60f62091c28706f2cb36330297fd9fd88129
+      cachePath: org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.module
+      sha256: 7adef3f2dc4ced688a6c9cfb60d606bb62b40369ef89cdb2afe9763428aea189
+      cachePath: org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.pom
+      sha256: 37773e08a2e6fd617661f1a9429d749848ae8c5e71abe9179edb3047397e73ec
+      cachePath: org/jetbrains/compose/collection-internal/collection/1.8.2/collection-1.8.2.pom
+  transitiveDependencies:
+  - androidx.collection:collection:1.5.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.foundation:foundation:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.jar
+      sha256: 5606df42c5bdc394e80c273490bad7284a53724633905d4998f88859033ccf45
+      cachePath: org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.module
+      sha256: 3d1117715e9b17a8ed60039a34159b5e2bd81d29eee661b03d3edcedc7855655
+      cachePath: org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.pom
+      sha256: 2094022a97ec17afee029472d8758a0df426c6a566914796f40bf125be7461eb
+      cachePath: org/jetbrains/compose/foundation/foundation/1.8.2/foundation-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.foundation:foundation:1.10.4
+  - org.jetbrains.compose.animation:animation:1.8.2
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.foundation:foundation-layout:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui:1.8.2
+  - org.jetbrains.compose.ui:ui-text:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.foundation:foundation-layout:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.jar
+      sha256: 92d91bf60833ce3b9b3017a49322e270e19371e7438fe1d4d5b5068d8df99be5
+      cachePath: org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.module
+      sha256: e193b441eb200a73dc7ab37486031cce42a26e2ce700fa79dd6b3166eb7a4794
+      cachePath: org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.pom
+      sha256: 7d6adcae7d76a9385ac2e2d71459771f31a41512c3818f962cf9bbe5dea71754
+      cachePath: org/jetbrains/compose/foundation/foundation-layout/1.8.2/foundation-layout-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.foundation:foundation-layout:1.10.4
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.runtime:runtime:1.9.2
+  resolvedVersion: 1.9.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.jar
+      sha256: b5d00a3d220d2cf62f8ac6f7a046597e7995963604f0196fe777dd2ff226156a
+      cachePath: org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.module
+      sha256: 9c6539e9e575647baf24d2bba0579d4f9069cba195f430f601cf6ddfa700bd85
+      cachePath: org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.pom
+      sha256: 5c79b4aba53200b2241a6a1aa1d9308236e17125598f7f47bbfcf44b025a5cee
+      cachePath: org/jetbrains/compose/runtime/runtime/1.9.2/runtime-1.9.2.pom
+  transitiveDependencies:
+  - androidx.compose.runtime:runtime:1.10.4
+- id: org.jetbrains.compose.runtime:runtime-saveable:1.9.2
+  resolvedVersion: 1.9.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.jar
+      sha256: 871b18d2ed020d54149afb546a32236885d3916f4f8b85f46e5bb2b82e5404bd
+      cachePath: org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.module
+      sha256: 6a0dd6c5b296f97e3c71577b121db240c3b0fee6a9c4f2bc4193c8d4a9b6268a
+      cachePath: org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.pom
+      sha256: cfeab4919db481ecc5985f0a85309e55467897c4891548f92f2516e658063086
+      cachePath: org/jetbrains/compose/runtime/runtime-saveable/1.9.2/runtime-saveable-1.9.2.pom
+  transitiveDependencies:
+  - androidx.compose.runtime:runtime-saveable:1.10.4
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.9.5
+  - org.jetbrains.androidx.savedstate:savedstate-compose:1.3.5
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+- id: org.jetbrains.compose.ui:ui:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.jar
+      sha256: cb770a872a3c33164ff4c053a8ec3f111f548b16a522c548fe04f94dbc8a21ce
+      cachePath: org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.module
+      sha256: 7c8f02050bc073026b7aa650630d72ef1c9a96e26bce6001827bde99e9b6f0f1
+      cachePath: org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.pom
+      sha256: ae65a445682bb6a3ebe64e4d755c30407bd75d4b5a91f0491f9bb9c1c072e1ce
+      cachePath: org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui:1.10.4
+  - org.jetbrains.androidx.lifecycle:lifecycle-common:2.9.5
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.9.5
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.9.5
+  - org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.9.5
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.runtime:runtime-saveable:1.9.2
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2
+  - org.jetbrains.compose.ui:ui-graphics:1.8.2
+  - org.jetbrains.compose.ui:ui-text:1.8.2
+  - org.jetbrains.compose.ui:ui-unit:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+- id: org.jetbrains.compose.ui:ui-geometry:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.jar
+      sha256: 048ffb7e9951901fb0bf39345001287487e85a195b294d7d47d3113fb1945d33
+      cachePath: org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.module
+      sha256: 5ef3a63e6543901a7db1f714d73d381c57733e3f2eac7ce731bf3a826df11d59
+      cachePath: org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.pom
+      sha256: 35430fc482948a99324215d2228c6d5f09746ca02efdbae22fefd7d50e7eaac4
+      cachePath: org/jetbrains/compose/ui/ui-geometry/1.8.2/ui-geometry-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui-geometry:1.10.4
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.ui:ui-graphics:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.jar
+      sha256: b30535a041927ea74f3893887f593e4f5b401792b05b9377881c003186e6ac6a
+      cachePath: org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.module
+      sha256: 6a1f446e25e186c5c55d4386e36cca1a769d7a34b441237abd6c664ab3eb3e25
+      cachePath: org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.pom
+      sha256: c7b05c68d704da4e4b5dbc41f73d9fd7b8f06518c7823710a87ba884cdb4254d
+      cachePath: org/jetbrains/compose/ui/ui-graphics/1.8.2/ui-graphics-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui-graphics:1.10.4
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2
+  - org.jetbrains.compose.ui:ui-unit:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.ui:ui-text:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.jar
+      sha256: e6cae972fb8865c4d3df8fe1ff15e5671531d5a062dde0106c48b459f3b6dc30
+      cachePath: org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.module
+      sha256: e8c23cd4b3301d0015a6c809615b72edd4c93c229aae2aed99f015809e8ae7a9
+      cachePath: org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.pom
+      sha256: 814e36b4e99e4fe858bb4ed3fabe1b6007e4f398aa11bb8522e10a4eaaa0acd1
+      cachePath: org/jetbrains/compose/ui/ui-text/1.8.2/ui-text-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui-text:1.10.4
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.runtime:runtime-saveable:1.9.2
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2
+  - org.jetbrains.compose.ui:ui-graphics:1.8.2
+  - org.jetbrains.compose.ui:ui-unit:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+- id: org.jetbrains.compose.ui:ui-unit:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.jar
+      sha256: 3660f128a528ca0ab0e8f3c7f78016587ba77c6f33841f1e81850e329c1b31ee
+      cachePath: org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.module
+      sha256: bd61d018cc234290a3ba24afc267afeaf90cff84107dbbd2561aa107f9982ea4
+      cachePath: org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.pom
+      sha256: 63db22a388995325aa1b4f0434d224338ba4c27cc0927129f0041355c99bb8b0
+      cachePath: org/jetbrains/compose/ui/ui-unit/1.8.2/ui-unit-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui-unit:1.10.4
+  - org.jetbrains.compose.annotation-internal:annotation:1.8.2
+  - org.jetbrains.compose.runtime:runtime:1.9.2
+  - org.jetbrains.compose.ui:ui-geometry:1.8.2
+  - org.jetbrains.compose.ui:ui-util:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+- id: org.jetbrains.compose.ui:ui-util:1.8.2
+  resolvedVersion: 1.8.2
+  artifacts:
+    jar:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.jar
+      sha256: e181ae37b1e5f8dbf7427eccf35f1bed34d898a7363f3d53c472a047f49a2fad
+      cachePath: org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.jar
+    module:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.module
+      sha256: f99b967b1ff02052567d4c4d1bd03a3b4181bd7f57da58e04a306263e861f0f8
+      cachePath: org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.module
+    pom:
+      url: https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.pom
+      sha256: 457fc0fa6d44c1981c08f752aea0e84b940a827c8f794517d4e3958e86053bc6
+      cachePath: org/jetbrains/compose/ui/ui-util/1.8.2/ui-util-1.8.2.pom
+  transitiveDependencies:
+  - androidx.compose.ui:ui-util:1.10.4
+  - org.jetbrains.compose.collection-internal:collection:1.8.2
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
 - id: org.jetbrains.kotlin:kotlin-bom:1.8.0
   resolvedVersion: 1.8.0
   artifacts:

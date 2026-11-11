@@ -15,10 +15,9 @@ publishing the app, include the full license texts (for example on an in-app lic
 
 ## Map outlines
 
-`app-core/src/main/res/raw/map_north_america.txt` and `map_british_isles.txt` are clipped and simplified
-from Natural Earth 1:50m land (`ne_50m_land`), via the nvkelso/natural-earth-vector repository. Natural Earth
-is in the public domain; no attribution is required, but it is credited here. The Great Lakes and other inland
-water are not drawn, because only the land layer was used.
+`app-core/src/main/res/raw/map_north_america.txt`, `map_british_isles.txt`, `map_south_east_australia.txt`
+and `map_middle_east.txt` are clipped and simplified from Natural Earth land data (public domain).
+Natural Earth is in the public domain; no attribution is required, but it is credited here.
 
 ## Video clips
 
@@ -59,3 +58,5 @@ the Halt tape (Internet Archive upload, copyright status unknown), the 24 June 1
 ## Libraries
 
 AndroidX Media3 (ExoPlayer, UI) plays the video clips. Apache License 2.0.
+
+Coil (`io.coil-kt.coil3:coil-compose`) loads the bundled photographs and scans. Apache License 2.0.

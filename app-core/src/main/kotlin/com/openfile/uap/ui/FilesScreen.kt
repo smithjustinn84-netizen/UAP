@@ -58,7 +58,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
     contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    item(key = "header") {
+    item(key = "header", contentType = "header") {
       Column {
         FilesHeader()
         SearchField(query = query, onQueryChange = { query = it })
@@ -72,7 +72,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
       }
     }
     if (results.isEmpty()) {
-      item(key = "empty") {
+      item(key = "empty", contentType = "empty") {
         Text(
           "No files match. Try a place, a year, a name or a witness, or clear the decade filter.",
           modifier = Modifier.padding(horizontal = ScreenPadding),
@@ -81,10 +81,12 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
         )
       }
     }
-    items(results, key = { it.id }) { record ->
+    items(results, key = { it.id }, contentType = { "folder" }) { record ->
       FolderCard(record = record, onClick = { onOpenCase(record.id) }, modifier = Modifier.padding(horizontal = ScreenPadding))
     }
-    item(key = "threads") { ThreadsLink(onClick = onOpenThreads, modifier = Modifier.padding(horizontal = ScreenPadding)) }
+    item(key = "threads", contentType = "threads") {
+      ThreadsLink(onClick = onOpenThreads, modifier = Modifier.padding(horizontal = ScreenPadding))
+    }
   }
 }
 

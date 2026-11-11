@@ -27,8 +27,26 @@ object MapSheets {
   // Bounds match the clipping used to produce the bundled outlines in res/raw.
   val northAmerica = MapSheet("north_america", "North America", west = -130.0, south = 20.0, east = -62.0, north = 54.0)
   val britishIsles = MapSheet("british_isles", "Britain and Ireland", west = -11.0, south = 49.5, east = 4.0, north = 57.0)
+  val southEastAustralia =
+    MapSheet(
+      id = "south_east_australia",
+      title = "South-East Australia",
+      west = 138.0,
+      south = -44.0,
+      east = 154.0,
+      north = -32.0,
+    )
+  val middleEast =
+    MapSheet(
+      id = "middle_east",
+      title = "Middle East",
+      west = 44.0,
+      south = 25.0,
+      east = 64.0,
+      north = 40.0,
+    )
 
-  val all: List<MapSheet> = listOf(northAmerica, britishIsles)
+  val all: List<MapSheet> = listOf(northAmerica, britishIsles, southEastAustralia, middleEast)
 
   fun sheetFor(point: MapPoint): MapSheet? = all.firstOrNull { it.contains(point.lat, point.lon) }
 
