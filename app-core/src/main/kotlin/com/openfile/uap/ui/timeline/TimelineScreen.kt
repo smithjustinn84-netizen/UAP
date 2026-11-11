@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.timeline
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,10 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -38,19 +34,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.openfile.uap.data.Archive
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.TimelineEntry
 import com.openfile.uap.data.TimelineKind
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.ScreenHeader
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.TypeTitle
 
 @Composable
-fun TimelineScreen(onOpenCase: (String) -> Unit) {
-  // The one kind being shown, or null for every kind.
-  var only by rememberSaveable { mutableStateOf<TimelineKind?>(null) }
-  val entries = remember(only) { Archive.timeline.filter { only == null || it.kind == only } }
+fun TimelineRoute(
+  archive: ArchiveRepository,
+  onOpenCase: (String) -> Unit,
+  viewModel: TimelineViewModel = viewModel { TimelineViewModel(archive, createSavedStateHandle()) },
+) {
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  TimelineScreen(uiState = uiState, onFilterChange = viewModel::onFilterChange, onOpenCase = onOpenCase)
+}
+
+@Composable
+fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> Unit, onOpenCase: (String) -> Unit) {
+  val entries = uiState.entries
   val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
   LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp)) {
@@ -62,7 +74,7 @@ fun TimelineScreen(onOpenCase: (String) -> Unit) {
       )
     }
     item(key = "kinds", contentType = "kinds") {
-      KindFilter(only = only, onChange = { only = it }, modifier = Modifier.padding(bottom = 20.dp))
+      KindFilter(only = uiState.only, kindCounts = uiState.kindCounts, onChange = onFilterChange, modifier = Modifier.padding(bottom = 20.dp))
     }
     itemsIndexed(entries, key = { _, entry -> "${entry.year}|${entry.title}" }, contentType = { _, _ -> "entry" }) { index, entry ->
       val showYear = index == 0 || entries[index - 1].year != entry.year
@@ -71,11 +83,14 @@ fun TimelineScreen(onOpenCase: (String) -> Unit) {
   }
 }
 
-private val kindCounts: Map<TimelineKind, Int> = Archive.timeline.groupingBy { it.kind }.eachCount()
-
 /** The key doubles as the filter: tap a kind to show only that kind, tap it again to show everything. */
 @Composable
-private fun KindFilter(only: TimelineKind?, onChange: (TimelineKind?) -> Unit, modifier: Modifier = Modifier) {
+private fun KindFilter(
+  only: TimelineKind?,
+  kindCounts: Map<TimelineKind, Int>,
+  onChange: (TimelineKind?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   Column(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().background(Paper).border(1.dp, Ink)) {
     TimelineKind.entries.forEachIndexed { index, kind ->
       if (index > 0) SolidRule()

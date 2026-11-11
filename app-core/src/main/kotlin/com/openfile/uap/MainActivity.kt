@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
       statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
       navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
     )
-    setContent { OpenFileTheme { MainNavigation() } }
+    val container = AppContainer(this)
+    setContent { OpenFileTheme { MainNavigation(container) } }
   }
 }

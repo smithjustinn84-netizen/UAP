@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.threads
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,14 +15,37 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.openfile.uap.data.Archive
-import com.openfile.uap.data.FileThread
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
+import com.openfile.uap.ui.BackLink
+import com.openfile.uap.ui.CardHeader
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.LeadText
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.ScreenHeader
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.StatusBarSpacer
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.countOf
 
 @Composable
-fun ThreadsScreen(onOpenCase: (String) -> Unit, onBack: () -> Unit) {
+fun ThreadsRoute(
+  archive: ArchiveRepository,
+  onOpenCase: (String) -> Unit,
+  onBack: () -> Unit,
+  viewModel: ThreadsViewModel = viewModel { ThreadsViewModel(archive) },
+) {
+  ThreadsScreen(uiState = viewModel.uiState, onOpenCase = onOpenCase, onBack = onBack)
+}
+
+@Composable
+fun ThreadsScreen(uiState: ThreadsUiState, onOpenCase: (String) -> Unit, onBack: () -> Unit) {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
     BackLink("Files", onBack, Modifier.padding(start = 8.dp, top = 8.dp))
@@ -37,7 +60,7 @@ fun ThreadsScreen(onOpenCase: (String) -> Unit, onBack: () -> Unit) {
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 8.dp, bottom = 28.dp),
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      Archive.threads.forEach { thread -> ThreadCard(thread, onOpenCase) }
+      uiState.threads.forEach { thread -> ThreadCard(thread, onOpenCase) }
       Text(
         "The threads describe the records. They do not rule on the events.",
         style = MaterialTheme.typography.labelMedium,
@@ -48,15 +71,16 @@ fun ThreadsScreen(onOpenCase: (String) -> Unit, onBack: () -> Unit) {
 }
 
 @Composable
-private fun ThreadCard(thread: FileThread, onOpenCase: (String) -> Unit) {
+private fun ThreadCard(threadUi: ThreadUi, onOpenCase: (String) -> Unit) {
+  val thread = threadUi.thread
   PaperSheet {
-    CardHeader(thread.id, countOf(thread.appearances.size, "file"))
+    CardHeader(thread.id, countOf(threadUi.appearances.size, "file"))
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       TypeTitle(thread.title, size = 19.sp)
       Text(thread.summary, style = MaterialTheme.typography.bodyMedium, color = Ink)
     }
-    thread.appearances.forEach { appearance ->
-      val record = Archive.case(appearance.caseId) ?: return@forEach
+    threadUi.appearances.forEach { appearance ->
+      val record = appearance.record
       SolidRule()
       TapRow(onClick = { onOpenCase(record.id) }, onClickLabel = "Open file") {
         Row(

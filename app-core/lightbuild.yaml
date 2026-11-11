@@ -21,6 +21,9 @@ android:
       - androidx.lifecycle:lifecycle-runtime-ktx:2.10.0
       - androidx.activity:activity-compose:1.13.0
       - androidx.lifecycle:lifecycle-runtime-compose:2.10.0
+      - androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0
+      - androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
+      - androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0
       - androidx.compose.ui:ui:1.10.4
       - androidx.compose.ui:ui-tooling-preview:1.10.4
       - androidx.compose.material3:material3:1.4.0
@@ -36,6 +39,7 @@ android:
       dependencies:
         maven:
           - junit:junit:4.13.2
+          - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2
     androidTest:
       runner: androidx.test.runner.AndroidJUnitRunner
       dependencies:

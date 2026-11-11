@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.casefile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +29,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.openfile.uap.data.Archive
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseDetail
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.data.Evidence
@@ -42,6 +43,29 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.ui.ActionRow
+import com.openfile.uap.ui.BackLink
+import com.openfile.uap.ui.BulletList
+import com.openfile.uap.ui.CardHeader
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.LeadText
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.NIMITZ_CASE_ID
+import com.openfile.uap.ui.NimitzIncidentInfographic
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.RecordField
+import com.openfile.uap.ui.ReportMediaCard
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.SourceRow
+import com.openfile.uap.ui.Stamp
+import com.openfile.uap.ui.StatusBarSpacer
+import com.openfile.uap.ui.TabCell
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TitledBlock
+import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.countOf
 
 private const val SEE_EXPLANATIONS = "See how each explanation reads this evidence"
 
@@ -54,8 +78,20 @@ private enum class Section(val label: String) {
 }
 
 @Composable
-fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
-  val record = Archive.case(caseId)
+fun CaseFileRoute(
+  archive: ArchiveRepository,
+  caseId: String,
+  backLabel: String,
+  onBack: () -> Unit,
+  viewModel: CaseFileViewModel = viewModel { CaseFileViewModel(archive, caseId) },
+) {
+  CaseFileScreen(uiState = viewModel.uiState, backLabel = backLabel, onBack = onBack)
+}
+
+@Composable
+fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Unit) {
+  val caseId = uiState.caseId
+  val record = (uiState as? CaseFileUiState.Found)?.record
   var section by rememberSaveable { mutableStateOf(Section.Summary) }
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {

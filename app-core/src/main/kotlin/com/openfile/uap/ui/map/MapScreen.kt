@@ -1,6 +1,5 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.map
 
-import androidx.annotation.RawRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -20,11 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -36,7 +30,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
@@ -45,11 +38,13 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.openfile.uap.R
-import com.openfile.uap.data.Archive
-import com.openfile.uap.data.CaseRecord
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.ArchiveRepository
+import com.openfile.uap.data.MapOutlineRepository
 import com.openfile.uap.data.MapSheet
-import com.openfile.uap.data.MapSheets
+import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -57,35 +52,40 @@ import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.MonoFamily
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
-import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.openfile.uap.ui.ActionRow
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.ScreenHeader
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.StatusBarSpacer
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.countOf
 
 private val Land = Color(0xFFE4D7B4)
 private val PinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 11.sp, color = Paper)
 
-/** Parsed outlines by raw resource. The files never change, so each is read once per process. */
-private val outlineCache = ConcurrentHashMap<Int, List<List<Pair<Float, Float>>>>()
-
-/** A case placed on the map, numbered in archive order so pins and list rows match. */
-private data class Plotted(val number: Int, val record: CaseRecord)
-
-@RawRes
-private fun outlineFor(sheet: MapSheet): Int =
-  when (sheet) {
-    MapSheets.northAmerica -> R.raw.map_north_america
-    MapSheets.britishIsles -> R.raw.map_british_isles
-    MapSheets.southEastAustralia -> R.raw.map_south_east_australia
-    MapSheets.middleEast -> R.raw.map_middle_east
-    else -> error("No outline is bundled for map sheet ${sheet.id}")
-  }
-
 @Composable
-fun MapScreen(onOpenCase: (String) -> Unit) {
-  val plotted = remember { Archive.cases.mapIndexed { i, c -> Plotted(i + 1, c) } }
-  // Remembered so each sheet is handed the same list on every pass and keeps its cached drawing.
-  val sheets = remember(plotted) { MapSheets.all.map { sheet -> sheet to plotted.filter { MapSheets.sheetFor(it.record.point) == sheet } } }
-  var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
+fun MapRoute(
+  archive: ArchiveRepository,
+  outlines: MapOutlineRepository,
+  onOpenCase: (String) -> Unit,
+  viewModel: MapViewModel = viewModel { MapViewModel(archive, outlines, createSavedStateHandle()) },
+) {
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  // The selection is passed as a provider, read while drawing, so selecting a pin redraws the pins and rebuilds nothing.
+  MapScreen(uiState = uiState, selectedId = { uiState.selectedId }, onPinSelect = viewModel::onPinSelect, onOpenCase = onOpenCase)
+}
+
+/**
+ * The sheets in [uiState] keep their instances from one state to the next unless their own outline changes, so each
+ * sheet skips recomposition and keeps its cached drawing.
+ */
+@Composable
+fun MapScreen(uiState: MapUiState, selectedId: () -> String?, onPinSelect: (String) -> Unit, onOpenCase: (String) -> Unit) {
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
@@ -99,23 +99,18 @@ fun MapScreen(onOpenCase: (String) -> Unit) {
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 8.dp, bottom = 28.dp),
       verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-      sheets.forEach { (sheet, onSheet) ->
+      uiState.sheets.forEach { sheet ->
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          MonoLabel("Sheet · ${sheet.title}", color = Ink)
-          SheetMap(
-            sheet = sheet,
-            pins = onSheet,
-            selectedId = { selectedId },
-            onSelect = { selectedId = if (selectedId == it) null else it },
-          )
-          onSheet.firstOrNull { it.record.id == selectedId }?.let { SelectedCard(it, onOpen = { onOpenCase(it.record.id) }) }
+          MonoLabel("Sheet · ${sheet.sheet.title}", color = Ink)
+          SheetMap(sheet = sheet.sheet, pins = sheet.pins, outline = sheet.outline, selectedId = selectedId, onSelect = onPinSelect)
+          sheet.pins.firstOrNull { it.record.id == uiState.selectedId }?.let { SelectedCard(it, onOpen = { onOpenCase(it.record.id) }) }
         }
       }
 
       Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         TypeTitle("Plotted cases", size = 20.sp)
         PaperSheet {
-          plotted.forEachIndexed { index, p ->
+          uiState.plotted.forEachIndexed { index, p ->
             if (index > 0) SolidRule()
             TapRow(onClick = { onOpenCase(p.record.id) }, onClickLabel = "Open file") {
               Row(
@@ -140,8 +135,13 @@ fun MapScreen(onOpenCase: (String) -> Unit) {
 
 /** [selectedId] is a provider so that it is read while drawing: selecting a pin redraws the pins and rebuilds nothing. */
 @Composable
-private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: () -> String?, onSelect: (String) -> Unit) {
-  val rings = rememberOutline(sheet)
+private fun SheetMap(
+  sheet: MapSheet,
+  pins: List<PlottedCase>,
+  outline: SheetOutline,
+  selectedId: () -> String?,
+  onSelect: (String) -> Unit,
+) {
   val measurer = rememberTextMeasurer()
   val description =
     "Map of ${sheet.title} with ${countOf(pins.size, "plotted case")}. " +
@@ -166,7 +166,7 @@ private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: () -> Str
       // The coastline paths and pin labels are built once per size, not on every draw.
       .drawWithCache {
         val land =
-          rings.value.map { ring ->
+          outline.map { ring ->
             Path().apply {
               ring.forEachIndexed { i, (lon, lat) ->
                 val at = sheet.project(lat.toDouble(), lon.toDouble())
@@ -194,23 +194,6 @@ private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: () -> Str
   )
 }
 
-/** Reads and parses a sheet's outline off the main thread. The sheet draws without land until it arrives. */
-@Composable
-private fun rememberOutline(sheet: MapSheet) =
-  outlineFor(sheet).let { resId ->
-    val resources = LocalContext.current.resources
-    produceState(outlineCache[resId].orEmpty(), resId, resources) {
-      if (!outlineCache.containsKey(resId)) {
-        value =
-          withContext(Dispatchers.IO) {
-            outlineCache.getOrPut(resId) {
-              resources.openRawResource(resId).bufferedReader().use { MapSheets.parseRings(it.readText()) }
-            }
-          }
-      }
-    }
-  }
-
 private fun DrawScope.drawPin(at: Offset, label: TextLayoutResult, selected: Boolean) {
   val half = 11.dp.toPx()
   if (selected) {
@@ -222,7 +205,7 @@ private fun DrawScope.drawPin(at: Offset, label: TextLayoutResult, selected: Boo
   drawText(label, topLeft = at - Offset(label.size.width / 2f, label.size.height / 2f))
 }
 
-private fun pinOffset(sheet: MapSheet, p: Plotted, width: Float, height: Float): Offset {
+private fun pinOffset(sheet: MapSheet, p: PlottedCase, width: Float, height: Float): Offset {
   val at = sheet.project(p.record.point.lat, p.record.point.lon)
   return Offset(at.x * width, at.y * height)
 }
@@ -254,7 +237,7 @@ private fun PinBadge(number: Int) {
 }
 
 @Composable
-private fun SelectedCard(p: Plotted, onOpen: () -> Unit) {
+private fun SelectedCard(p: PlottedCase, onOpen: () -> Unit) {
   PaperSheet {
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {

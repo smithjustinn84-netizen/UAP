@@ -161,7 +161,13 @@ sourceSets:
       compile: 'off'
   - androidx.lifecycle:lifecycle-viewmodel-android:2.10.0:
       compile: 'off'
+  - androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0:
+      compile: 'off'
+  - androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0:
+      compile: 'off'
   - androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0:
+      compile: 'off'
+  - androidx.lifecycle:lifecycle-viewmodel-navigation3-android:2.10.0:
       compile: 'off'
   - androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0:
       compile: 'off'
@@ -2001,6 +2007,46 @@ dependencies:
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2
+- id: androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0
+  requestedVersion: 2.10.0
+  resolvedVersion: 2.10.0
+  artifacts:
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-compose/2.10.0/lifecycle-viewmodel-compose-2.10.0.module
+      sha256: 27c1036d01cc82d0142b04e0d4d7db3c99100472a592beaf758bc2e8659f2ee7
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-compose/2.10.0/lifecycle-viewmodel-compose-2.10.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-compose/2.10.0/lifecycle-viewmodel-compose-2.10.0.pom
+      sha256: 480b70b66c935a1f492742ef5ae16df974d7b4957a011f2795002072d5ed5259
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-compose/2.10.0/lifecycle-viewmodel-compose-2.10.0.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0
+- id: androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0
+  requestedVersion: 2.10.0
+  resolvedVersion: 2.10.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.aar
+      sha256: 225904e54ad5154768630471e108b98e143c261df0c08380ff43ea7e832dad7e
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.aar
+      extracted: androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.module
+      sha256: 552a254d62c5d9aa830bd79da2987208251e1c81afd93c3c2bffb026d42f45ca
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.pom
+      sha256: 363387a71f0f312517514becd9a401ec8589fbcb8d0934a1cac3c5f05eb00c8a
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-compose-android/2.10.0/lifecycle-viewmodel-compose-android-2.10.0.pom
+  transitiveDependencies:
+  - androidx.annotation:annotation:1.9.1
+  - androidx.compose.runtime:runtime:1.10.4
+  - androidx.compose.ui:ui:1.10.4
+  - androidx.lifecycle:lifecycle-common:2.10.0
+  - androidx.lifecycle:lifecycle-viewmodel:2.10.0
+  - androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
+  - org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3
 - id: androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0
   resolvedVersion: 2.10.0
   artifacts:
@@ -2021,7 +2067,51 @@ dependencies:
   - androidx.lifecycle:lifecycle-viewmodel:2.10.0
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2
+- id: androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0
+  requestedVersion: 2.10.0
+  resolvedVersion: 2.10.0
+  artifacts:
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-navigation3/2.10.0/lifecycle-viewmodel-navigation3-2.10.0.module
+      sha256: e79913def8524c0b00981bb1e86000dfedc8f1fdca644416629ea53489763832
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-navigation3/2.10.0/lifecycle-viewmodel-navigation3-2.10.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-navigation3/2.10.0/lifecycle-viewmodel-navigation3-2.10.0.pom
+      sha256: 92cbf61095edf700bf1e246f2a297ab44585c37168e6f4bb2886cb334008892b
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-navigation3/2.10.0/lifecycle-viewmodel-navigation3-2.10.0.pom
+  transitiveDependencies:
+  - androidx.lifecycle:lifecycle-viewmodel-navigation3-android:2.10.0
+- id: androidx.lifecycle:lifecycle-viewmodel-navigation3-android:2.10.0
+  requestedVersion: 2.10.0
+  resolvedVersion: 2.10.0
+  artifacts:
+    aar:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.aar
+      sha256: a4e0e66288a40659d927938c605fee060acdbad610b041fbf8984866318cb5ed
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.aar
+      extracted: androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0-exploded
+    module:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.module
+      sha256: a5aa4198b5f8bf813671d89c3644232566facc000935031cf1581e9edff66fbf
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.module
+    pom:
+      url: https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.pom
+      sha256: d757c187baf5d7d0ef99f1b75e40e8849d682da8077618d1c0b24ca9f1839663
+      cachePath: androidx/lifecycle/lifecycle-viewmodel-navigation3-android/2.10.0/lifecycle-viewmodel-navigation3-android-2.10.0.pom
+  transitiveDependencies:
+  - androidx.activity:activity-compose:1.13.0
+  - androidx.collection:collection:1.5.0
+  - androidx.compose.runtime:runtime:1.10.4
+  - androidx.compose.runtime:runtime-saveable:1.10.4
+  - androidx.lifecycle:lifecycle-viewmodel:2.10.0
+  - androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0
+  - androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
+  - androidx.navigation3:navigation3-runtime:1.0.1
+  - androidx.savedstate:savedstate:1.4.0
+  - androidx.savedstate:savedstate-compose:1.4.0
+  - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
 - id: androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
+  requestedVersion: 2.10.0
   resolvedVersion: 2.10.0
   artifacts:
     module:
@@ -2035,6 +2125,7 @@ dependencies:
   transitiveDependencies:
   - androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0
 - id: androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0
+  requestedVersion: 2.10.0
   resolvedVersion: 2.10.0
   artifacts:
     aar:
@@ -3700,6 +3791,7 @@ dependencies:
   - org.jetbrains.kotlin:kotlin-stdlib:2.3.20
   - org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2
 - id: org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2
+  requestedVersion: 1.10.2
   resolvedVersion: 1.10.2
   artifacts:
     module:
@@ -3713,6 +3805,7 @@ dependencies:
   transitiveDependencies:
   - org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.10.2
 - id: org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.10.2
+  requestedVersion: 1.10.2
   resolvedVersion: 1.10.2
   artifacts:
     jar:

@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.files
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,10 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -39,18 +35,53 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.openfile.uap.data.Archive
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.Stamp
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.countOf
 
 @Composable
-fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
-  var query by rememberSaveable { mutableStateOf("") }
-  var decade by rememberSaveable { mutableStateOf<Int?>(null) }
-  val results = remember(query, decade) { Archive.search(query, decade) }
+fun FilesRoute(
+  archive: ArchiveRepository,
+  onOpenCase: (String) -> Unit,
+  onOpenThreads: () -> Unit,
+  viewModel: FilesViewModel = viewModel { FilesViewModel(archive, createSavedStateHandle()) },
+) {
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  FilesScreen(
+    uiState = uiState,
+    query = viewModel.query,
+    onQueryChange = viewModel::onQueryChange,
+    onDecadeSelect = viewModel::onDecadeSelect,
+    onOpenCase = onOpenCase,
+    onOpenThreads = onOpenThreads,
+  )
+}
+
+@Composable
+fun FilesScreen(
+  uiState: FilesUiState,
+  query: String,
+  onQueryChange: (String) -> Unit,
+  onDecadeSelect: (Int?) -> Unit,
+  onOpenCase: (String) -> Unit,
+  onOpenThreads: () -> Unit,
+) {
+  val results = uiState.results
   val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
   LazyColumn(
@@ -61,8 +92,8 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
     item(key = "header", contentType = "header") {
       Column {
         FilesHeader()
-        SearchField(query = query, onQueryChange = { query = it })
-        DecadeChips(selected = decade, onSelect = { decade = it })
+        SearchField(query = query, onQueryChange = onQueryChange)
+        DecadeChips(decades = uiState.decades, selected = uiState.selectedDecade, onSelect = onDecadeSelect)
         Text(
           text = "${countOf(results.size, "file")} · oldest first",
           modifier = Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp),
@@ -85,7 +116,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
       FolderCard(record = record, onClick = { onOpenCase(record.id) }, modifier = Modifier.padding(horizontal = ScreenPadding))
     }
     item(key = "threads", contentType = "threads") {
-      ThreadsLink(onClick = onOpenThreads, modifier = Modifier.padding(horizontal = ScreenPadding))
+      ThreadsLink(threadCount = uiState.threadCount, onClick = onOpenThreads, modifier = Modifier.padding(horizontal = ScreenPadding))
     }
   }
 }
@@ -111,13 +142,13 @@ private fun FilesHeader() {
 
 /** The way in to the cross-file threads. Sits after the folders, like the index sheet at the back of a drawer. */
 @Composable
-private fun ThreadsLink(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun ThreadsLink(threadCount: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
   TapRow(onClick = onClick, onClickLabel = "Open threads", modifier = modifier.defaultMinSize(minHeight = 64.dp).background(Ink)) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Text("Threads across the files", style = MaterialTheme.typography.labelLarge, color = Paper)
         Text(
-          "${Archive.threads.size} patterns that recur from one case to the next",
+          "$threadCount patterns that recur from one case to the next",
           style = MaterialTheme.typography.labelMedium,
           color = Paper,
         )
@@ -155,13 +186,13 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
 }
 
 @Composable
-private fun DecadeChips(selected: Int?, onSelect: (Int?) -> Unit) {
+private fun DecadeChips(decades: List<Int>, selected: Int?, onSelect: (Int?) -> Unit) {
   Row(
     Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(start = ScreenPadding, end = ScreenPadding, top = 16.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     Chip(label = "All", selected = selected == null, onClick = { onSelect(null) })
-    Archive.decades.forEach { d -> Chip(label = "${d}s", selected = selected == d, onClick = { onSelect(d) }) }
+    decades.forEach { d -> Chip(label = "${d}s", selected = selected == d, onClick = { onSelect(d) }) }
   }
 }
 

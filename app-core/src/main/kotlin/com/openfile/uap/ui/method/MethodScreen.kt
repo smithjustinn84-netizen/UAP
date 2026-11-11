@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.method
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,13 @@ import androidx.compose.ui.unit.dp
 import com.openfile.uap.data.SourceLabel
 import com.openfile.uap.data.StoryKind
 import com.openfile.uap.theme.Ink
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.ScreenHeader
+import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.StatusBarSpacer
+import com.openfile.uap.ui.TitledBlock
 
 private val sourceLabels = SourceLabel.entries.map { it.label to it.meaning }
 
