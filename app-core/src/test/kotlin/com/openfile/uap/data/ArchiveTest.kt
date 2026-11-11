@@ -72,15 +72,12 @@ class ArchiveTest {
         assertTrue("${c.id} ${item.id} links to valid evidence ${item.evidenceId}", item.evidenceId in evidenceIds)
         assertTrue(detail.mediaForEvidence(item.evidenceId).contains(item))
         when (item.kind) {
-          MediaKind.Diagram, MediaKind.Photo -> assertNotNull("${c.id} ${item.id} has figure", item.figure)
-          MediaKind.Audio -> {
+          MediaKind.Diagram -> assertNotNull("${c.id} ${item.id} has figure", item.figure)
+          MediaKind.Photo -> assertTrue("${c.id} ${item.id} has image or figure", item.image != null || item.figure != null)
+          MediaKind.Audio, MediaKind.Video -> {
+            // No more simulated players: every recording is either bundled or links to where it plays.
+            assertTrue("${c.id} ${item.id} is bundled or linked", item.clip != null || item.sourceUrl != null)
             assertNotNull("${c.id} ${item.id} has duration", item.durationSeconds)
-            assertTrue("${c.id} ${item.id} has transcript", item.transcript.isNotEmpty())
-          }
-          MediaKind.Video -> {
-            assertNotNull("${c.id} ${item.id} has figure", item.figure)
-            assertNotNull("${c.id} ${item.id} has duration", item.durationSeconds)
-            assertTrue("${c.id} ${item.id} has transcript", item.transcript.isNotEmpty())
           }
           MediaKind.Document -> {
             assertTrue("${c.id} ${item.id} has excerpt", item.excerpt.isNotEmpty())

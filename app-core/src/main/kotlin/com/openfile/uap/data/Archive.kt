@@ -61,7 +61,6 @@ enum class MediaFigure {
   ArnoldCascadeTrack,
   ArnoldOriginalSketch,
   MogulBalloonTrain,
-  FortWorthDebrisPhoto,
   WashingtonRadarScope,
   KecksburgAcornProfile,
   ShagHarbourImpactChart,
@@ -70,9 +69,24 @@ enum class MediaFigure {
   PhoenixVFormation,
   PhoenixEstrellasPhoto,
   NimitzAltitudeDrop,
-  NimitzFlirFrame,
-  RooseveltGimbalFrame,
-  RooseveltGoFastFrame,
+}
+
+/** Bundled recordings in `res/raw`. Video without a clip links out to [ReportMedia.sourceUrl] instead. */
+enum class MediaClip {
+  NimitzFlir1,
+  RooseveltGimbal,
+  RooseveltGoFast,
+  WashingtonSamford,
+}
+
+/** Real photographs and document scans bundled as raster drawables; see THIRD-PARTY-NOTICES.md for each source. */
+enum class MediaImage {
+  HaltMemo,
+  RoswellDailyRecord,
+  RameyDuboseDebris,
+  MogulReflectorTrain,
+  KecksburgReplica,
+  SamfordMinutes,
 }
 
 data class TranscriptCue(val timestamp: String, val speaker: String, val text: String)
@@ -97,6 +111,9 @@ data class ReportMedia(
   val transcript: List<TranscriptCue> = emptyList(),
   val telemetryLabels: List<String> = emptyList(),
   val sourceUrl: String? = null,
+  val clip: MediaClip? = null,
+  /** A real photograph or scan. Photos show it in place of [figure]; documents show it above the excerpt. */
+  val image: MediaImage? = null,
 )
 
 data class Explanation(
@@ -484,21 +501,22 @@ private val rendlesham: CaseDetail
             kind = MediaKind.Document,
             sourceLabel = "Primary record",
             title = "Memorandum: “Unexplained Lights” (13 Jan 1981)",
-            caption = "Typed one-page report from Lt Col Charles I. Halt to RAF Community Relations Officer.",
-            provenance = "Released 1983 under US FOIA · UK National Archives DEFE 24/1948",
+            caption = "Typed one-page memo from Lt Col Charles I. Halt, Deputy Base Commander, to the RAF commander at Bentwaters. " +
+              "Excerpts are verbatim, including the memo’s spelling.",
+            provenance = "Released 1983 under US FOIA · UK National Archives DEFE 24/1948 · Scan via Wikimedia Commons (public domain, USAF)",
+            image = MediaImage.HaltMemo,
             documentHeader =
               listOf(
-                "FROM" to "Lt Col Charles I. Halt, Deputy Base Commander, 81st CSG",
-                "TO" to "RAF/CC (Ministry of Defence)",
+                "FROM" to "Lt Col Charles I. Halt, Deputy Base Commander, HQ 81st Combat Support Group (USAFE)",
+                "TO" to "RAF/CC",
                 "DATE" to "13 Jan 1981",
                 "SUBJECT" to "Unexplained Lights",
               ),
             excerpt =
               listOf(
-                "1. Early in the morning of 27 Dec 80 (approx 0300L), two USAF security police patrolmen saw unusual lights outside the back gate at RAF Woodbridge.",
-                "2. The individuals reported seeing a strange glowing object in the forest. The object was described as being metallic in appearance and triangular in shape, approximately two to three meters across the base.",
-                "3. The next day, three depressions 1 1/2\" deep and 7\" in diameter were found where the object had been sighted on the ground. The following night (29 Dec 80) the area was checked for radiation. Beta/gamma readings of 0.1 milliroentgens were recorded with peak readings in the three depressions.",
-                "4. Later in the night a red sun-like light was seen through the trees. It moved about and pulsed. At one point it appeared to throw off glowing particles and then broke into five separate white objects and then disappeared.",
+                "1. Early in the morning of 27 Dec 80 (approximately 0300L), two USAF security police patrolmen saw unusual lights outside the back gate at RAF Woodbridge. … The individuals reported seeing a strange glowing object in the forest. The object was described as being metalic in appearance and triangular in shape, approximately two to three meters across the base and approximately two meters high.",
+                "2. The next day, three depressions 1 1/2\" deep and 7\" in diameter were found where the object had been sighted on the ground. The following night (29 Dec 80) the area was checked for radiation. Beta/gamma readings of 0.1 milliroentgens were recorded with peak readings in the three depressions and near the center of the triangle formed by the depressions.",
+                "3. Later in the night a red sun-like light was seen through the trees. It moved about and pulsed. At one point it appeared to throw off glowing particles and then broke into five separate white objects and then disappeared. … The object to the south was visible for two or three hours and beamed down a stream of light from time to time.",
               ),
           ),
           ReportMedia(
@@ -507,17 +525,22 @@ private val rendlesham: CaseDetail
             kind = MediaKind.Audio,
             sourceLabel = "Primary record",
             title = "The Halt microcassette field recording",
-            caption = "18-minute Lanier pocket tape recorded in Rendlesham Forest on the night of 28 December 1980.",
-            provenance = "Recorded on site by Lt Col Charles Halt · Public copy released 1984",
-            durationSeconds = 108,
+            caption = "About 18 minutes of Lanier micro-cassette tape recorded in and beyond Rendlesham Forest in the early hours of " +
+              "28 December 1980. Halt switched the recorder on and off, so the tape jumps. Times below are the clock times spoken on " +
+              "the tape, not positions in the recording.",
+            provenance = "Recorded on site by Lt Col Charles Halt · Copy released 1984 · Lines quoted from Ian Ridpath’s transcription · " +
+              "Full recording on the Internet Archive (uploader unknown)",
+            durationSeconds = 1078,
             transcript =
               listOf(
-                TranscriptCue("00:00", "Lt Col Halt", "1:05 AM. We're still in the forest investigating the site from the first night."),
-                TranscriptCue("00:22", "Sgt Nevills", "Wait a minute—we're getting a deflection on the AN/PDR-27 meter inside the depression."),
-                TranscriptCue("00:44", "Lt Col Halt", "Okay, we're seeing a strange red light out through the trees to the east, moving and pulsing."),
-                TranscriptCue("01:08", "Airman Englund", "There it goes again... about every five seconds right through the pines."),
-                TranscriptCue("01:31", "Lt Col Halt", "Now we are observing what appears to be a beam coming down to the ground. This is unreal."),
+                TranscriptCue("01:25", "MSgt Nevels", "We’re getting right at a half of a millirem."),
+                TranscriptCue("01:48", "Lt Col Halt", "We’re hearing very strange sounds out of the farmer’s barnyard animals."),
+                TranscriptCue("03:05", "Lt Col Halt", "We see strange strobe-like flashes to the... rather sporadic, but there’s definitely something there. Some kind of phenomenon."),
+                TranscriptCue("03:15", "Lt Col Halt", "Now we’ve got an object about 10 degrees directly south, 10 degrees off the horizon."),
+                TranscriptCue("03:15", "Lt Col Halt", "Now we’re observing what appears to be a beam coming down to the ground."),
+                TranscriptCue("03:30", "Lt Col Halt", "The objects are still in the sky, although the one to the south looks like it’s losing a little bit of altitude."),
               ),
+            sourceUrl = "https://archive.org/details/rendlesham-forest-ufo-incident-colonel-halt-audio-tape-recording-full-recording",
           ),
           ReportMedia(
             id = "M-03",
@@ -542,7 +565,7 @@ private val shagHarbour: CaseDetail
         listOf(
           "At approximately 11:20 PM on 4 October 1967, multiple observers in the coastal village of Shag Harbour saw four bright lights in sequence flying low across the night sky.",
           "Witnesses reported the object angled down at roughly 45 degrees, struck the water with an audible whistling sound and bright flash, and floated on the surface roughly half a mile from shore.",
-          "Three RCMP officers and local fishermen rushed out in boats believing an airliner had crashed. They found a thick patch of glowing yellowish foam spreading across the water, but no wreckage.",
+          "Three RCMP officers and local fishermen rushed out in boats believing an airliner had crashed. They found a patch of glittering yellowish foam on the water, but no wreckage.",
           "Royal Canadian Navy clearance divers from HMCS Granby searched the harbour bottom over several days but recovered no debris.",
         ),
       notInDispute =
@@ -564,9 +587,9 @@ private val shagHarbour: CaseDetail
             id = "E-01",
             kind = "Document",
             sourceLabel = "Primary record",
-            title = "RCMP Priority Telex",
+            title = "Rescue Co-ordination Centre priority telex",
             description =
-              "A priority telex sent on 5 October 1967 by the RCMP detachment in Barrington Passage to Air Force Headquarters in Ottawa, reporting that an unknown object with four lights had crashed into the ocean.",
+              "A priority telex titled “UFO Report”, sent on 5 October 1967 by the Rescue Co-ordination Centre in Halifax to Canadian Forces Headquarters in Ottawa, saying an object had come down off Shag Harbour and that aircraft and flares had been ruled out.",
             caveat = "describes initial reports taken under emergency conditions when officers believed an airliner had crashed.",
           ),
           Evidence(
@@ -602,8 +625,8 @@ private val shagHarbour: CaseDetail
             sourceLabel = "Reported",
             title = "Yellow surface foam",
             description =
-              "A wide patch of yellowish foam with an unusual odour reported by boat crews and police on the surface where the object entered the water.",
-            caveat = "no chemical samples of the foam were collected or preserved for laboratory analysis.",
+              "A patch of glittering yellowish foam, later described as about 80 feet wide and half a mile long, reported by boat crews and police where the object went into the water.",
+            caveat = "the size comes from witness accounts gathered later, not from a measurement made at the time.",
           ),
           Evidence(
             id = "E-06",
@@ -672,24 +695,26 @@ private val shagHarbour: CaseDetail
         listOf(
           ReportMedia(
             id = "M-01",
-            evidenceId = "E-01",
+            evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Primary record",
-            title = "RCMP Barrington Passage Priority Telex",
-            caption = "Telex dispatched to RCAF Air Defence Command Headquarters, Ottawa, 5 October 1967.",
-            provenance = "Library and Archives Canada · RG 24 (Department of National Defence)",
+            sourceLabel = "Official record",
+            title = "Canadian Forces “UFO Report: Lower Woods Harbour NS”",
+            caption = "Summary written at Canadian Forces Headquarters while the Navy dive search was under way. Excerpts are " +
+              "verbatim from a transcription; one bracketed word corrects an apparent transcription error (“dismounted”).",
+            provenance = "Department of National Defence file, Library and Archives Canada (RG 24) · Text as transcribed by the " +
+              "Shag Harbour UFO Incident Society · Author given as Col. Turner, Director of Operations; sources differ on his initials",
             documentHeader =
               listOf(
-                "FROM" to "RCMP DETACHMENT BARRINGTON PASSAGE NS",
-                "TO" to "CANFORCEHED OTTAWA // AIR DEFENCE COMMAND",
-                "DATE" to "05 OCT 1967 · PRIORITY",
-                "FILE" to "UFO REPORT - SHAG HARBOUR",
+                "TITLE" to "UFO REPORT · LOWER WOODS HARBOUR NS",
+                "FROM" to "Col. Turner, Director of Operations, Canadian Forces Headquarters",
+                "DATE" to "October 1967 (written after 5 Oct)",
               ),
             excerpt =
               listOf(
-                "AT APPROX 2320 HRS 4 OCT 67 NUMEROUS CALLS RECEIVED FROM RESIDENTS OF SHAG HARBOUR REPORTING LARGE OBJECT WITH FOUR BRIGHT LIGHTS CRASHING INTO WATERS OF GULF OF MAINE.",
-                "THREE MEMBERS THIS DETACHMENT ATTENDED IMMEDIATELY AND OBSERVED PALE YELLOW LIGHT FLOATING ON SURFACE HALF MILE OFFSHORE.",
-                "LOCAL FISHING BOATS AND COAST GUARD CUTTER SEARCHED AREA OF THICK YELLOW FOAM APPROX 80 FEET WIDE. OBJECT SUBMERGED PRIOR TO ARRIVAL OF BOATS. NO WRECKAGE RECOVERED.",
+                "1. On 04 October 1967 at 2345 hours a local RCMP Corporal WERBICKI from Barrington Passage NS and six other witnesses sighted a large flying object. This object, in the time interval of approximately five minutes, flew down to the water surface, floated and sank.",
+                "2. … The object, flying in an easterly direction when first sighted, descended rapidly to the water and produced a bright flash on impact. One light remained on the surface for considerable time but sank before a boat could reach it.",
+                "3. The Rescue Co-ordination Centre conducted preliminary investigation and [discounted] the possibilities that the sighting was produced by an aircraft, flares, floats, or any other known object.",
+                "4. Maritime Command were asked, on 05 Oct, to conduct an investigation into to sighting. At the present time one Officer and a diving team of three men are on the scene aided by Coast Guard Cutter 101.",
               ),
           ),
           ReportMedia(
@@ -697,9 +722,12 @@ private val shagHarbour: CaseDetail
             evidenceId = "E-05",
             kind = MediaKind.Diagram,
             sourceLabel = "Official record",
-            title = "Harbour descent track & yellow foam drift chart",
-            caption = "Sightline from Highway 3, impact bearing off Bon Portage Island, and tidal drift of the foam slick.",
-            provenance = "Compiled from RCMP detachment notes and HMCS Granby dive search coordinates",
+            title = "Harbour descent and yellow foam (schematic)",
+            caption = "Not to scale. The descent witnesses described, the object floating offshore and the foam later found " +
+              "there. Accounts put the object between 250–300 m and about half a mile out; the foam was reported as about " +
+              "80 feet wide and half a mile long.",
+            provenance = "Drawn from published witness accounts, chiefly Chris Styles and Don Ledger, “Dark Object” (2001), " +
+              "as reported by The Coast · Not an official chart",
             figure = MediaFigure.ShagHarbourImpactChart,
           ),
         ),
@@ -842,8 +870,8 @@ private val nimitz: CaseDetail
             sourceLabel = "Primary record",
             title = "ATFLIR targeting pod video (“FLIR1”)",
             caption = "76-second infrared recording captured from an F/A-18F Super Hornet operating from USS Nimitz.",
-            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020)",
-            figure = MediaFigure.NimitzFlirFrame,
+            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
+            clip = MediaClip.NimitzFlir1,
             durationSeconds = 76,
             telemetryLabels = listOf("IR TV · NAR", "EL -02°", "AZ +00°", "RNG ---", "2.0X ZOOM"),
             transcript =
@@ -853,7 +881,7 @@ private val nimitz: CaseDetail
                 TranscriptCue("00:54", "ATFLIR HUD", "Optical track holds elongated oblong return with no thermal exhaust plume."),
                 TranscriptCue("01:11", "ATFLIR HUD", "Target accelerates left out of 2.0x magnification frame; gimbal lock breaks."),
               ),
-            sourceUrl = "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by- the-department-of-defense-on-the-release-of-historical-navy-videos/".replace(" ", ""),
+            sourceUrl = "https://www.dvidshub.net/video/955825/flir-uap",
           ),
           ReportMedia(
             id = "M-02",
@@ -872,10 +900,11 @@ private val nimitz: CaseDetail
             sourceLabel = "Official record",
             title = "DoD Immediate Release: Historical Navy Videos",
             caption = "Formal Pentagon statement accompanying the official release of FLIR1, Gimbal, and GoFast.",
-            provenance = "Office of the Secretary of Defense · 27 April 2020",
+            provenance = "“Statement by the Department of Defense on the Release of Historical Navy Videos”, 27 April 2020 · " +
+              "defense.gov release 2165713",
             documentHeader =
               listOf(
-                "ISSUED BY" to "Department of Defense · Office of the Spokesperson",
+                "ISSUED BY" to "US Department of Defense",
                 "DATE" to "27 April 2020",
                 "SUBJECT" to "Release of Historical Navy Videos (FLIR1, GIMBAL, GOFAST)",
               ),
@@ -885,6 +914,17 @@ private val nimitz: CaseDetail
                 "DOD is releasing the videos in order to clear up any misconceptions by the public on whether or not the footage that has been circulating was real, or whether or not there is more to the videos.",
                 "The aerial phenomena observed in the videos remain characterized as 'unidentified'.",
               ),
+          ),
+          ReportMedia(
+            id = "M-04",
+            evidenceId = "E-02",
+            kind = MediaKind.Video,
+            sourceLabel = "Official record",
+            title = "House Oversight subcommittee hearing on UAP (26 July 2023)",
+            caption = "Retired Cdr David Fravor gives sworn testimony on the 2004 Nimitz encounter, alongside Ryan Graves and David Grusch. The video is not bundled; it plays on YouTube.",
+            provenance = "House Committee on Oversight and Accountability · Official channel upload",
+            durationSeconds = 9240,
+            sourceUrl = "https://www.youtube.com/watch?v=KQ7Dw-739VY",
           ),
         ),
     )
@@ -1032,18 +1072,21 @@ private val arnold: CaseDetail
             kind = MediaKind.Document,
             sourceLabel = "Press report",
             title = "Associated Press wire dispatch (25 June 1947)",
-            caption = "First national wire report from Pendleton, Oregon, introducing the term “saucer-like aircraft”.",
-            provenance = "East Oregonian / Associated Press wire copy · 25 June 1947",
+            caption = "One of the first wire reports, filed from Pendleton, Oregon, the day after the sighting. Wording varied " +
+              "between papers; this is the version printed in Corvallis that afternoon, verbatim.",
+            provenance = "Associated Press, as printed in the Corvallis Gazette-Times, 25 June 1947 · Transcription by " +
+              "Patrick Gross (ufologie.patrickgross.org)",
             documentHeader =
               listOf(
                 "DATELINE" to "PENDLETON, Ore., June 25 (AP)",
-                "WITNESS" to "Kenneth Arnold, Boise, Idaho (Fire Control Equipment Co.)",
-                "FLIGHT" to "Chehalis to Yakima, Wash. · 24 June 1947, 3:00 PM PST",
+                "PRINTED IN" to "Corvallis Gazette-Times, 25 June 1947",
               ),
             excerpt =
               listOf(
-                "Nine bright saucer-like objects flying at 'incredible' speed at 10,000 feet altitude were reported here today by Kenneth Arnold, Boise, Ida., pilot who said he could not hazard a guess as to what they were.",
-                "Arnold, a United States Forest Service flyer engaged in searching for a missing Marine plane, said he sighted the mysterious objects yesterday at 3 p.m. They were flying between Mount Rainier and Mount Adams, in Washington State, he said, and appeared to weave in and out of formation.",
+                "Kenneth Arnold, Boise, Ida. pilot, doesn’t know whether to believe his eyes.",
+                "He reported here today that while searching for a missing marine corp plane in southwestern Washington yesterday he sighted nine “saucer-like” objects flying at “amazing” speed.",
+                "He clocked the strange-appearing “planes” as they flew between Mt. Rainier and Mt. Adams and estimated their speed at “about 1200 miles an hour.”",
+                "“It seemed impossible,” he said, “but there it is — I must believe my eyes.”",
               ),
           ),
         ),
@@ -1183,7 +1226,9 @@ private val roswell: CaseDetail
             sourceLabel = "Primary record",
             title = "509th Bomb Group public information release",
             caption = "Press statement drafted by 1st Lt Walter Haut at Roswell Army Air Field on 8 July 1947.",
-            provenance = "Roswell Daily Record · 8 July 1947 afternoon edition",
+            provenance = "Release text as carried by the press, 8 July 1947 · Front page: Roswell Daily Record, 8 July 1947 " +
+              "(photographed reprint via Wikimedia Commons; public domain, copyright not renewed)",
+            image = MediaImage.RoswellDailyRecord,
             documentHeader =
               listOf(
                 "ORIGIN" to "Public Information Office, Roswell Army Air Field, N.M.",
@@ -1201,10 +1246,12 @@ private val roswell: CaseDetail
             evidenceId = "E-02",
             kind = MediaKind.Photo,
             sourceLabel = "Primary record",
-            title = "Fort Worth Army Air Field debris plate",
-            caption = "Archival plate of foil-backed radar reflector and neoprene fragments photographed in Brig. Gen. Roger Ramey’s office.",
-            provenance = "Fort Worth Star-Telegram / US National Archives · 8 July 1947",
-            figure = MediaFigure.FortWorthDebrisPhoto,
+            title = "Ramey and DuBose with the Roswell debris",
+            caption = "Brig. Gen. Roger Ramey (left) and Col. Thomas J. DuBose with debris from Roswell, photographed in Ramey’s office " +
+              "at Fort Worth on 8 July 1947. The archive’s caption calls the debris a “wind-forecasting device”.",
+            provenance = "Fort Worth Star-Telegram photograph · University of Texas at Arlington Libraries · Via Wikimedia Commons " +
+              "(public domain, copyright not renewed)",
+            image = MediaImage.RameyDuboseDebris,
           ),
           ReportMedia(
             id = "M-03",
@@ -1215,6 +1262,30 @@ private val roswell: CaseDetail
             caption = "600-foot acoustic array with neoprene sounding balloons, ML-307 corner radar targets, and payload sonobuoy.",
             provenance = "Adapted from USAF Report 'The Roswell Report: Fact versus Fiction in the New Mexico Desert' (1994)",
             figure = MediaFigure.MogulBalloonTrain,
+          ),
+          ReportMedia(
+            id = "M-04",
+            evidenceId = "E-03",
+            kind = MediaKind.Video,
+            sourceLabel = "Official record",
+            title = "Air Force press conference on “The Roswell Report: Case Closed”",
+            caption = "Pentagon news conference of 24 June 1997 presenting the Air Force’s second Roswell report. " +
+              "The video is not bundled; it plays on C-SPAN.",
+            provenance = "C-SPAN recording · 24 June 1997",
+            durationSeconds = 1446,
+            sourceUrl = "https://www.c-span.org/program/news-conference/air-force-report-on-roswell-events/65601",
+          ),
+          ReportMedia(
+            id = "M-05",
+            evidenceId = "E-03",
+            kind = MediaKind.Photo,
+            sourceLabel = "Official record",
+            title = "Radar reflectors on a balloon train",
+            caption = "Photograph reproduced in the Air Force’s 1995 Roswell report showing a string of radar-reflector targets " +
+              "carried on a balloon train of the kind the report says Project Mogul flew.",
+            provenance = "USAF, “The Roswell Report: Fact vs. Fiction in the New Mexico Desert” (1995), Attachment 25 · " +
+              "Via Wikimedia Commons (public domain, US Government)",
+            image = MediaImage.MogulReflectorTrain,
           ),
         ),
     )
@@ -1362,19 +1433,38 @@ private val washingtonRadar: CaseDetail
             kind = MediaKind.Document,
             sourceLabel = "Official record",
             title = "Pentagon Press Conference Transcript Excerpt",
-            caption = "Maj. Gen. John A. Samford, USAF Director of Intelligence, briefing reporters at the Pentagon on 29 July 1952.",
-            provenance = "Department of the Air Force · Public Relations Transcript, 29 July 1952",
+            caption = "Maj. Gen. John A. Samford, USAF Director of Intelligence, briefing reporters at the Pentagon on 29 July 1952. " +
+              "Excerpts are verbatim from the minutes.",
+            provenance = "Department of Defense, “Minutes of Press Conference Held by Major General John A. Samford” · " +
+              "Scan via Wikimedia Commons (public domain, US Government)",
+            image = MediaImage.SamfordMinutes,
             documentHeader =
               listOf(
                 "SPEAKER" to "Maj. Gen. John A. Samford, Director of Intelligence, USAF",
-                "PRESENT" to "Capt. Edward J. Ruppelt (Project Blue Book)",
-                "DATE" to "29 July 1952 · Room 3E-869, The Pentagon",
+                "PRESENT" to "Maj. Gen. Roger M. Ramey, Col. Donald L. Bower, Capt. Roy L. James, Capt. Edward J. Ruppelt, " +
+                  "Mr. Burgoyne L. Griffing",
+                "DATE" to "29 July 1952 · 4:00 p.m. · Room 3E-869, The Pentagon",
               ),
             excerpt =
               listOf(
-                "Our real interest in this problem has always been not the question of 'what is it', our problem is 'what can it do?' And we have found to date no pattern that indicates anything roughly translatable as hostility or even potential menace.",
-                "With regard to the radar contacts in the Washington area, radar beams can be deflected downward by a layer of warm air sitting above a cooler layer—an inversion—returning ground targets as apparent aerial blips.",
+                "The Air Force feels a very definite obligation to identify and analyze things that happen in the air that may have in them menace to the United States …",
+                "And we can say, as of now, that there has been no pattern that reveals anything remotely like purpose or remotely like consistency that we can in any way associate with any menace to the United States.",
+                "… temperature inversion in the atmosphere can cause an image from somewhere else to be reflected in positions where it is not. … There’s no reason to relate those phenomena to those atmospheric conditions positively, but it is a possibility.",
               ),
+          ),
+          ReportMedia(
+            id = "M-03",
+            evidenceId = "E-03",
+            kind = MediaKind.Video,
+            sourceLabel = "Primary record",
+            title = "Maj. Gen. Samford’s statement on “flying saucers”",
+            caption = "Five-minute sound film of Maj. Gen. John A. Samford, USAF Director of Intelligence, reading a statement " +
+              "at the Pentagon, followed by a second speaker. The National Archives dates the film 31 July 1952, two days " +
+              "after the press conference.",
+            provenance = "US National Archives, Record Group 111 (catalog id 25738) · Public domain · Copy via the Internet Archive",
+            clip = MediaClip.WashingtonSamford,
+            durationSeconds = 300,
+            sourceUrl = "https://catalog.archives.gov/id/25738",
           ),
         ),
     )
@@ -1509,20 +1599,14 @@ private val kecksburg: CaseDetail
           ),
           ReportMedia(
             id = "M-02",
-            evidenceId = "E-02",
-            kind = MediaKind.Audio,
-            sourceLabel = "Primary record",
-            title = "WHJB Greensburg field broadcast (“Object in the Woods”)",
-            caption = "On-scene interviews recorded by WHJB News Director John Murphy on the night of 9 December 1965.",
-            provenance = "WHJB 620 AM radio broadcast archive · Greensburg, Pennsylvania",
-            durationSeconds = 64,
-            transcript =
-              listOf(
-                TranscriptCue("00:00", "John Murphy (WHJB)", "This is John Murphy reporting from the road junction above Kecksburg."),
-                TranscriptCue("00:18", "Volunteer Fireman", "State Police and Army personnel from Oakdale just closed off the hollow road."),
-                TranscriptCue("00:39", "Local Resident", "It came down slow with a blue vapor trail and settled right into the trees."),
-                TranscriptCue("00:54", "John Murphy (WHJB)", "Military officials on scene state they have found nothing in the woods at this hour."),
-              ),
+            evidenceId = "E-01",
+            kind = MediaKind.Photo,
+            sourceLabel = "Reported",
+            title = "The “acorn” replica in Kecksburg",
+            caption = "A replica of the object as witnesses described it, on display in Kecksburg. It is a later model, not the " +
+              "object, and not evidence that one existed.",
+            provenance = "Photograph by Ryright, 2008 · Wikimedia Commons, CC BY-SA 3.0",
+            image = MediaImage.KecksburgReplica,
           ),
         ),
     )
@@ -1651,8 +1735,9 @@ private val berwyn: CaseDetail
             kind = MediaKind.Diagram,
             sourceLabel = "Official record",
             title = "Seismograph trace: Bala Fault tremor (3.5 ML)",
-            caption = "Institute of Geological Sciences waveform at 20:38:15 GMT compared with fireball sightings across North Wales.",
-            provenance = "British Geological Survey / UK National Archives AIR 2/18961",
+            caption = "Illustrative trace of the magnitude 3.5 earthquake the Institute of Geological Sciences reported at about " +
+              "20:38 on 23 January 1974. It is drawn, not a copy of a real seismogram.",
+            provenance = "Drawn from the time and magnitude reported by the Institute of Geological Sciences (now British Geological Survey)",
             figure = MediaFigure.BerwynSeismograph,
           ),
           ReportMedia(
@@ -1660,20 +1745,23 @@ private val berwyn: CaseDetail
             evidenceId = "E-03",
             kind = MediaKind.Document,
             sourceLabel = "Official record",
-            title = "MoD S4 (Air) Inquiry Minute: Llandrillo Incident",
-            caption = "Declassified Ministry of Defence summary cross-checking RAF Valley mountain rescue and police logs.",
-            provenance = "UK National Archives · File AIR 2/18961 (Released 2005)",
+            title = "MoD Freedom of Information reply on the Berwyn Mountains",
+            caption = "Ministry of Defence reply to a public request about the Berwyn Mountains and Rendlesham Forest, " +
+              "published in its FOI disclosure log around 2006. It points to the 1970s files rather than summarising them, " +
+              "and gives the date as 24 January. Excerpts are verbatim.",
+            provenance = "Ministry of Defence FOI disclosure log, “Request 4” (archived copy, Internet Archive, 2006) · " +
+              "Files named: UK National Archives AIR 2/18873 and AIR 2/18874",
+            sourceUrl = "https://web.archive.org/web/20060227112322/http://www.mod.uk/NR/rdonlyres/2AE8E020-BC06-47F2-AFE6-28DA88F84B46/0/uforeq4.pdf",
             documentHeader =
               listOf(
-                "DEPARTMENT" to "Ministry of Defence · S4 (Air)",
-                "REFERENCE" to "AIR 2/18961 · North Wales Sightings",
-                "DATE" to "January 1974",
+                "FROM" to "Ministry of Defence, UFO correspondence focal point",
+                "SUBJECT" to "‘UFO incidents’ in the Berwyn Mountains and Rendlesham Forest",
+                "FILES" to "AIR 2/18873 (UFOs 1973–74) · AIR 2/18874 (UFOs 1974–75)",
               ),
             excerpt =
               listOf(
-                "1. At 2038 hrs on 23 January 1974 an earth tremor measuring 3.5 on the Richter scale was felt across Merionethshire and Denbighshire.",
-                "2. Concurrently a brilliant green fireball descended on a NNW–SSE trajectory and was observed from Ireland to the Midlands.",
-                "3. A search of the Berwyn range near Llandrillo by Gwynedd Constabulary and an RAF Valley team found no wreckage on the mountain.",
+                "The alleged events at the Berwyn Mountains took place on 24 January 1974 and the Ministry of Defence UFO records for this period are now open for public viewing at The National Archives, Kew …",
+                "A quick look at the archives catalogue (PROCAT) has revealed two files for this period that might hold relevant information. These are AIR 2/18873 (Unidentified Flying Objects 1973-74) and AIR 2/18874 (Unidentified Flying Objects 1974-75).",
               ),
           ),
         ),
@@ -1813,8 +1901,10 @@ private val phoenixLights: CaseDetail
             kind = MediaKind.Video,
             sourceLabel = "Primary record",
             title = "Phoenix valley camcorder sequence (22:00 MST)",
-            caption = "Video telemetry reconstruction showing the illumination and sequential drop-out behind the Sierra Estrella ridgeline.",
-            provenance = "Civilian VHS / Hi8 recordings logged 13 March 1997",
+            caption = "Civilian camcorder footage of the lights seen over the Phoenix valley on 13 March 1997. " +
+              "The video is not bundled; it plays on YouTube.",
+            provenance = "Civilian VHS / Hi8 recordings logged 13 March 1997 · Third-party YouTube upload by AZDigitalTransfers, " +
+              "as linked from Wikipedia’s Phoenix Lights article",
             figure = MediaFigure.PhoenixEstrellasPhoto,
             durationSeconds = 90,
             telemetryLabels = listOf("22:00 MST", "AZ 235° SW", "SIERRA ESTRELLA", "HI8 CAMCORDER"),
@@ -1824,6 +1914,7 @@ private val phoenixLights: CaseDetail
                 TranscriptCue("00:30", "Camcorder Log", "Additional lights ignite to the west of the line, holding steady elevation."),
                 TranscriptCue("01:05", "Camcorder Log", "Westernmost lights wink out abruptly behind the ridgeline Profile."),
               ),
+            sourceUrl = "https://www.youtube.com/watch?v=bvKLeaPWPyw",
           ),
           ReportMedia(
             id = "M-03",
@@ -1972,8 +2063,8 @@ private val rooseveltEncounters: CaseDetail
             sourceLabel = "Primary record",
             title = "ATFLIR video & cockpit audio (“GIMBAL”)",
             caption = "34-second infrared targeting pod recording with WSO and pilot intercom audio off the US East Coast.",
-            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020)",
-            figure = MediaFigure.RooseveltGimbalFrame,
+            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
+            clip = MediaClip.RooseveltGimbal,
             durationSeconds = 34,
             telemetryLabels = listOf("IR WHOT", "250 KTS", "BANK 28° L", "0.53 MACH", "ATFLIR POD"),
             transcript =
@@ -1983,7 +2074,7 @@ private val rooseveltEncounters: CaseDetail
                 TranscriptCue("00:19", "Aviator 1", "Look at that thing, dude! That's not our L&S, is it?"),
                 TranscriptCue("00:26", "Aviator 2", "Look at that thing! It's rotating!"),
               ),
-            sourceUrl = "https://www.navair.navy.mil/foia/documents",
+            sourceUrl = "https://www.dvidshub.net/video/956955/gimbal-uap",
           ),
           ReportMedia(
             id = "M-02",
@@ -1992,8 +2083,8 @@ private val rooseveltEncounters: CaseDetail
             sourceLabel = "Primary record",
             title = "ATFLIR infrared video (“GOFAST”)",
             caption = "34-second radar-slaved infrared track of a low-altitude object over the Atlantic Ocean.",
-            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020)",
-            figure = MediaFigure.RooseveltGoFastFrame,
+            provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
+            clip = MediaClip.RooseveltGoFast,
             durationSeconds = 34,
             telemetryLabels = listOf("IR BHOT", "RNG 4.4 NM", "25,000 FT", "EL -26°", "AUTO TRACK"),
             transcript =
@@ -2002,26 +2093,40 @@ private val rooseveltEncounters: CaseDetail
                 TranscriptCue("00:14", "Pilot", "Whoa, it's in the bracket! What the heck is that?"),
                 TranscriptCue("00:24", "WSO", "Did you box a moving target? Look at it skimming above the water."),
               ),
-            sourceUrl = "https://www.navair.navy.mil/foia/documents",
+            sourceUrl = "https://www.dvidshub.net/video/956683/gofast-uap",
           ),
           ReportMedia(
             id = "M-03",
             evidenceId = "E-04",
             kind = MediaKind.Document,
             sourceLabel = "Official record",
-            title = "NAVAIR FOIA Release & Classification Review Note",
-            caption = "Naval Air Systems Command release summary for the three ATFLIR cockpit recordings.",
-            provenance = "Naval Air Systems Command (NAVAIR) FOIA Reading Room · April 2020",
+            title = "DoD statement on releasing the Navy videos",
+            caption = "Department of Defense press statement of 27 April 2020 authorising release of FLIR1, GIMBAL and GOFAST " +
+              "and pointing to the NAVAIR FOIA reading room for the files. Excerpts are verbatim.",
+            provenance = "“Statement by the Department of Defense on the Release of Historical Navy Videos”, 27 April 2020 · " +
+              "Text as reproduced by The Black Vault (defense.gov release 2165713)",
             documentHeader =
               listOf(
-                "AGENCY" to "Department of the Navy · Naval Air Systems Command",
-                "RECORDS" to "FLIR.mp4 · GIMBAL.wmv · GOFAST.wmv",
-                "CLASSIFICATION" to "UNCLASSIFIED // CLEARED FOR PUBLIC RELEASE",
+                "ISSUED BY" to "US Department of Defense",
+                "DATE" to "27 April 2020",
+                "FILES" to "FLIR.mp4 · GIMBAL.wmv · GOFAST.wmv (NAVAIR FOIA Reading Room)",
               ),
             excerpt =
               listOf(
                 "After a thorough review, the department has determined that the authorized release of these unclassified videos does not reveal any sensitive capabilities or systems, and does not impinge on any subsequent investigations of military air space incursions by unidentified aerial phenomena.",
+                "The released videos can be found at the Naval Air Systems Command FOIA Reading Room …",
               ),
+          ),
+          ReportMedia(
+            id = "M-04",
+            evidenceId = "E-05",
+            kind = MediaKind.Video,
+            sourceLabel = "Official record",
+            title = "House Oversight subcommittee hearing on UAP (26 July 2023)",
+            caption = "Former Navy pilot Ryan Graves, who flew from USS Theodore Roosevelt, testifies alongside David Fravor and David Grusch. The video is not bundled; it plays on YouTube.",
+            provenance = "House Committee on Oversight and Accountability · Official channel upload",
+            durationSeconds = 9240,
+            sourceUrl = "https://www.youtube.com/watch?v=KQ7Dw-739VY",
           ),
         ),
     )
