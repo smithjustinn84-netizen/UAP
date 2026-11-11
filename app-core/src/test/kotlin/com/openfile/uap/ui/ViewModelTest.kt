@@ -91,7 +91,15 @@ class ViewModelTest {
     val withMissingCase =
       object : ArchiveRepository by archive {
         override val threads =
-          listOf(FileThread("T-1", "Title", "Summary", listOf(ThreadAppearance(known.id, "on file"), ThreadAppearance("OF-0000-00", "gone")), "Note"))
+          listOf(
+            FileThread(
+              "T-1",
+              "Title",
+              "Summary",
+              listOf(ThreadAppearance(known.id, "on file"), ThreadAppearance("OF-0000-00", "gone")),
+              "Note",
+            ),
+          )
       }
 
     val appearances = ThreadsViewModel(withMissingCase).uiState.threads.single().appearances

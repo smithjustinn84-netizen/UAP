@@ -39,6 +39,8 @@ data class CaseDetail(
   val story: List<StoryEntry> = emptyList(),
   /** Records that would bear on the case but are lost, destroyed, withheld or were never made. */
   val gaps: List<RecordGap> = emptyList(),
+  /** A briefing graphic drawn for this file alone, shown on its summary. */
+  val infographic: Infographic? = null,
 ) {
   fun mediaForEvidence(evidenceId: String): List<ReportMedia> = media.filter { it.evidenceId == evidenceId }
 }
@@ -53,6 +55,11 @@ enum class SourceLabel(val label: String, val meaning: String) {
   OfficialRecord("Official record", "Produced by a government or other public body."),
   Reported("Reported", "Described in another source. The original is not available to check."),
   NotPreserved("Not preserved", "Seen at the time. Nothing survives to examine."),
+}
+
+/** Interactive graphics drawn in code for one particular file; `ui/casefile` has a composable for each. */
+enum class Infographic {
+  NimitzBriefing,
 }
 
 /** [sourceLabel] says where an item comes from, never whether it is true. */
@@ -1180,6 +1187,7 @@ private val nimitz: CaseDetail
           "by naval personnel and stating that the observed aerial phenomena remain officially categorized as unidentified.",
       story = nimitzStory,
       gaps = nimitzGaps,
+      infographic = Infographic.NimitzBriefing,
       media =
         listOf(
           ReportMedia(

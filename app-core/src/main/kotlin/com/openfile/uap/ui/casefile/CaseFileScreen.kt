@@ -35,6 +35,7 @@ import com.openfile.uap.data.CaseDetail
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.data.Evidence
 import com.openfile.uap.data.Explanation
+import com.openfile.uap.data.Infographic
 import com.openfile.uap.data.RecordGap
 import com.openfile.uap.data.ReportMedia
 import com.openfile.uap.data.StoryEntry
@@ -51,11 +52,8 @@ import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
-import com.openfile.uap.ui.NIMITZ_CASE_ID
-import com.openfile.uap.ui.NimitzIncidentInfographic
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.RecordField
-import com.openfile.uap.ui.ReportMediaCard
 import com.openfile.uap.ui.ScreenPadding
 import com.openfile.uap.ui.SolidRule
 import com.openfile.uap.ui.SourceRow
@@ -210,12 +208,16 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
     detail.reported.forEach { Text(it, style = MaterialTheme.typography.bodyLarge, color = Ink) }
   }
 
-  if (record.id == NIMITZ_CASE_ID) {
+  detail.infographic?.let { infographic ->
     TitledBlock("Incident briefing graphic") {
-      NimitzIncidentInfographic(
-        onOpenEvidence = { onOpen(Section.Evidence) },
-        onOpenMedia = { onOpen(Section.Media) },
-      )
+      when (infographic) {
+        Infographic.NimitzBriefing ->
+          NimitzIncidentInfographic(
+            caseId = record.id,
+            onOpenEvidence = { onOpen(Section.Evidence) },
+            onOpenMedia = { onOpen(Section.Media) },
+          )
+      }
     }
   }
 

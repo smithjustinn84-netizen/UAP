@@ -74,7 +74,12 @@ fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> 
       )
     }
     item(key = "kinds", contentType = "kinds") {
-      KindFilter(only = uiState.only, kindCounts = uiState.kindCounts, onChange = onFilterChange, modifier = Modifier.padding(bottom = 20.dp))
+      KindFilter(
+        only = uiState.only,
+        kindCounts = uiState.kindCounts,
+        onChange = onFilterChange,
+        modifier = Modifier.padding(bottom = 20.dp),
+      )
     }
     itemsIndexed(entries, key = { _, entry -> "${entry.year}|${entry.title}" }, contentType = { _, _ -> "entry" }) { index, entry ->
       val showYear = index == 0 || entries[index - 1].year != entry.year

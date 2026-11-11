@@ -18,10 +18,8 @@ interface MapOutlineRepository {
 }
 
 /** Reads the outlines bundled in res/raw. The files never change, so each is parsed once and kept. */
-class RawResourceMapOutlineRepository(
-  private val resources: Resources,
-  private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : MapOutlineRepository {
+class RawResourceMapOutlineRepository(private val resources: Resources, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
+  MapOutlineRepository {
   private val cache = ConcurrentHashMap<String, SheetOutline>()
 
   override suspend fun outline(sheet: MapSheet): SheetOutline =

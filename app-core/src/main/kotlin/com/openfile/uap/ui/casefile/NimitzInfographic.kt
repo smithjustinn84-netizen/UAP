@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.casefile
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -55,6 +55,15 @@ import com.openfile.uap.theme.OpenFileTheme
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
 import com.openfile.uap.theme.StampRed
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.TabCell
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.dashedBorder
 
 private data class MetricCellData(
   val figure: String,
@@ -251,21 +260,19 @@ private val sequenceSteps =
     ),
   )
 
-/** The file this briefing graphic belongs to; its summary shows the graphic. */
-const val NIMITZ_CASE_ID = "OF-2004-01"
-
 /**
- * Multi-panel archival dossier infographic for [NIMITZ_CASE_ID] (USS Nimitz encounter).
+ * Multi-panel archival dossier infographic for the USS Nimitz encounter, shown on the file whose detail carries
+ * [com.openfile.uap.data.Infographic.NimitzBriefing]; [caseId] is that file's id.
  * Combines key reported figures, an interactive operating-area tactical chart, an altitude descent profile,
  * and a four-channel evidence availability matrix.
  */
 @Composable
-fun NimitzIncidentInfographic(onOpenEvidence: () -> Unit, onOpenMedia: () -> Unit, modifier: Modifier = Modifier) {
+fun NimitzIncidentInfographic(caseId: String, onOpenEvidence: () -> Unit, onOpenMedia: () -> Unit, modifier: Modifier = Modifier) {
   var selectedStationIndex by rememberSaveable { mutableIntStateOf(1) }
   val activeStation = tacticalStations[selectedStationIndex.coerceIn(0, tacticalStations.lastIndex)]
 
   Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-    InfographicMetricsSheet()
+    InfographicMetricsSheet(caseId)
     TacticalTheaterSheet(
       selectedStation = activeStation,
       onSelectStation = { index -> selectedStationIndex = index },
@@ -276,14 +283,14 @@ fun NimitzIncidentInfographic(onOpenEvidence: () -> Unit, onOpenMedia: () -> Uni
 }
 
 @Composable
-private fun InfographicMetricsSheet() {
+private fun InfographicMetricsSheet(caseId: String) {
   PaperSheet {
     Row(
       Modifier.fillMaxWidth().background(Manila).padding(horizontal = 12.dp, vertical = 7.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      MonoLabel("DOSSIER BRIEFING SHEET · $NIMITZ_CASE_ID", color = Ink)
+      MonoLabel("DOSSIER BRIEFING SHEET · $caseId", color = Ink)
       MonoLabel("14 NOV 2004 · CSG-11", color = StampRed)
     }
     SolidRule(color = Ink)
@@ -879,7 +886,7 @@ private fun ChannelChip(channel: String, state: RecordState) {
 private fun NimitzIncidentInfographicPreview() {
   OpenFileTheme {
     Column(Modifier.background(Manila).padding(16.dp)) {
-      NimitzIncidentInfographic(onOpenEvidence = {}, onOpenMedia = {})
+      NimitzIncidentInfographic(caseId = "OF-2004-01", onOpenEvidence = {}, onOpenMedia = {})
     }
   }
 }

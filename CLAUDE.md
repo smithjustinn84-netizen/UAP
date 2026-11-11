@@ -36,16 +36,25 @@ Build targets have no `//` prefix (`app-core`); module dependencies inside `ligh
 
 ## Architecture
 
-- No ViewModels, network or persistence. All content is static Kotlin data in `data/Archive.kt`:
+- No network or persistence. All content is static Kotlin data in `data/Archive.kt`:
   `Archive.cases` (oldest first), `Archive.timeline`, `Archive.search(query, decade)`, `Archive.case(id)`.
   Each case's write-up is a private `CaseDetail` val further down the same file.
+- UI reads data only through repositories: `ArchiveRepository` (synchronous; the archive is compiled in) and
+  `MapOutlineRepository` (suspend; parses `res/raw` off the main thread and caches). `AppContainer` is the manual DI
+  root, owned by `OpenFileApplication` so it survives configuration changes. Don't add a DI framework.
+- Each feature is a package `ui/<feature>/` with a `<Feature>Route` (gets the ViewModel, collects state), a stateless
+  `<Feature>Screen` and a `<Feature>ViewModel` exposing an immutable `UiState`. Filters and selections that should
+  survive process death go in `SavedStateHandle`; pure UI element state (scroll, open section) stays in
+  `rememberSaveable`. `Navigation.kt` gives each back-stack entry its own ViewModelStore. ViewModel tests live in
+  `ViewModelTest` and use fakes of the repository interfaces.
 - `data/Lore.kt` holds each case's `story` (how it has been retold, oldest first, each step with a `StoryKind`),
   its `gaps` (records lost, destroyed, withheld or never made) and `Archive.threads` (patterns across files).
 - Media exhibits (`ReportMedia`) link to evidence by `evidenceId`. Formats include drawn vector diagrams
-  (`MediaFigure` in `ui/ReportMediaComponents.kt` and `res/drawable/plate_*.xml`), photographic and document scans
-  (`MediaImage` in `res/drawable-nodpi/` loaded with Coil), bundled video clips (`MediaClip` in `res/raw/` played with
-  Media3 ExoPlayer), audio/video transcripts, verbatim document excerpts, interactive infographics (`ui/NimitzInfographic.kt`)
-  and external links.
+  (`MediaFigure` in `ui/casefile/ReportMediaComponents.kt` and `res/drawable/plate_*.xml`), photographic and document
+  scans (`MediaImage` in `res/drawable-nodpi/` loaded with Coil), bundled video clips (`MediaClip` in `res/raw/` played
+  with Media3 ExoPlayer), audio/video transcripts, verbatim document excerpts and external links.
+- A file-specific briefing graphic is selected by `CaseDetail.infographic` (an `Infographic` entry), never by checking
+  a case id in the UI; each entry maps to a composable in `ui/casefile/` (e.g. `NimitzInfographic.kt`).
 - Map: `data/MapSheets.kt` defines sheet bounds and projection (North America, Britain & Ireland, South-East Australia,
   Middle East); outlines are `res/raw/map_*.txt` (one ring per line of `lon,lat` pairs). Sheet bounds must match the
   clipping used to make those files.

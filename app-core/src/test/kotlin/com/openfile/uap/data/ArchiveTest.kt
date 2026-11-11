@@ -8,6 +8,13 @@ import org.junit.Test
 
 class ArchiveTest {
   @Test
+  fun eachInfographicIsDrawnForExactlyOneFile() {
+    Infographic.entries.forEach { infographic ->
+      assertEquals(infographic.name, 1, Archive.cases.count { it.detail?.infographic == infographic })
+    }
+  }
+
+  @Test
   fun emptyQueryAndNoDecadeReturnsEveryFile() {
     assertEquals(Archive.cases, Archive.search("", null))
   }

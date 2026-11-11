@@ -86,7 +86,6 @@ fun MapRoute(
  */
 @Composable
 fun MapScreen(uiState: MapUiState, selectedId: () -> String?, onPinSelect: (String) -> Unit, onOpenCase: (String) -> Unit) {
-
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
     ScreenHeader(

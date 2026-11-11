@@ -1,4 +1,4 @@
-package com.openfile.uap.ui
+package com.openfile.uap.ui.casefile
 
 import android.content.Context
 import androidx.annotation.DrawableRes
@@ -90,6 +90,15 @@ import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
 import com.openfile.uap.theme.StampRed
+import com.openfile.uap.ui.CardHeader
+import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.LeadText
+import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperSheet
+import com.openfile.uap.ui.SolidRule
+import com.openfile.uap.ui.TapRow
+import com.openfile.uap.ui.TypeTitle
 import kotlin.math.sin
 import kotlinx.coroutines.delay
 
