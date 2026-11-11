@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="90dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- White-hot IR sky and lower bright cloud deck -->
+    <path
+        android:fillColor="#383127"
+        android:pathData="M0,0h320v180h-320z" />
+    <path
+        android:fillColor="#C8B894"
+        android:pathData="M0,126 Q80,118 160,124 T320,120 L320,180 L0,180 Z" />
+    <!-- Artificial horizon pitch bars (banked) -->
+    <path
+        android:strokeColor="#F5EFE0"
+        android:strokeWidth="1.3"
+        android:pathData="M78,108 L118,92 M202,68 L242,52" />
+    <!-- Central tracking crosshairs -->
+    <path
+        android:strokeColor="#F5EFE0"
+        android:strokeWidth="1.2"
+        android:pathData="M100,86h36 M184,86h36 M160,36v30 M160,106v30" />
+    <!-- Cold-halo ring around target -->
+    <path
+        android:fillColor="#EDE4CE"
+        android:pathData="M132,86 C136,72 184,72 188,86 C184,100 136,100 132,86 Z" />
+    <!-- Dark rotating disc/top-shaped thermal signature tilted at ~25 deg -->
+    <path
+        android:fillColor="#1F1B14"
+        android:pathData="M137,89 Q158,74 183,83 Q168,98 137,89 Z" />
+    <path
+        android:fillColor="#1F1B14"
+        android:pathData="M152,78 Q160,70 169,80 Q160,94 152,78 Z" />
+</vector>

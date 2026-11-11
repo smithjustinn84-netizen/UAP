@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="90dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- Archival halftone photographic plate background -->
+    <path
+        android:fillColor="#2B251B"
+        android:pathData="M0,0h320v180h-320z" />
+    <!-- Office floor / rug tonal bands -->
+    <path
+        android:fillColor="#3F3729"
+        android:pathData="M0,105 L320,88 L320,180 L0,180 Z" />
+    <!-- Crinkled metallic foil reflector sheets on floor -->
+    <path
+        android:fillColor="#E5DAC0"
+        android:strokeColor="#1F1B14"
+        android:strokeWidth="1.5"
+        android:pathData="M48,132 L92,98 L148,112 L176,94 L218,126 L168,156 L108,144 L66,158 Z" />
+    <path
+        android:fillColor="#F5EFE0"
+        android:strokeColor="#1F1B14"
+        android:strokeWidth="1.2"
+        android:pathData="M96,106 L142,82 L188,104 L152,134 L104,124 Z" />
+    <!-- Facet creases on metallic foil -->
+    <path
+        android:strokeColor="#7A6C4F"
+        android:strokeWidth="1.1"
+        android:pathData="M96,106 L152,134 M142,82 L126,128 M68,136 L118,118 L168,156" />
+    <!-- Balsa / wooden sticks across debris -->
+    <path
+        android:strokeColor="#D9C9A3"
+        android:strokeWidth="3.2"
+        android:pathData="M62,148 L195,96 M112,86 L228,142" />
+    <!-- Dark neoprene balloon remnant (right) -->
+    <path
+        android:fillColor="#1F1B14"
+        android:strokeColor="#BFAE86"
+        android:strokeWidth="1"
+        android:pathData="M210,118 C228,104 264,108 278,126 C286,142 262,158 232,156 C208,152 198,132 210,118 Z" />
+    <!-- Archival crop marks -->
+    <path
+        android:strokeColor="#F5EFE0"
+        android:strokeWidth="1.2"
+        android:pathData="M12,24 L12,12 L24,12 M296,12 L308,12 L308,24 M12,156 L12,168 L24,168 M296,168 L308,168 L308,156" />
+</vector>

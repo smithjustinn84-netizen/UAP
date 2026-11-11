@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="90dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- Archival paper background -->
+    <path
+        android:fillColor="#EFE6D0"
+        android:pathData="M0,0h320v180h-320z" />
+    <!-- Subtle drafting grid -->
+    <path
+        android:strokeColor="#D5C7A8"
+        android:strokeWidth="0.6"
+        android:pathData="M0,30h320M0,60h320M0,90h320M0,120h320M0,150h320M40,0v180M80,0v180M120,0v180M160,0v180M200,0v180M240,0v180M280,0v180" />
+    <!-- Plan view of Arnold's heel-shaped craft (left) -->
+    <path
+        android:fillColor="#DFD2B5"
+        android:strokeColor="#1F1B14"
+        android:strokeWidth="2"
+        android:pathData="M52,118 C48,68 78,34 114,34 C150,34 180,68 176,118 C154,110 136,128 114,138 C92,128 74,110 52,118 Z" />
+    <!-- Center circular dark spot drawn by Arnold -->
+    <path
+        android:fillColor="#1F1B14"
+        android:pathData="M114,76 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0" />
+    <path
+        android:strokeColor="#1F1B14"
+        android:strokeWidth="1"
+        android:pathData="M114,56 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0" />
+    <!-- Rib shading lines -->
+    <path
+        android:strokeColor="#3F3729"
+        android:strokeWidth="1"
+        android:pathData="M74,95 L98,84 M154,95 L130,84 M86,112 L106,96 M142,112 L122,96" />
+    <!-- Side / edge-on thin profile (right) -->
+    <path
+        android:fillColor="#1F1B14"
+        android:pathData="M206,78 Q252,72 298,78 Q252,84 206,78 Z" />
+    <path
+        android:strokeColor="#1F1B14"
+        android:strokeWidth="1.2"
+        android:pathData="M246,74 C250,70 254,70 258,74" />
+    <!-- Dimension callout arrows -->
+    <path
+        android:strokeColor="#8A2B1D"
+        android:strokeWidth="1.2"
+        android:pathData="M50,152 L178,152 M50,147 L50,157 M178,147 L178,157 M206,105 L298,105 M206,100 L206,110 M298,100 L298,110" />
+</vector>
