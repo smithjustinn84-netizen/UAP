@@ -24,7 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,25 +48,18 @@ import com.openfile.uap.theme.Paper
 
 @Composable
 fun TimelineScreen(onOpenCase: (String) -> Unit) {
-  // Ordinal of the one kind being shown; -1 shows every kind.
-  var only by rememberSaveable { mutableIntStateOf(-1) }
-  val entries = remember(only) { Archive.timeline.filter { only == -1 || it.kind.ordinal == only } }
+  // The one kind being shown, or null for every kind.
+  var only by rememberSaveable { mutableStateOf<TimelineKind?>(null) }
+  val entries = remember(only) { Archive.timeline.filter { only == null || it.kind == only } }
   val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
   LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp)) {
     item(key = "header", contentType = "header") {
-      Column(
-        Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 28.dp, bottom = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-      ) {
-        MonoLabel("Open File")
-        TypeTitle("Timeline", size = 32.sp)
-        Text(
-          "Reported sightings alongside the inquiries that followed them and the books, films and broadcasts that retold them.",
-          style = MaterialTheme.typography.bodyLarge,
-          color = InkBody,
-        )
-      }
+      ScreenHeader(
+        label = "Open File",
+        title = "Timeline",
+        intro = "Reported sightings alongside the inquiries that followed them and the books, films and broadcasts that retold them.",
+      )
     }
     item(key = "kinds", contentType = "kinds") {
       KindFilter(only = only, onChange = { only = it }, modifier = Modifier.padding(bottom = 20.dp))
@@ -78,21 +71,21 @@ fun TimelineScreen(onOpenCase: (String) -> Unit) {
   }
 }
 
-private val kindCounts = TimelineKind.entries.map { kind -> Archive.timeline.count { it.kind == kind } }
+private val kindCounts: Map<TimelineKind, Int> = Archive.timeline.groupingBy { it.kind }.eachCount()
 
 /** The key doubles as the filter: tap a kind to show only that kind, tap it again to show everything. */
 @Composable
-private fun KindFilter(only: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+private fun KindFilter(only: TimelineKind?, onChange: (TimelineKind?) -> Unit, modifier: Modifier = Modifier) {
   Column(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().background(Paper).border(1.dp, Ink)) {
     TimelineKind.entries.forEachIndexed { index, kind ->
       if (index > 0) SolidRule()
-      val selected = only == kind.ordinal
+      val selected = only == kind
       Row(
         Modifier
           .fillMaxWidth()
           .defaultMinSize(minHeight = 48.dp)
           .background(if (selected) Ink else Paper)
-          .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind.ordinal else -1) }
+          .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind else null) }
           .padding(horizontal = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -105,7 +98,7 @@ private fun KindFilter(only: Int, onChange: (Int) -> Unit, modifier: Modifier = 
           color = if (selected) Paper else Ink,
         )
         Text(
-          if (selected) "Only these · tap for all" else kindCounts[index].toString(),
+          if (selected) "Only these · tap for all" else (kindCounts[kind] ?: 0).toString(),
           style = MaterialTheme.typography.labelMedium,
           color = if (selected) Paper else InkSoft,
         )
@@ -119,16 +112,9 @@ private fun KindFilter(only: Int, onChange: (Int) -> Unit, modifier: Modifier = 
 private fun KindMarker(kind: TimelineKind, inverted: Boolean = false) {
   val ink = if (inverted) Paper else Ink
   val paper = if (inverted) Ink else Paper
+  val fill = if (kind == TimelineKind.Sighting) ink else paper
   Box(
-    Modifier.size(10.dp).background(
-      if (kind ==
-        TimelineKind.Sighting
-      ) {
-        ink
-      } else {
-        paper
-      },
-    ).border(2.dp, ink),
+    Modifier.size(10.dp).background(fill).border(2.dp, ink),
     contentAlignment = Alignment.Center,
   ) {
     if (kind == TimelineKind.Culture) Box(Modifier.size(2.dp).background(ink))

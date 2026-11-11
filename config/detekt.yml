@@ -32,3 +32,6 @@ style:
     ignoreAnnotated: ['Preview']
   ReturnCount:
     excludeGuardClauses: true
+  UnusedImports:
+    # Off in detekt's defaults, and ktlint 1.x no longer checks imports, so nothing else catches them.
+    active: true

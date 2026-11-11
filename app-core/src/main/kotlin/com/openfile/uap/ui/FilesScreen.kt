@@ -64,7 +64,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
         SearchField(query = query, onQueryChange = { query = it })
         DecadeChips(selected = decade, onSelect = { decade = it })
         Text(
-          text = if (results.size == 1) "1 file · oldest first" else "${results.size} files · oldest first",
+          text = "${countOf(results.size, "file")} · oldest first",
           modifier = Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp),
           style = MaterialTheme.typography.labelMedium,
           color = InkSoft,
@@ -200,14 +200,12 @@ private fun FolderCard(record: CaseRecord, onClick: () -> Unit, modifier: Modifi
         DashedRule()
         Row(
           Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween,
+          horizontalArrangement = Arrangement.spacedBy(12.dp),
           verticalAlignment = Alignment.CenterVertically,
         ) {
           MonoLabel(record.status, color = Ink, modifier = Modifier.weight(1f))
           val mediaCount = record.detail?.media?.size ?: 0
-          if (mediaCount > 0) {
-            MonoLabel("$mediaCount exhibits", color = InkSoft)
-          }
+          if (mediaCount > 0) MonoLabel(countOf(mediaCount, "exhibit"), color = InkSoft)
         }
       }
     }

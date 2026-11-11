@@ -44,6 +44,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.openfile.uap.data.SourceLabel
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -59,7 +60,7 @@ private data class MetricCellData(
   val figure: String,
   val unit: String,
   val label: String,
-  val sourceLabel: String,
+  val sourceLabel: SourceLabel,
   val evidenceRef: String,
   val note: String,
 )
@@ -69,7 +70,7 @@ private data class TacticalStation(
   val shortTab: String,
   val code: String,
   val title: String,
-  val sourceLabel: String,
+  val sourceLabel: SourceLabel,
   val evidenceRef: String,
   val relativePos: Offset,
   val summary: String,
@@ -100,7 +101,7 @@ private val nimitzMetrics =
       figure = "80,000 → 50",
       unit = "FT ALTITUDE",
       label = "AN/SPY-1B vertical drop",
-      sourceLabel = "Reported",
+      sourceLabel = SourceLabel.Reported,
       evidenceRef = "E-03",
       note = "Tracked by USS Princeton operators; raw radar tapes were not preserved.",
     ),
@@ -108,7 +109,7 @@ private val nimitzMetrics =
       figure = "~40 FT",
       unit = "OBLONG HULL",
       label = "Visual craft estimate",
-      sourceLabel = "First-hand",
+      sourceLabel = SourceLabel.FirstHand,
       evidenceRef = "E-02 · E-04",
       note = "Two F/A-18F crews described a white wingless craft over 50–100 m churned water.",
     ),
@@ -116,7 +117,7 @@ private val nimitzMetrics =
       figure = "~60 NM",
       unit = "RE-DETECTION",
       label = "Merge to CAP point",
-      sourceLabel = "Reported",
+      sourceLabel = SourceLabel.Reported,
       evidenceRef = "E-02 · E-03",
       note = "Princeton radar reported a track at the squadron's CAP point seconds after departure.",
     ),
@@ -124,7 +125,7 @@ private val nimitzMetrics =
       figure = "76 SEC",
       unit = "ATFLIR CLIP",
       label = "Declassified 'FLIR1' video",
-      sourceLabel = "Primary record",
+      sourceLabel = SourceLabel.PrimaryRecord,
       evidenceRef = "E-01 · E-05",
       note = "Recorded by a second F/A-18F crew at 20,000 ft; released by DoD in April 2020.",
     ),
@@ -137,7 +138,7 @@ private val tacticalStations =
       shortTab = "1 · RADAR",
       code = "STA-01 · AN/SPY-1B PICKET",
       title = "USS Princeton (CG-59) & USS Nimitz (CVN-68)",
-      sourceLabel = "Reported",
+      sourceLabel = SourceLabel.Reported,
       evidenceRef = "E-03",
       relativePos = Offset(0.68f, 0.28f),
       summary =
@@ -150,7 +151,7 @@ private val tacticalStations =
       shortTab = "2 · MERGE",
       code = "STA-02 · VISUAL INTERCEPT",
       title = "Visual merge & ocean surface disturbance",
-      sourceLabel = "First-hand",
+      sourceLabel = SourceLabel.FirstHand,
       evidenceRef = "E-02 · E-04",
       relativePos = Offset(0.32f, 0.72f),
       summary =
@@ -164,7 +165,7 @@ private val tacticalStations =
       shortTab = "3 · CAP PT",
       code = "STA-03 · RENDEZVOUS POINT",
       title = "CAP point radar re-acquisition (~60 NM)",
-      sourceLabel = "Reported",
+      sourceLabel = SourceLabel.Reported,
       evidenceRef = "E-02 · E-03",
       relativePos = Offset(0.24f, 0.24f),
       summary =
@@ -177,7 +178,7 @@ private val tacticalStations =
       shortTab = "4 · ATFLIR",
       code = "STA-04 · INFRARED TRACK",
       title = "Second flight ATFLIR capture ('FLIR1')",
-      sourceLabel = "Primary record",
+      sourceLabel = SourceLabel.PrimaryRecord,
       evidenceRef = "E-01 · E-05",
       relativePos = Offset(0.62f, 0.68f),
       summary =
@@ -250,8 +251,11 @@ private val sequenceSteps =
     ),
   )
 
+/** The file this briefing graphic belongs to; its summary shows the graphic. */
+const val NIMITZ_CASE_ID = "OF-2004-01"
+
 /**
- * Multi-panel archival dossier infographic for `OF-2004-01` (USS Nimitz encounter).
+ * Multi-panel archival dossier infographic for [NIMITZ_CASE_ID] (USS Nimitz encounter).
  * Combines key reported figures, an interactive operating-area tactical chart, an altitude descent profile,
  * and a four-channel evidence availability matrix.
  */
@@ -279,7 +283,7 @@ private fun InfographicMetricsSheet() {
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      MonoLabel("DOSSIER BRIEFING SHEET · OF-2004-01", color = Ink)
+      MonoLabel("DOSSIER BRIEFING SHEET · $NIMITZ_CASE_ID", color = Ink)
       MonoLabel("14 NOV 2004 · CSG-11", color = StampRed)
     }
     SolidRule(color = Ink)
@@ -321,7 +325,7 @@ private fun MetricCell(data: MetricCellData, modifier: Modifier = Modifier) {
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      MonoLabel(data.sourceLabel, color = StampRed)
+      MonoLabel(data.sourceLabel.label, color = StampRed)
       MonoLabel(data.evidenceRef, color = InkSoft)
     }
     TypeTitle(data.figure, size = 21.sp)
@@ -401,7 +405,7 @@ private fun TacticalTheaterSheet(selectedStation: TacticalStation, onSelectStati
         verticalAlignment = Alignment.CenterVertically,
       ) {
         MonoLabel("${selectedStation.code} · ${selectedStation.evidenceRef}", color = Ink)
-        MonoLabel(selectedStation.sourceLabel, color = StampRed)
+        MonoLabel(selectedStation.sourceLabel.label, color = StampRed)
       }
       TypeTitle(selectedStation.title, size = 18.sp)
       Text(selectedStation.summary, style = MaterialTheme.typography.bodyMedium, color = Ink)

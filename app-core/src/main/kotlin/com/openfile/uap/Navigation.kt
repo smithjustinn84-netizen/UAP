@@ -19,12 +19,11 @@ fun MainNavigation() {
   val backStack = rememberNavBackStack(Files)
   val switchTab: (NavKey) -> Unit = { backStack.switchTo(it) }
   val openCase: (String) -> Unit = { backStack.add(CaseFile(it)) }
-
   val openThreads: () -> Unit = { backStack.add(Threads) }
 
   // The frame sits outside NavDisplay so the desk and tab strip are composed once, not once per destination.
   // A file or the threads belong to whichever section they were opened from, so that tab stays lit.
-  AppFrame(current = backStack.firstOrNull() ?: Files, onTab = switchTab) {
+  AppFrame(tabs = TopLevelSections, current = backStack.firstOrNull() ?: Files, onTab = switchTab) {
     NavDisplay(
       backStack = backStack,
       onBack = { backStack.removeLastOrNull() },
@@ -45,13 +44,7 @@ fun MainNavigation() {
   }
 }
 
-private fun sectionLabel(key: NavKey): String =
-  when (key) {
-    EventMap -> "Map"
-    Timeline -> "Timeline"
-    Method -> "Method"
-    else -> "Files"
-  }
+private fun sectionLabel(key: NavKey): String = (TopLevelSections.firstOrNull { it.key == key } ?: TopLevelSections.first()).label
 
 /** Replaces the whole stack with one top-level destination, without ever leaving it empty. */
 private fun NavBackStack<NavKey>.switchTo(key: NavKey) {

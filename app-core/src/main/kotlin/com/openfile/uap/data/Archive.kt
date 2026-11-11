@@ -43,11 +43,23 @@ data class CaseDetail(
   fun mediaForEvidence(evidenceId: String): List<ReportMedia> = media.filter { it.evidenceId == evidenceId }
 }
 
+/**
+ * Where an evidence item or exhibit comes from, never whether it is true. These are the only labels the archive uses;
+ * [meaning] is the definition the Method screen gives for [label].
+ */
+enum class SourceLabel(val label: String, val meaning: String) {
+  PrimaryRecord("Primary record", "Made at or near the time by someone involved."),
+  FirstHand("First-hand", "An account from a person who was present."),
+  OfficialRecord("Official record", "Produced by a government or other public body."),
+  Reported("Reported", "Described in another source. The original is not available to check."),
+  NotPreserved("Not preserved", "Seen at the time. Nothing survives to examine."),
+}
+
 /** [sourceLabel] says where an item comes from, never whether it is true. */
 data class Evidence(
   val id: String,
   val kind: String,
-  val sourceLabel: String,
+  val sourceLabel: SourceLabel,
   val title: String,
   val description: String,
   val caveat: String,
@@ -61,9 +73,10 @@ enum class MediaKind(val label: String) {
   Document("Document excerpt"),
 }
 
-enum class MediaFigure {
+/** A figure for an exhibit: drawn in code for a diagram, or a bundled vector drawable when [plate] is true. */
+enum class MediaFigure(val plate: Boolean = false) {
   ArnoldCascadeTrack,
-  ArnoldOriginalSketch,
+  ArnoldOriginalSketch(plate = true),
   MogulBalloonTrain,
   WashingtonRadarScope,
   KecksburgAcornProfile,
@@ -71,7 +84,7 @@ enum class MediaFigure {
   BerwynSeismograph,
   RendleshamLandingTriangle,
   PhoenixVFormation,
-  PhoenixEstrellasPhoto,
+  PhoenixEstrellasPhoto(plate = true),
   NimitzAltitudeDrop,
 }
 
@@ -104,7 +117,7 @@ data class ReportMedia(
   val id: String,
   val evidenceId: String,
   val kind: MediaKind,
-  val sourceLabel: String,
+  val sourceLabel: SourceLabel,
   val title: String,
   val caption: String,
   val provenance: String,
@@ -128,13 +141,19 @@ data class Explanation(
   val drawsOn: List<String>,
 )
 
-/** What kind of step a [StoryEntry] is. Like a source label, it says how a detail arrived, never whether it is true. */
-enum class StoryKind(val label: String) {
-  AtTheTime("At the time"),
-  NewAccount("New account"),
-  PrintOrScreen("Print or screen"),
-  Inquiry("Inquiry or record"),
-  Revised("Revised or withdrawn"),
+/**
+ * What kind of step a [StoryEntry] is. Like a source label, it says how a detail arrived, never whether it is true.
+ * [meaning] is the definition the Method screen gives for [label].
+ */
+enum class StoryKind(val label: String, val meaning: String) {
+  AtTheTime("At the time", "Said, written or done within days or weeks of the event."),
+  NewAccount(
+    "New account",
+    "A witness or researcher adds something that was not public before. The date is when it was first made public.",
+  ),
+  PrintOrScreen("Print or screen", "A book, article, film or broadcast that carried the story to a wider audience."),
+  Inquiry("Inquiry or record", "A public body or a study examines the case, or releases a record."),
+  Revised("Revised or withdrawn", "Someone changes or takes back what they said earlier."),
 }
 
 /** Where a statement in the archive can be checked: [label] is the citation as printed, [url] opens it. */
@@ -660,7 +679,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "The Halt memo",
             description =
               "A one-page memo titled “Unexplained Lights”, written by Lt Col Charles Halt to the UK Ministry of " +
@@ -670,7 +689,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Audio",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "The Halt tape",
             description =
               "A microcassette recording Halt made in the forest on the second night, describing the lights and " +
@@ -680,7 +699,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Witness statements",
             description =
               "Written statements made by airmen in January 1981, and later interviews with Jim Penniston, John " +
@@ -690,7 +709,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Physical trace",
-            sourceLabel = "Not preserved",
+            sourceLabel = SourceLabel.NotPreserved,
             title = "Ground depressions",
             description =
               "Three depressions in a rough triangle, found where the object was reported on the first night and " +
@@ -700,7 +719,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Measurement",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Radiation readings",
             description =
               "Readings taken at the site with a military survey meter. The memo records a peak of 0.1 " +
@@ -710,7 +729,7 @@ private val rendlesham: CaseDetail
           Evidence(
             id = "E-06",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Police and ministry records",
             description =
               "Suffolk police attended and logged that the only lights they could see were from the Orford Ness " +
@@ -795,7 +814,7 @@ private val rendlesham: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Document,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Memorandum: “Unexplained Lights” (13 Jan 1981)",
             caption = "Typed one-page memo from Lt Col Charles I. Halt, Deputy Base Commander, to the RAF commander at Bentwaters. " +
               "Excerpts are verbatim, including the memo’s spelling.",
@@ -819,7 +838,7 @@ private val rendlesham: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Audio,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "The Halt microcassette field recording",
             caption = "About 18 minutes of Lanier micro-cassette tape recorded in and beyond Rendlesham Forest in the early hours of " +
               "28 December 1980. Halt switched the recorder on and off, so the tape jumps. Times below are the clock times spoken on " +
@@ -842,7 +861,7 @@ private val rendlesham: CaseDetail
             id = "M-03",
             evidenceId = "E-04",
             kind = MediaKind.Diagram,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Clearing survey: ground depressions & radiation peaks",
             caption = "Reconstructed geometry of the three 7-inch impressions and AN/PDR-27 survey readings (0.1 mR/hr).",
             provenance = "Plotted from dimensions recorded in the Halt memo and patrol sketches",
@@ -882,7 +901,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Rescue Co-ordination Centre priority telex",
             description =
               "A priority telex titled “UFO Report”, sent on 5 October 1967 by the Rescue Co-ordination Centre in Halifax to Canadian Forces Headquarters in Ottawa, saying an object had come down off Shag Harbour and that aircraft and flares had been ruled out.",
@@ -891,7 +910,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of National Defence file",
             description =
               "Files compiled by the Canadian Department of National Defence detailing communications between the Royal Canadian Air Force, Coast Guard, and Navy, officially titled 'UFO Report - Shag Harbour'.",
@@ -900,7 +919,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "RCMP officer testimony",
             description =
               "Statements from RCMP Constables Ron Pound, Victor Werbieki, and Ron O'Brien, who observed the lights, the impact area, and the yellow foam on the water.",
@@ -909,7 +928,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Fishermen rescue crews",
             description =
               "Testimony from local fishermen who launched small boats immediately after the crash to look for survivors.",
@@ -918,7 +937,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Physical trace",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Yellow surface foam",
             description =
               "A patch of glittering yellowish foam, later described as about 80 feet wide and half a mile long, reported by boat crews and police where the object went into the water.",
@@ -927,7 +946,7 @@ private val shagHarbour: CaseDetail
           Evidence(
             id = "E-06",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Naval diver search log",
             description =
               "Log of dive operations conducted by Royal Canadian Navy clearance divers from HMCS Granby scouring the seabed of Shag Harbour between 8 and 15 October 1967.",
@@ -995,7 +1014,7 @@ private val shagHarbour: CaseDetail
             id = "M-01",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Canadian Forces “UFO Report: Lower Woods Harbour NS”",
             caption = "Summary written at Canadian Forces Headquarters while the Navy dive search was under way. Excerpts are " +
               "verbatim from a transcription; one bracketed word corrects an apparent transcription error (“dismounted”).",
@@ -1019,7 +1038,7 @@ private val shagHarbour: CaseDetail
             id = "M-02",
             evidenceId = "E-05",
             kind = MediaKind.Diagram,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Harbour descent and yellow foam (schematic)",
             caption = "Not to scale. The descent witnesses described, the object floating offshore and the foam later found " +
               "there. Accounts put the object between 250–300 m and about half a mile out; the foam was reported as about " +
@@ -1062,7 +1081,7 @@ private val nimitz: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Video",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "ATFLIR infrared video ('FLIR1')",
             description =
               "Infrared targeting sensor recording of an elongated oblong object tracking at high velocity and subsequently jumping out of the sensor field of view.",
@@ -1071,7 +1090,7 @@ private val nimitz: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Aviator eyewitness testimony",
             description =
               "Statements and public testimony by Commander David Fravor and Lieutenant Commander Alex Dietrich describing a white, wingless 'Tic Tac' craft with no visible exhaust hovering and maneuvering at extreme speeds.",
@@ -1080,7 +1099,7 @@ private val nimitz: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Measurement",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "AN/SPY-1B radar tracks",
             description =
               "Radar logs and operator accounts from USS Princeton describing multiple targets tracked at altitudes ranging from 80,000 feet to surface level within seconds.",
@@ -1089,7 +1108,7 @@ private val nimitz: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Visual",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Ocean surface disturbance",
             description =
               "Pilots reported an area of disturbed, churning water roughly 50 to 100 metres across directly underneath the hovering craft, resembling an object submerged or surface chop.",
@@ -1098,7 +1117,7 @@ private val nimitz: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Defense declassification notice",
             description =
               "Formal statement from the Office of the Under Secretary of Defense declassifying the FLIR1 video and confirming that the aerial phenomena depicted remain categorized as 'unidentified'.",
@@ -1167,7 +1186,7 @@ private val nimitz: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "ATFLIR targeting pod video (“FLIR1”)",
             caption = "76-second infrared recording captured from an F/A-18F Super Hornet operating from USS Nimitz.",
             provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
@@ -1187,7 +1206,7 @@ private val nimitz: CaseDetail
             id = "M-02",
             evidenceId = "E-03",
             kind = MediaKind.Diagram,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "AN/SPY-1B vertical descent profile",
             caption = "Reported radar track dropping from 80,000 ft to 20,000 ft and sea-skimming level in <1 second.",
             provenance = "Reconstructed from USS Princeton radar operator testimony",
@@ -1197,7 +1216,7 @@ private val nimitz: CaseDetail
             id = "M-03",
             evidenceId = "E-05",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "DoD Immediate Release: Historical Navy Videos",
             caption = "Formal Pentagon statement accompanying the official release of FLIR1, Gimbal, and GoFast.",
             provenance = "“Statement by the Department of Defense on the Release of Historical Navy Videos”, 27 April 2020 · " +
@@ -1219,7 +1238,7 @@ private val nimitz: CaseDetail
             id = "M-04",
             evidenceId = "E-02",
             kind = MediaKind.Video,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "House Oversight subcommittee hearing on UAP (26 July 2023)",
             caption = "Retired Cdr David Fravor gives sworn testimony on the 2004 Nimitz encounter, alongside Ryan Graves and David Grusch. The video is not bundled; it plays on YouTube.",
             provenance = "House Committee on Oversight and Accountability · Official channel upload",
@@ -1258,7 +1277,7 @@ private val arnold: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Arnold’s account",
             description =
               "Arnold’s interviews and written reports describing nine objects in a chain, their motion, and the time he took to cross the gap between two mountains.",
@@ -1267,7 +1286,7 @@ private val arnold: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Press report",
+            sourceLabel = SourceLabel.Reported,
             title = "Newspaper coverage, June 1947",
             description =
               "The first newspaper reports, published from 25 June 1947, quoted Arnold and carried the phrase “flying saucers” across the country.",
@@ -1276,7 +1295,7 @@ private val arnold: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Measurement",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Speed estimate",
             description =
               "Arnold timed the objects between two landmarks with his cockpit clock and worked out a speed well above that of any aircraft then flying.",
@@ -1285,7 +1304,7 @@ private val arnold: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "US Air Force project files",
             description =
               "The report was later reviewed in the Air Force’s UFO studies, and its files record the sighting along with reviewers’ comments.",
@@ -1352,7 +1371,7 @@ private val arnold: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Photo,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Arnold’s sketch for Army Air Forces Intelligence",
             caption = "Drawing submitted by Kenneth Arnold on 12 July 1947 showing the flat, heel-shaped profile of the object.",
             provenance = "Project Blue Book Archive · Case File #1 (National Archives)",
@@ -1362,7 +1381,7 @@ private val arnold: CaseDetail
             id = "M-02",
             evidenceId = "E-03",
             kind = MediaKind.Diagram,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Cascade Range timing track (Mt. Rainier to Mt. Adams)",
             caption = "1 min 42 sec timed transit across the 47-mile crest line observed from Arnold’s CallAir A-2 at 9,200 ft.",
             provenance = "Plotted from Arnold’s written report to Commanding General, Wright Field",
@@ -1372,7 +1391,7 @@ private val arnold: CaseDetail
             id = "M-03",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Press report",
+            sourceLabel = SourceLabel.Reported,
             title = "Associated Press wire dispatch (25 June 1947)",
             caption = "One of the first wire reports, filed from Pendleton, Oregon, the day after the sighting. Wording varied " +
               "between papers; this is the version printed in Corvallis that afternoon, verbatim.",
@@ -1424,7 +1443,7 @@ private val roswell: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "The 8 July 1947 press release",
             description =
               "A statement from the Roswell Army Air Field announcing it had recovered a “flying disc”, and the local newspaper headline that followed.",
@@ -1433,7 +1452,7 @@ private val roswell: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Fort Worth press photographs",
             description =
               "Photographs taken on 8 July 1947 of Army officers with debris, shown as the remains of a weather balloon.",
@@ -1442,7 +1461,7 @@ private val roswell: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "US Air Force Roswell reports",
             description =
               "Two reports, in 1994 and 1997, concluding that the debris came from a classified balloon project and that later claims of bodies stemmed from other events.",
@@ -1451,7 +1470,7 @@ private val roswell: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Later witness accounts",
             description =
               "Interviews and statements from base personnel and local people, gathered mainly from 1978 onward.",
@@ -1460,7 +1479,7 @@ private val roswell: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Government Accountability Office review",
             description =
               "A 1995 review of government records on the case, which found that some base records from the period had been destroyed.",
@@ -1527,7 +1546,7 @@ private val roswell: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Document,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "509th Bomb Group public information release",
             caption = "Press statement drafted by 1st Lt Walter Haut at Roswell Army Air Field on 8 July 1947.",
             provenance = "Release text as carried by the press, 8 July 1947 · Front page: Roswell Daily Record, 8 July 1947 " +
@@ -1549,7 +1568,7 @@ private val roswell: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Photo,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Ramey and DuBose with the Roswell debris",
             caption = "Brig. Gen. Roger Ramey (left) and Col. Thomas J. DuBose with debris from Roswell, photographed in Ramey’s office " +
               "at Fort Worth on 8 July 1947. The archive’s caption calls the debris a “wind-forecasting device”.",
@@ -1561,7 +1580,7 @@ private val roswell: CaseDetail
             id = "M-03",
             evidenceId = "E-03",
             kind = MediaKind.Diagram,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Project Mogul Service Flight #4 balloon train",
             caption = "600-foot acoustic array with neoprene sounding balloons, ML-307 corner radar targets, and payload sonobuoy.",
             provenance = "Adapted from USAF Report 'The Roswell Report: Fact versus Fiction in the New Mexico Desert' (1994)",
@@ -1571,7 +1590,7 @@ private val roswell: CaseDetail
             id = "M-04",
             evidenceId = "E-03",
             kind = MediaKind.Video,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Air Force press conference on “The Roswell Report: Case Closed”",
             caption = "Pentagon news conference of 24 June 1997 presenting the Air Force’s second Roswell report. " +
               "The video is not bundled; it plays on C-SPAN.",
@@ -1583,7 +1602,7 @@ private val roswell: CaseDetail
             id = "M-05",
             evidenceId = "E-03",
             kind = MediaKind.Photo,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Radar reflectors on a balloon train",
             caption = "Photograph reproduced in the Air Force’s 1995 Roswell report showing a string of radar-reflector targets " +
               "carried on a balloon train of the kind the report says Project Mogul flew.",
@@ -1624,7 +1643,7 @@ private val washingtonRadar: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Measurement",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Radar returns",
             description =
               "Targets tracked on air-traffic and military radar at Washington National and Andrews, described in reports and operator accounts.",
@@ -1633,7 +1652,7 @@ private val washingtonRadar: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Controller and pilot accounts",
             description =
               "Statements from the controllers who watched the scopes and from pilots who reported lights near the capital.",
@@ -1642,7 +1661,7 @@ private val washingtonRadar: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Air Force press conference, 29 July 1952",
             description =
               "The Air Force’s public statement on the sightings, offering a temperature inversion and ordinary lights as explanations.",
@@ -1651,7 +1670,7 @@ private val washingtonRadar: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Project Blue Book and later review",
             description =
               "The case file held in the Air Force’s UFO study, and the review by a CIA-convened scientific panel the following year.",
@@ -1660,7 +1679,7 @@ private val washingtonRadar: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Document",
-            sourceLabel = "Press report",
+            sourceLabel = SourceLabel.Reported,
             title = "Newspaper coverage",
             description =
               "Front-page reports on both weekends, which drew public attention across the United States.",
@@ -1727,7 +1746,7 @@ private val washingtonRadar: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Diagram,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Washington National ARTC PPI radar scope plot",
             caption = "7 unidentified primary returns plotted in Sector 3 over Andrews AFB and the Capitol restricted zone, 19–20 July 1952.",
             provenance = "Reconstructed from CAA Senior Controller Harry G. Barnes’ log and Project Blue Book file",
@@ -1737,7 +1756,7 @@ private val washingtonRadar: CaseDetail
             id = "M-02",
             evidenceId = "E-03",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Pentagon Press Conference Transcript Excerpt",
             caption = "Maj. Gen. John A. Samford, USAF Director of Intelligence, briefing reporters at the Pentagon on 29 July 1952. " +
               "Excerpts are verbatim from the minutes.",
@@ -1762,7 +1781,7 @@ private val washingtonRadar: CaseDetail
             id = "M-03",
             evidenceId = "E-03",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Maj. Gen. Samford’s statement on “flying saucers”",
             caption = "Five-minute sound film of Maj. Gen. John A. Samford, USAF Director of Intelligence, reading a statement " +
               "at the Pentagon, followed by a second speaker. The National Archives dates the film 31 July 1952, two days " +
@@ -1805,7 +1824,7 @@ private val kecksburg: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Witness accounts",
             description =
               "Statements from residents who saw the fireball, went to the woods, or saw military personnel there.",
@@ -1814,7 +1833,7 @@ private val kecksburg: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Audio",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Local radio coverage",
             description =
               "Radio reports on the night of the event, made by a local reporter who went to the area.",
@@ -1823,7 +1842,7 @@ private val kecksburg: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Military and Project Blue Book records",
             description =
               "Air Force records of the fireball and the search, which record the event as a meteor.",
@@ -1832,7 +1851,7 @@ private val kecksburg: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Freedom of Information litigation",
             description =
               "A lawsuit brought in the 2000s against the US space agency to obtain records of the event.",
@@ -1899,7 +1918,7 @@ private val kecksburg: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Diagram,
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Composite witness sketch: Kecksburg woods object",
             caption = "Bronze-colored acorn-shaped hull (approx. 10–12 ft long) with raised bumper ring reported in the ravine.",
             provenance = "Composite from 1965–1979 witness descriptions in Westmoreland County",
@@ -1909,7 +1928,7 @@ private val kecksburg: CaseDetail
             id = "M-02",
             evidenceId = "E-01",
             kind = MediaKind.Photo,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "The “acorn” replica in Kecksburg",
             caption = "A replica of the object as witnesses described it, on display in Kecksburg. It is a later model, not the " +
               "object, and not evidence that one existed.",
@@ -1949,7 +1968,7 @@ private val berwyn: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Measurement",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Seismic record",
             description =
               "The British Geological Survey record of an earthquake of about magnitude 3.5 in North Wales that evening.",
@@ -1958,7 +1977,7 @@ private val berwyn: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Police and resident accounts",
             description =
               "Accounts from police officers and residents of the tremor, the sound and the light.",
@@ -1967,7 +1986,7 @@ private val berwyn: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Ministry of Defence files",
             description =
               "Files released by the Ministry of Defence recording the reports and its view that a meteor and an earthquake explain them.",
@@ -1976,7 +1995,7 @@ private val berwyn: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Testimony",
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Later claims of a crash and cordon",
             description =
               "Accounts gathered in later years describing a crashed craft, soldiers and a closed area on the mountain.",
@@ -2043,7 +2062,7 @@ private val berwyn: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Diagram,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Seismograph trace: Bala Fault tremor (3.5 ML)",
             caption = "Illustrative trace of the magnitude 3.5 earthquake the Institute of Geological Sciences reported at about " +
               "20:38 on 23 January 1974. It is drawn, not a copy of a real seismogram.",
@@ -2054,7 +2073,7 @@ private val berwyn: CaseDetail
             id = "M-02",
             evidenceId = "E-03",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "MoD Freedom of Information reply on the Berwyn Mountains",
             caption = "Ministry of Defence reply to a public request about the Berwyn Mountains and Rendlesham Forest, " +
               "published in its FOI disclosure log around 2006. It points to the 1970s files rather than summarising them, " +
@@ -2107,7 +2126,7 @@ private val phoenixLights: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Video",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Residents’ video",
             description =
               "Home footage of lights over Phoenix, much of it showing a row of steady lights that appear to burn out one by one.",
@@ -2116,7 +2135,7 @@ private val phoenixLights: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Eyewitness accounts",
             description =
               "Statements from residents and others, including the state’s then governor, who later said he had also seen the lights.",
@@ -2125,7 +2144,7 @@ private val phoenixLights: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Air National Guard statement",
             description =
               "A military statement that aircraft from a Guard unit dropped flares over a training range that night.",
@@ -2134,7 +2153,7 @@ private val phoenixLights: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Document",
-            sourceLabel = "Press report",
+            sourceLabel = SourceLabel.Reported,
             title = "News coverage",
             description =
               "Local and national reports on the sightings, including interviews with witnesses and officials.",
@@ -2201,7 +2220,7 @@ private val phoenixLights: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Photo,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Sierra Estrella ridge lights plate (22:00 MST)",
             caption = "Archival frame showing the stationary arc of nine amber lights above the Estrella Mountains southwest of Phoenix.",
             provenance = "Composite plate from 13 March 1997 Phoenix home video recordings",
@@ -2211,7 +2230,7 @@ private val phoenixLights: CaseDetail
             id = "M-02",
             evidenceId = "E-01",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Phoenix valley camcorder sequence (22:00 MST)",
             caption = "Civilian camcorder footage of the lights seen over the Phoenix valley on 13 March 1997. " +
               "The video is not bundled; it plays on YouTube.",
@@ -2232,7 +2251,7 @@ private val phoenixLights: CaseDetail
             id = "M-03",
             evidenceId = "E-02",
             kind = MediaKind.Diagram,
-            sourceLabel = "Reported",
+            sourceLabel = SourceLabel.Reported,
             title = "Statewide transit corridor vs. Barry Goldwater Range",
             caption = "Comparison of the 19:50–20:45 MST V-formation track (Henderson → Paulden → Phoenix → Tucson) and the 22:00 MST flare range.",
             provenance = "Plotted from NUFORC witness timestamps and Maryland ANG range coordinates",
@@ -2271,7 +2290,7 @@ private val rooseveltEncounters: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Video",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "“Gimbal” video",
             description =
               "Infrared footage of a single object that appears to rotate while the camera tracks it, with the pilots’ voices on the audio.",
@@ -2280,7 +2299,7 @@ private val rooseveltEncounters: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Video",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "“GoFast” video",
             description =
               "Infrared footage of an object over the sea that seems to move quickly across the field of view.",
@@ -2289,7 +2308,7 @@ private val rooseveltEncounters: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Aviator accounts",
             description =
               "Interviews and public statements from aviators who flew in the area and reported regular encounters.",
@@ -2298,7 +2317,7 @@ private val rooseveltEncounters: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Defense release",
             description =
               "The April 2020 statement releasing three Navy videos and confirming that the objects in them remain unidentified.",
@@ -2307,7 +2326,7 @@ private val rooseveltEncounters: CaseDetail
           Evidence(
             id = "E-05",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Congressional testimony",
             description =
               "Testimony given to a House subcommittee in 2023 by a former Navy aviator who described the encounters.",
@@ -2374,7 +2393,7 @@ private val rooseveltEncounters: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "ATFLIR video & cockpit audio (“GIMBAL”)",
             caption = "34-second infrared targeting pod recording with WSO and pilot intercom audio off the US East Coast.",
             provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
@@ -2394,7 +2413,7 @@ private val rooseveltEncounters: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "ATFLIR infrared video (“GOFAST”)",
             caption = "34-second radar-slaved infrared track of a low-altitude object over the Atlantic Ocean.",
             provenance = "US Department of Defense / NAVAIR FOIA release (27 April 2020) · Public domain · Copy also on DVIDS",
@@ -2413,7 +2432,7 @@ private val rooseveltEncounters: CaseDetail
             id = "M-03",
             evidenceId = "E-04",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "DoD statement on releasing the Navy videos",
             caption = "Department of Defense press statement of 27 April 2020 authorising release of FLIR1, GIMBAL and GOFAST " +
               "and pointing to the NAVAIR FOIA reading room for the files. Excerpts are verbatim.",
@@ -2435,7 +2454,7 @@ private val rooseveltEncounters: CaseDetail
             id = "M-04",
             evidenceId = "E-05",
             kind = MediaKind.Video,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "House Oversight subcommittee hearing on UAP (26 July 2023)",
             caption = "Former Navy pilot Ryan Graves, who flew from USS Theodore Roosevelt, testifies alongside David Fravor and David Grusch. The video is not bundled; it plays on YouTube.",
             provenance = "House Committee on Oversight and Accountability · Official channel upload",
@@ -2475,7 +2494,7 @@ private val westall: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Witness accounts",
             description =
               "Statements from students and science teacher Andrew Greenwood who observed the object through binoculars.",
@@ -2484,7 +2503,7 @@ private val westall: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Contemporary press coverage",
             description =
               "Reports in The Dandenong Journal on 14 and 21 April 1966 and The Sun on 7 April 1966 recording interviews with students and teachers.",
@@ -2493,7 +2512,7 @@ private val westall: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Air archives",
             description =
               "National Archives of Australia file series A703 containing correspondence and reports of aerial phenomena from 1966.",
@@ -2502,7 +2521,7 @@ private val westall: CaseDetail
           Evidence(
             id = "E-04",
             kind = "Physical trace",
-            sourceLabel = "Not preserved",
+            sourceLabel = SourceLabel.NotPreserved,
             title = "Ground depression and scorched circle",
             description =
               "Circular ring of flattened and discoloured grass reported in the Grange reserve paddock.",
@@ -2568,7 +2587,7 @@ private val westall: CaseDetail
             id = "M-01",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "The Dandenong Journal report (14 April 1966)",
             caption = "Front page coverage quoting headmaster, teachers, and students describing the disc descent.",
             provenance = "The Dandenong Journal · National Library of Australia Trove collection",
@@ -2588,7 +2607,7 @@ private val westall: CaseDetail
             id = "M-02",
             evidenceId = "E-03",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Air UFO correspondence (NAA A703)",
             caption = "Excerpt from Australian Department of Air correspondence regarding civilian reports in Victoria.",
             provenance = "National Archives of Australia · Series A703, control symbol 554/1/30 Part 3",
@@ -2638,7 +2657,7 @@ private val tehran: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "US Defense Intelligence Agency report",
             description =
               "Declassified DIA information report titled 'An Outstanding Report of an Unidentified Flying Object'.",
@@ -2647,7 +2666,7 @@ private val tehran: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Flight crew testimony",
             description =
               "Accounts of Maj. Parviz Jafari and other IIAF airmen describing the radar lock and weapons system failures.",
@@ -2656,7 +2675,7 @@ private val tehran: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Mehrabad Airport tower logs",
             description =
               "Civilian radar and control tower logs reporting visual sighting and anomalous radar returns.",
@@ -2722,7 +2741,7 @@ private val tehran: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "US Defense Intelligence Agency evaluation memo (1976)",
             caption = "Declassified joint intelligence report summarizing the scramble of two F-4s and radar tracking.",
             provenance = "US Defense Intelligence Agency / Joint Chiefs of Staff · Released under FOIA · National Security Archive collection",
@@ -2744,7 +2763,7 @@ private val tehran: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "National Press Club testimony of Gen. Parviz Jafari (2007)",
             caption = "Transcript of the second F-4 pilot's public statement at the National Press Club in Washington D.C.",
             provenance = "National Press Club UAP press conference, 12 November 2007",
@@ -2795,7 +2814,7 @@ private val valentich: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Audio",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Melbourne Flight Service radio tape",
             description =
               "VHF voice communications between Valentich and flight service controller Steve Robey recorded on 21 October 1978.",
@@ -2804,7 +2823,7 @@ private val valentich: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Transport accident investigation",
             description =
               "Bureau of Air Safety Investigation summary Ref. V116/783/1047 recording the search and technical assessment.",
@@ -2813,7 +2832,7 @@ private val valentich: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Testimony",
-            sourceLabel = "First-hand",
+            sourceLabel = SourceLabel.FirstHand,
             title = "Civilian sighting reports",
             description =
               "Reports of strange green or orange lights in the sky over Victoria and Bass Strait on the same evening.",
@@ -2878,7 +2897,7 @@ private val valentich: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Audio,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Melbourne Flight Service radio tape excerpt (21 October 1978)",
             caption = "VHF radio exchange between flight service controller Steve Robey and pilot Frederick Valentich over Bass Strait.",
             provenance = "Department of Transport / National Archives of Australia · Series B1497",
@@ -2899,7 +2918,7 @@ private val valentich: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Department of Transport accident investigation summary (1982)",
             caption = "Final summary report by the Bureau of Air Safety Investigation on Cessna 182L VH-DOJ.",
             provenance = "Department of Transport Australia · Reference V116/783/1047 (Released 27 April 1982)",
@@ -2950,7 +2969,7 @@ private val tehran2026: CaseDetail
           Evidence(
             id = "E-01",
             kind = "Video",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Civilian video recordings",
             description =
               "Smartphone recordings from Tehran showing a pulsing, multicoloured aerial light against the night sky.",
@@ -2959,7 +2978,7 @@ private val tehran2026: CaseDetail
           Evidence(
             id = "E-02",
             kind = "Document",
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Open-source intelligence & defense reports",
             description =
               "Analyses by regional defense monitors evaluating drone and electronic surveillance capabilities in Iranian airspace.",
@@ -2968,7 +2987,7 @@ private val tehran2026: CaseDetail
           Evidence(
             id = "E-03",
             kind = "Document",
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Press and wire reporting",
             description =
               "Coverage in regional news agencies comparing the sighting to historical incidents and discussing air-defense sensitivity.",
@@ -3034,7 +3053,7 @@ private val tehran2026: CaseDetail
             id = "M-01",
             evidenceId = "E-01",
             kind = MediaKind.Video,
-            sourceLabel = "Primary record",
+            sourceLabel = SourceLabel.PrimaryRecord,
             title = "Tehran night sky recordings (September 2026)",
             caption = "Civilian smartphone video showing the illuminated hovering aerial phenomenon over Tehran.",
             provenance = "Social media open-source compilation · Verified multi-angle recordings",
@@ -3046,7 +3065,7 @@ private val tehran2026: CaseDetail
             id = "M-02",
             evidenceId = "E-02",
             kind = MediaKind.Document,
-            sourceLabel = "Official record",
+            sourceLabel = SourceLabel.OfficialRecord,
             title = "Regional defense and aviation analysis excerpt (2026)",
             caption = "Summary analysis by defense observers regarding airspace monitoring and drone flap dynamics.",
             provenance = "Middle East Aviation and Defense Monitor · Analysis Briefing (October 2026)",

@@ -1,6 +1,7 @@
 package com.openfile.uap.data
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -78,9 +79,12 @@ class ArchiveTest {
         assertTrue("${c.id} ${item.id} links to valid evidence ${item.evidenceId}", item.evidenceId in evidenceIds)
         assertTrue(detail.mediaForEvidence(item.evidenceId).contains(item))
         when (item.kind) {
-          MediaKind.Diagram -> assertNotNull("${c.id} ${item.id} has figure", item.figure)
+          MediaKind.Diagram -> assertFalse("${c.id} ${item.id} has a drawn figure", item.figure?.plate ?: true)
 
-          MediaKind.Photo -> assertTrue("${c.id} ${item.id} has image or figure", item.image != null || item.figure != null)
+          MediaKind.Photo -> {
+            assertTrue("${c.id} ${item.id} has image or figure", item.image != null || item.figure != null)
+            assertTrue("${c.id} ${item.id} figure is a plate", item.figure?.plate ?: true)
+          }
 
           MediaKind.Audio, MediaKind.Video -> {
             // No more simulated players: every recording is either bundled or links to where it plays.

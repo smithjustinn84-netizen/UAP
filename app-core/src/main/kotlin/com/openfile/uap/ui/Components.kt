@@ -50,10 +50,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
-import com.openfile.uap.EventMap
-import com.openfile.uap.Files
-import com.openfile.uap.Method
-import com.openfile.uap.Timeline
+import com.openfile.uap.TopLevelSection
 import com.openfile.uap.data.Citation
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
@@ -66,8 +63,6 @@ import com.openfile.uap.theme.StampRed
 import com.openfile.uap.theme.TypewriterFamily
 
 val ScreenPadding = 20.dp
-
-private val BottomTabs: List<Pair<NavKey, String>> = listOf(Files to "FILES", EventMap to "MAP", Timeline to "TIMELINE", Method to "METHOD")
 
 /**
  * Leading spacer for a screen's scrolling content, as tall as the status bar. Placing it inside the scroll area lets
@@ -85,7 +80,7 @@ fun StatusBarSpacer() {
  * are respected here, and each screen handles the status bar itself with [StatusBarSpacer].
  */
 @Composable
-fun AppFrame(current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -> Unit) {
+fun AppFrame(tabs: List<TopLevelSection>, current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -> Unit) {
   Column(
     Modifier.fillMaxSize()
       .background(Manila)
@@ -97,9 +92,11 @@ fun AppFrame(current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -
     // The strip's paper extends behind the navigation bar; the tabs themselves sit above it.
     Column(Modifier.fillMaxWidth().background(Paper).windowInsetsPadding(WindowInsets.navigationBars)) {
       Row(Modifier.fillMaxWidth().height(56.dp)) {
-        BottomTabs.forEachIndexed { index, (key, label) ->
+        tabs.forEachIndexed { index, tab ->
           if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-          TabCell(label = label, selected = key == current, onClick = { onTab(key) }, modifier = Modifier.weight(1f))
+          TabCell(label = tab.label.uppercase(), selected = tab.key == current, onClick = {
+            onTab(tab.key)
+          }, modifier = Modifier.weight(1f))
         }
       }
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -73,11 +72,12 @@ private data class Plotted(val number: Int, val record: CaseRecord)
 
 @RawRes
 private fun outlineFor(sheet: MapSheet): Int =
-  when (sheet.id) {
-    MapSheets.britishIsles.id -> R.raw.map_british_isles
-    MapSheets.southEastAustralia.id -> R.raw.map_south_east_australia
-    MapSheets.middleEast.id -> R.raw.map_middle_east
-    else -> R.raw.map_north_america
+  when (sheet) {
+    MapSheets.northAmerica -> R.raw.map_north_america
+    MapSheets.britishIsles -> R.raw.map_british_isles
+    MapSheets.southEastAustralia -> R.raw.map_south_east_australia
+    MapSheets.middleEast -> R.raw.map_middle_east
+    else -> error("No outline is bundled for map sheet ${sheet.id}")
   }
 
 @Composable
@@ -89,18 +89,11 @@ fun MapScreen(onOpenCase: (String) -> Unit) {
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
-    Column(
-      Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 28.dp, bottom = 16.dp),
-      verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-      MonoLabel("Open File")
-      TypeTitle("Map", size = 32.sp)
-      Text(
-        "Where each case was reported. Every pin is approximate: some events covered a wide area or open sea.",
-        style = MaterialTheme.typography.bodyLarge,
-        color = InkBody,
-      )
-    }
+    ScreenHeader(
+      label = "Open File",
+      title = "Map",
+      intro = "Where each case was reported. Every pin is approximate: some events covered a wide area or open sea.",
+    )
 
     Column(
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 8.dp, bottom = 28.dp),
@@ -151,7 +144,7 @@ private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: () -> Str
   val rings = rememberOutline(sheet)
   val measurer = rememberTextMeasurer()
   val description =
-    "Map of ${sheet.title} with ${pins.size} plotted ${if (pins.size == 1) "case" else "cases"}. " +
+    "Map of ${sheet.title} with ${countOf(pins.size, "plotted case")}. " +
       "The cases are listed below the map."
 
   Spacer(
@@ -274,11 +267,6 @@ private fun SelectedCard(p: Plotted, onOpen: () -> Unit) {
       DashedRule()
       MonoLabel(p.record.status, color = Ink)
     }
-    TapRow(onClick = onOpen, modifier = Modifier.defaultMinSize(minHeight = 52.dp).background(Ink)) {
-      Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("Open file", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = Paper)
-        Chevron(color = Paper)
-      }
-    }
+    ActionRow("Open file", onClick = onOpen)
   }
 }

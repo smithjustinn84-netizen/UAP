@@ -53,7 +53,8 @@ so do not swap in UTA's copies.
 
 These open outside the app and are not redistributed: the Phoenix Lights camcorder video (YouTube, AZDigitalTransfers),
 the Halt tape (Internet Archive upload, copyright status unknown), the 24 June 1997 Air Force Roswell press conference
-(C-SPAN), and the 26 July 2023 House Oversight subcommittee hearing (official committee YouTube channel).
+(C-SPAN), the 26 July 2023 House Oversight subcommittee hearing (official committee YouTube channel), and the
+September 2026 Tehran aerial recordings (YouTube).
 
 ## Libraries
 

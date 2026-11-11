@@ -9,7 +9,8 @@ on any of it.
 - **Files** — the case list, searchable by name, place, year or witness and filterable by decade.
 - **Threads** — patterns that recur across the files (late-arriving details, missing records, changed official
   positions), each with what to keep in mind about it. Opened from the foot of the case list.
-- **Map** — every case plotted on hand-drawn sheets of North America and Britain and Ireland.
+- **Map** — every case plotted on hand-drawn sheets of North America, Britain and Ireland, South-East Australia
+  and the Middle East.
 - **Timeline** — sightings alongside the inquiries that followed them and the books, films and broadcasts that
   retold them, filterable by kind.
 - **Method** — how the archive labels sources, status and explanations.
@@ -18,13 +19,15 @@ on any of it.
   records known to be missing, and the lore: how the story has been told since, in date order.
 
 Cases on file include Kenneth Arnold (1947), Roswell (1947), the Washington, D.C. radar sightings (1952),
-Kecksburg (1965), Shag Harbour (1967), Berwyn Mountains (1974), Rendlesham Forest (1980), the Phoenix Lights
-(1997), USS Nimitz (2004) and USS Theodore Roosevelt (2015).
+Kecksburg (1965), Westall (1966), Shag Harbour (1967), Berwyn Mountains (1974), Tehran (1976),
+the Valentich disappearance (1978), Rendlesham Forest (1980), the Phoenix Lights (1997), USS Nimitz (2004),
+USS Theodore Roosevelt (2015) and the Tehran aerial phenomenon (2026).
 
 ## Tech
 
 - Kotlin 2.3, Jetpack Compose, Material 3
 - Navigation 3
+- AndroidX Media3 (ExoPlayer) for video playback, Coil for photographs and document scans
 - [Lightbuild](https://developer.android.com/r/lightbuild) (experimental) instead of Gradle
 - minSdk 24, compileSdk 36, targetSdk 34, Java 17
 
@@ -39,14 +42,15 @@ app-core/                     Library module with all code and resources
   src/main/kotlin/com/openfile/uap/
     MainActivity.kt
     Navigation.kt             NavDisplay, tab switching, case-file routing
-    NavigationKeys.kt         Files, EventMap, Timeline, Method, CaseFile(id)
+    NavigationKeys.kt         Files, EventMap, Timeline, Method, Threads, CaseFile(id)
     data/Archive.kt           Every case, its write-up, media and the timeline
     data/Lore.kt              How each case has been retold, what is missing from its record, cross-file threads
     data/MapSheets.kt         Map sheet bounds, projection and outline parser
     theme/                    Colours, typography (Special Elite, IBM Plex), theme
-    ui/                       One file per screen, plus shared components
-  src/main/res/raw/           Map outlines (Natural Earth, simplified)
+    ui/                       One file per screen, shared components, infographics
+  src/main/res/raw/           Map outlines (Natural Earth, simplified) and bundled video clips
   src/main/res/drawable/      Vector "photographic plates" used as media exhibits
+  src/main/res/drawable-nodpi/ Bundled photographic plates and document scans
   src/test/                   JVM unit tests for the archive and map sheets
 ```
 
@@ -79,5 +83,6 @@ Kotlin compiler warnings fail the `app-core` build.
 
 ## Third-party material
 
-Fonts are from Google Fonts (Apache 2.0 and SIL OFL 1.1) and map outlines are derived from Natural Earth (public
-domain). See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Fonts are from Google Fonts (Apache 2.0 and SIL OFL 1.1), map outlines are derived from Natural Earth (public
+domain), and video clips, photographs and document scans are from government releases, archives and Wikimedia Commons.
+See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

@@ -14,3 +14,14 @@ import kotlinx.serialization.Serializable
 @Serializable data object Threads : NavKey
 
 @Serializable data class CaseFile(val id: String) : NavKey
+
+/** A destination on the bottom tab strip. [label] is also how a file's back link names the section it came from. */
+data class TopLevelSection(val key: NavKey, val label: String)
+
+val TopLevelSections: List<TopLevelSection> =
+  listOf(
+    TopLevelSection(Files, "Files"),
+    TopLevelSection(EventMap, "Map"),
+    TopLevelSection(Timeline, "Timeline"),
+    TopLevelSection(Method, "Method"),
+  )

@@ -2,7 +2,6 @@ package com.openfile.uap.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,19 +19,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.data.Archive
@@ -49,6 +43,8 @@ import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
 
+private const val SEE_EXPLANATIONS = "See how each explanation reads this evidence"
+
 private enum class Section(val label: String) {
   Summary("Summary"),
   Evidence("Evidence"),
@@ -60,8 +56,7 @@ private enum class Section(val label: String) {
 @Composable
 fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
   val record = Archive.case(caseId)
-  var sectionIndex by rememberSaveable { mutableIntStateOf(0) }
-  val section = Section.entries[sectionIndex.coerceIn(0, Section.entries.lastIndex)]
+  var section by rememberSaveable { mutableStateOf(Section.Summary) }
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
@@ -70,14 +65,7 @@ fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      Box(
-        Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-          .clickable(onClickLabel = "Back to ${backLabel.lowercase()}", role = Role.Button, onClick = onBack)
-          .padding(horizontal = 12.dp),
-        contentAlignment = Alignment.Center,
-      ) {
-        Text("< $backLabel", style = MaterialTheme.typography.labelLarge, color = Ink)
-      }
+      BackLink(backLabel, onBack)
       Text(caseId, style = MaterialTheme.typography.labelMedium, color = InkSoft)
     }
 
@@ -103,29 +91,29 @@ fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
     if (detail == null) {
       UnwrittenFile(record)
     } else {
-      SectionTabs(current = section, onSelect = { sectionIndex = it.ordinal })
+      SectionTabs(current = section, onSelect = { section = it })
       Column(
         Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
       ) {
         when (section) {
-          Section.Summary -> SummarySection(record, detail, onOpen = { sectionIndex = it.ordinal })
+          Section.Summary -> SummarySection(record, detail, onOpen = { section = it })
 
           Section.Evidence ->
             EvidenceSection(
               detail = detail,
-              onSeeMedia = { sectionIndex = Section.Media.ordinal },
-              onSeeExplanations = { sectionIndex = Section.Explanations.ordinal },
+              onSeeMedia = { section = Section.Media },
+              onSeeExplanations = { section = Section.Explanations },
             )
 
           Section.Media ->
             MediaSection(
               detail = detail,
-              onSeeEvidence = { sectionIndex = Section.Evidence.ordinal },
-              onSeeExplanations = { sectionIndex = Section.Explanations.ordinal },
+              onSeeEvidence = { section = Section.Evidence },
+              onSeeExplanations = { section = Section.Explanations },
             )
 
-          Section.Explanations -> ExplanationsSection(detail, onSeeEvidence = { sectionIndex = Section.Evidence.ordinal })
+          Section.Explanations -> ExplanationsSection(detail, onSeeEvidence = { section = Section.Evidence })
 
           Section.Lore -> LoreSection(detail)
         }
@@ -186,7 +174,7 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
     detail.reported.forEach { Text(it, style = MaterialTheme.typography.bodyLarge, color = Ink) }
   }
 
-  if (record.id == "OF-2004-01") {
+  if (record.id == NIMITZ_CASE_ID) {
     TitledBlock("Incident briefing graphic") {
       NimitzIncidentInfographic(
         onOpenEvidence = { onOpen(Section.Evidence) },
@@ -197,14 +185,14 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
 
   TitledBlock("In this file") {
     PaperSheet {
-      FileLink("Evidence", "${detail.evidence.size} items, labelled by source") { onOpen(Section.Evidence) }
+      FileLink("Evidence", "${countOf(detail.evidence.size, "item")}, labelled by source") { onOpen(Section.Evidence) }
       if (detail.media.isNotEmpty()) {
         SolidRule()
         val kindsSummary = detail.media.map { it.kind.label.lowercase() }.distinct().joinToString(", ")
-        FileLink("Media", "${detail.media.size} exhibits · $kindsSummary") { onOpen(Section.Media) }
+        FileLink("Media", "${countOf(detail.media.size, "exhibit")} · $kindsSummary") { onOpen(Section.Media) }
       }
       SolidRule()
-      FileLink("Explanations", "${detail.explanations.size} angles, listed A–Z") { onOpen(Section.Explanations) }
+      FileLink("Explanations", "${countOf(detail.explanations.size, "angle")}, listed A–Z") { onOpen(Section.Explanations) }
       if (detail.story.isNotEmpty()) {
         SolidRule()
         FileLink("Lore", "How the story has been told, ${detail.story.first().year}–${detail.story.last().year}") { onOpen(Section.Lore) }
@@ -221,14 +209,6 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
     style = MaterialTheme.typography.labelMedium,
     color = InkSoft,
   )
-}
-
-@Composable
-private fun TitledBlock(title: String, content: @Composable () -> Unit) {
-  Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-    TypeTitle(title, size = 20.sp)
-    content()
-  }
 }
 
 @Composable
@@ -260,29 +240,9 @@ private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExp
     }
     if (detail.gaps.isNotEmpty()) MissingFromFile(detail.gaps)
     if (detail.media.isNotEmpty()) {
-      TapRow(onClick = onSeeMedia, modifier = Modifier.defaultMinSize(minHeight = 52.dp).background(Paper).border(1.dp, Ink)) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-          Text(
-            "Browse all ${detail.media.size} media exhibits in this file",
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.labelLarge,
-            color = Ink,
-          )
-          Chevron(color = Ink)
-        }
-      }
+      ActionRow("Browse all ${countOf(detail.media.size, "media exhibit")} in this file", onClick = onSeeMedia, solid = false)
     }
-    TapRow(onClick = onSeeExplanations, modifier = Modifier.defaultMinSize(minHeight = 52.dp).background(Ink)) {
-      Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(
-          "See how each explanation reads this evidence",
-          modifier = Modifier.weight(1f),
-          style = MaterialTheme.typography.labelLarge,
-          color = Paper,
-        )
-        Chevron(color = Paper)
-      }
-    }
+    ActionRow(SEE_EXPLANATIONS, onClick = onSeeExplanations)
   }
 }
 
@@ -290,27 +250,12 @@ private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExp
 private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>) {
   var showMedia by rememberSaveable(item.id) { mutableStateOf(false) }
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("${item.id} · ${item.kind}", color = Ink)
-      MonoLabel(item.sourceLabel, color = Ink)
-    }
-    SolidRule(color = Ink)
+    CardHeader("${item.id} · ${item.kind}", item.sourceLabel.label)
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       TypeTitle(item.title, size = 19.sp)
       Text(item.description, style = MaterialTheme.typography.bodyMedium, color = Ink)
       DashedRule()
-      Text(
-        buildAnnotatedString {
-          withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Keep in mind: ") }
-          append(item.caveat)
-        },
-        style = MaterialTheme.typography.bodySmall,
-        color = InkBody,
-      )
+      LeadText("Keep in mind", item.caveat)
     }
     if (attachedMedia.isNotEmpty()) {
       SolidRule(color = Ink)
@@ -399,15 +344,7 @@ private fun LoreSection(detail: CaseDetail) {
 @Composable
 private fun StoryCard(entry: StoryEntry) {
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel(entry.date, color = Ink)
-      MonoLabel(entry.kind.label, color = Ink)
-    }
-    SolidRule(color = Ink)
+    CardHeader(entry.date, entry.kind.label)
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       TypeTitle(entry.title, size = 18.sp)
       Text(entry.detail, style = MaterialTheme.typography.bodyMedium, color = Ink)
@@ -436,24 +373,14 @@ private fun MediaSection(detail: CaseDetail, onSeeEvidence: () -> Unit, onSeeExp
         onOpenEvidence = onSeeEvidence,
       )
     }
-    TapRow(onClick = onSeeExplanations, modifier = Modifier.defaultMinSize(minHeight = 52.dp).background(Ink)) {
-      Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(
-          "See how each explanation reads this evidence",
-          modifier = Modifier.weight(1f),
-          style = MaterialTheme.typography.labelLarge,
-          color = Paper,
-        )
-        Chevron(color = Paper)
-      }
-    }
+    ActionRow(SEE_EXPLANATIONS, onClick = onSeeExplanations)
   }
 }
 
 @Composable
 private fun ExplanationsSection(detail: CaseDetail, onSeeEvidence: () -> Unit) {
-  // One angle open at a time; -1 means all closed.
-  var open by rememberSaveable { mutableIntStateOf(0) }
+  // One angle open at a time, the first to begin with.
+  var open by rememberSaveable { mutableStateOf<Int?>(0) }
   Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
     Text(
       "${detail.explanations.size} angles, listed A–Z and not by merit. Each shows who holds it, what supports it and what complicates it.",
@@ -465,7 +392,7 @@ private fun ExplanationsSection(detail: CaseDetail, onSeeEvidence: () -> Unit) {
       ExplanationCard(
         explanation = explanation,
         expanded = open == index,
-        onToggle = { open = if (open == index) -1 else index },
+        onToggle = { open = if (open == index) null else index },
         onSeeEvidence = onSeeEvidence,
       )
     }

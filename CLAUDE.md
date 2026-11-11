@@ -41,13 +41,19 @@ Build targets have no `//` prefix (`app-core`); module dependencies inside `ligh
   Each case's write-up is a private `CaseDetail` val further down the same file.
 - `data/Lore.kt` holds each case's `story` (how it has been retold, oldest first, each step with a `StoryKind`),
   its `gaps` (records lost, destroyed, withheld or never made) and `Archive.threads` (patterns across files).
-- Media exhibits (`ReportMedia`) link to evidence by `evidenceId`. Drawn figures are `MediaFigure` enum values
-  rendered in `ui/ReportMediaComponents.kt`; photographic plates are vector drawables `res/drawable/plate_*.xml`.
-- Map: `data/MapSheets.kt` defines sheet bounds and projection; outlines are `res/raw/map_*.txt`
-  (one ring per line of `lon,lat` pairs). Sheet bounds must match the clipping used to make those files.
+- Media exhibits (`ReportMedia`) link to evidence by `evidenceId`. Formats include drawn vector diagrams
+  (`MediaFigure` in `ui/ReportMediaComponents.kt` and `res/drawable/plate_*.xml`), photographic and document scans
+  (`MediaImage` in `res/drawable-nodpi/` loaded with Coil), bundled video clips (`MediaClip` in `res/raw/` played with
+  Media3 ExoPlayer), audio/video transcripts, verbatim document excerpts, interactive infographics (`ui/NimitzInfographic.kt`)
+  and external links.
+- Map: `data/MapSheets.kt` defines sheet bounds and projection (North America, Britain & Ireland, South-East Australia,
+  Middle East); outlines are `res/raw/map_*.txt` (one ring per line of `lon,lat` pairs). Sheet bounds must match the
+  clipping used to make those files.
 - Styling: manila/paper/ink palette in `theme/Color.kt`; fonts in `theme/Type.kt`. Reuse the shared composables
   in `ui/Components.kt` (`PaperSheet`, `MonoLabel`, `TypeTitle`, `Stamp`, `RecordField`, `BulletList`, rules,
-  `TapRow`, `ScreenPadding`) instead of raw Material components.
+  `TapRow`, `ScreenPadding`) and `ui/SheetParts.kt` (`ScreenHeader`, `BackLink`, `TitledBlock`, `CardHeader`,
+  `ActionRow`, `LeadText`, `countOf`) instead of raw Material components.
+- Top-level tabs and their labels are defined once, as `TopLevelSections` in `NavigationKeys.kt`.
 
 ## Editorial rules for content
 

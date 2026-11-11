@@ -11,18 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.openfile.uap.data.SourceLabel
+import com.openfile.uap.data.StoryKind
 import com.openfile.uap.theme.Ink
-import com.openfile.uap.theme.InkBody
 
-private val sourceLabels =
-  listOf(
-    "Primary record" to "Made at or near the time by someone involved.",
-    "First-hand" to "An account from a person who was present.",
-    "Official record" to "Produced by a government or other public body.",
-    "Reported" to "Described in another source. The original is not available to check.",
-    "Not preserved" to "Seen at the time. Nothing survives to examine.",
-  )
+private val sourceLabels = SourceLabel.entries.map { it.label to it.meaning }
 
 private val statusTerms =
   listOf(
@@ -31,49 +24,36 @@ private val statusTerms =
     "Disputed" to "Witnesses or researchers have publicly rejected an explanation.",
   )
 
-private val storyKinds =
-  listOf(
-    "At the time" to "Said, written or done within days or weeks of the event.",
-    "New account" to "A witness or researcher adds something that was not public before. The date is when it was first made public.",
-    "Print or screen" to "A book, article, film or broadcast that carried the story to a wider audience.",
-    "Inquiry or record" to "A public body or a study examines the case, or releases a record.",
-    "Revised or withdrawn" to "Someone changes or takes back what they said earlier.",
-  )
+private val storyKinds = StoryKind.entries.map { it.label to it.meaning }
 
 @Composable
 fun MethodScreen() {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
-    Column(
-      Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 28.dp, bottom = 16.dp),
-      verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-      MonoLabel("Open File")
-      TypeTitle("How we file things", size = 32.sp)
-      Text(
+    ScreenHeader(
+      label = "Open File",
+      title = "How we file things",
+      intro =
         "We record what was reported, what is on record and every explanation that has been seriously put forward. " +
           "We do not rule on any of it.",
-        style = MaterialTheme.typography.bodyLarge,
-        color = InkBody,
-      )
-    }
+    )
 
     Column(
       Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 8.dp, bottom = 28.dp),
       verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-      Block("Source labels") {
+      TitledBlock("Source labels") {
         Body("Every item of evidence carries one. It says where the item comes from, not whether it is true.")
         Glossary(sourceLabels)
       }
-      Block("Status terms") { Glossary(statusTerms) }
-      Block("Explanations") {
+      TitledBlock("Status terms") { Glossary(statusTerms) }
+      TitledBlock("Explanations") {
         Body(
           "Listed A–Z, never ranked. Each one names who holds it, the points in its support and the points that " +
             "complicate it, and links to the evidence it draws on.",
         )
       }
-      Block("Lore") {
+      TitledBlock("Lore") {
         Body(
           "Each file follows how its story has been told since, in date order. These cases are folklore as well as " +
             "record, and the retelling is part of what happened. Every step carries a label for how it reached the public.",
@@ -85,33 +65,25 @@ fun MethodScreen() {
         )
         Body("Late does not mean false, and early does not mean true. The dates show what can be checked against records made at the time.")
       }
-      Block("Missing from the file") {
+      TitledBlock("Missing from the file") {
         Body(
           "Where a record is known to be lost, destroyed, withheld or never made, the file says so. " +
             "A gap shows that a record is missing. It cannot show what the record said.",
         )
       }
-      Block("Threads") {
+      TitledBlock("Threads") {
         Body(
           "Some patterns recur from one file to the next. The threads list where each one appears and what should be " +
             "kept in mind about it. They describe the records and draw no conclusion about the events.",
         )
       }
-      Block("Why keep these files") {
+      TitledBlock("Why keep these files") {
         Body(
           "Whatever their cause, these reports have become part of modern lore. They are worth knowing accurately: " +
             "what was said, by whom, and what has been offered to account for it.",
         )
       }
     }
-  }
-}
-
-@Composable
-private fun Block(title: String, content: @Composable () -> Unit) {
-  Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-    TypeTitle(title, size = 20.sp)
-    content()
   }
 }
 

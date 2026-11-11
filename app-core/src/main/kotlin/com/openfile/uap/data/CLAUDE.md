@@ -3,8 +3,9 @@
 The app's premise is neutrality; keep it when adding or editing cases.
 
 - Record what was reported and what is on record. Don't rule on whether anything happened or what it was.
-- Every `Evidence` has a source label from the Method screen ("Primary record", "First-hand", "Official record",
-  "Reported", "Not preserved"). The label says where the item comes from, never whether it is true.
+- Every `Evidence` and `ReportMedia` has a `SourceLabel` (Primary record, First-hand, Official record, Reported,
+  Not preserved). The label says where the item comes from, never whether it is true. The enum also holds the
+  definitions the Method screen shows, so adding a label means writing its definition there.
 - Status text uses the Method screen terms ("Official explanation on record", "No official explanation",
   "Disputed").
 - Explanations are listed A–Z, never ranked, each with who holds it, what supports it, what complicates it and

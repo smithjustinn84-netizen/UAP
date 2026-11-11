@@ -33,7 +33,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +50,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -62,10 +60,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -96,10 +90,7 @@ import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
 import com.openfile.uap.theme.StampRed
-import kotlin.math.PI
-import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
 /**
@@ -109,15 +100,7 @@ import kotlinx.coroutines.delay
 fun ReportMediaCard(media: ReportMedia, evidenceTitle: String? = null, onOpenEvidence: (() -> Unit)? = null) {
   val uriHandler = LocalUriHandler.current
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("${media.id} · ${media.kind.label}", color = Ink)
-      MonoLabel(media.sourceLabel, color = Ink)
-    }
-    SolidRule(color = Ink)
+    CardHeader("${media.id} · ${media.kind.label}", media.sourceLabel.label)
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
       TypeTitle(media.title, size = 19.sp)
       when (media.kind) {
@@ -129,14 +112,7 @@ fun ReportMediaCard(media: ReportMedia, evidenceTitle: String? = null, onOpenEvi
       }
       Text(media.caption, style = MaterialTheme.typography.bodyMedium, color = Ink)
       DashedRule()
-      Text(
-        buildAnnotatedString {
-          withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Provenance: ") }
-          append(media.provenance)
-        },
-        style = MaterialTheme.typography.bodySmall,
-        color = InkBody,
-      )
+      LeadText("Provenance", media.provenance)
     }
     // Linked recordings carry their own play button, so only bundled or static exhibits get this row.
     val linkedRecording = (media.kind == MediaKind.Audio || media.kind == MediaKind.Video) && media.clip == null
@@ -185,7 +161,10 @@ fun ReportMediaCard(media: ReportMedia, evidenceTitle: String? = null, onOpenEvi
 private fun MediaFigure?.toDrawableRes(): Int? =
   when (this) {
     MediaFigure.ArnoldOriginalSketch -> R.drawable.plate_arnold_sketch
+
     MediaFigure.PhoenixEstrellasPhoto -> R.drawable.plate_phoenix_estrellas
+
+    // Drawn figures have no drawable.
     else -> null
   }
 
@@ -324,65 +303,37 @@ private fun ArchivalDiagramExhibit(media: ReportMedia) {
   ) {
     Row(
       Modifier.fillMaxWidth().background(Manila).padding(horizontal = 10.dp, vertical = 6.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      MonoLabel("FIG. ${media.id} · TECHNICAL RECONSTRUCTION", color = Ink)
+      MonoLabel("FIG. ${media.id} · TECHNICAL RECONSTRUCTION", color = Ink, modifier = Modifier.weight(1f))
       MonoLabel("NOT TO SCALE", color = InkSoft)
     }
     SolidRule(color = Ink)
-    val figure = media.figure
+    val diagram = media.figure?.diagram()
     Spacer(
       Modifier.fillMaxWidth()
         .height(176.dp)
         .semantics { contentDescription = "${media.title}. ${media.caption}" }
         // Paths and dash effects are built once per size, not on every draw.
         .drawWithCache {
-          val drawFigure = diagramFor(figure)
+          val drawFigure = diagram?.build?.invoke(this)
           onDrawBehind {
             drawDraftingGrid()
-            drawFigure()
+            drawFigure?.invoke(this)
           }
         },
     )
     SolidRule(color = Rule)
     Row(
       Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 6.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-      MonoLabel(diagramPrimaryLegend(media.figure), color = InkSoft)
-      MonoLabel(diagramSecondaryLegend(media.figure), color = StampRed)
+      MonoLabel(diagram?.legend ?: "ARCHIVAL PLOT", color = InkSoft, modifier = Modifier.weight(1f))
+      MonoLabel(diagram?.note ?: "EXHIBIT", color = StampRed)
     }
   }
 }
-
-private fun diagramPrimaryLegend(figure: MediaFigure?): String =
-  when (figure) {
-    MediaFigure.ArnoldCascadeTrack -> "DIST: 47 MI (RAINIER → ADAMS)"
-    MediaFigure.MogulBalloonTrain -> "LENGTH: ~600 FT · NEOPRENE + ML-307"
-    MediaFigure.WashingtonRadarScope -> "RANGE RINGS: 10 / 20 / 30 NM"
-    MediaFigure.KecksburgAcornProfile -> "EST. HULL: 10–12 FT · BRONZE TONE"
-    MediaFigure.ShagHarbourImpactChart -> "OFFSHORE: 250 M–½ MI · ACCOUNTS DIFFER"
-    MediaFigure.BerwynSeismograph -> "c. 20:38 · MAGNITUDE 3.5 (IGS)"
-    MediaFigure.RendleshamLandingTriangle -> "BASE: ~2.5 M · PODS: 7\" DIA × 1.5\" DEEP"
-    MediaFigure.PhoenixVFormation -> "TRACK: NNW → SSE · ~200 MI CORRIDOR"
-    MediaFigure.NimitzAltitudeDrop -> "ALT: 80,000 FT → 20,000 FT → 50 FT"
-    else -> "ARCHIVAL PLOT"
-  }
-
-private fun diagramSecondaryLegend(figure: MediaFigure?): String =
-  when (figure) {
-    MediaFigure.ArnoldCascadeTrack -> "TIME: 1M 42S"
-    MediaFigure.MogulBalloonTrain -> "NYU FLIGHT #4"
-    MediaFigure.WashingtonRadarScope -> "7 TARGETS LOGGED"
-    MediaFigure.KecksburgAcornProfile -> "RAISED BAND"
-    MediaFigure.ShagHarbourImpactChart -> "FOAM ~80 FT WIDE"
-    MediaFigure.BerwynSeismograph -> "ILLUSTRATIVE TRACE"
-    MediaFigure.RendleshamLandingTriangle -> "PEAK: 0.1 mR/HR"
-    MediaFigure.PhoenixVFormation -> "19:50–22:00 MST"
-    MediaFigure.NimitzAltitudeDrop -> "DROP: ~0.78 SEC"
-    else -> "EXHIBIT"
-  }
 
 @RawRes
 private fun MediaClip.toRawRes(): Int =
@@ -530,18 +481,10 @@ private fun RecordedVideoExhibit(media: ReportMedia, clip: MediaClip) {
       } else {
         MonoLabel("PRESS PLAY TO LOAD TAPE", color = Paper)
       }
-      Box(
-        Modifier.align(Alignment.BottomStart)
-          .padding(8.dp)
-          .background(Ink.copy(alpha = 0.85f))
-          .border(1.dp, Paper)
-          .padding(horizontal = 8.dp, vertical = 3.dp),
-      ) {
-        MonoLabel(
-          text = "${if (playing) "PLAY" else "STILL"} · ${formatSeconds(elapsed)} / ${formatSeconds(totalSeconds)}",
-          color = Paper,
-        )
-      }
+      OverlayTag(
+        "${if (playing) "PLAY" else "STILL"} · ${formatSeconds(elapsed)} / ${formatSeconds(totalSeconds)}",
+        Modifier.align(Alignment.BottomStart),
+      )
     }
     Row(
       Modifier.fillMaxWidth().background(Manila).padding(horizontal = 10.dp, vertical = 4.dp),
@@ -647,15 +590,7 @@ private fun LinkedVideoExhibit(media: ReportMedia) {
           contentScale = ContentScale.FillWidth,
           modifier = Modifier.fillMaxSize(),
         )
-        Box(
-          Modifier.align(Alignment.BottomStart)
-            .padding(8.dp)
-            .background(Ink.copy(alpha = 0.85f))
-            .border(1.dp, Paper)
-            .padding(horizontal = 8.dp, vertical = 3.dp),
-        ) {
-          MonoLabel("STILL · EXTERNAL VIDEO", color = Paper)
-        }
+        OverlayTag("STILL · EXTERNAL VIDEO", Modifier.align(Alignment.BottomStart))
       }
     } else {
       Row(
@@ -752,15 +687,7 @@ private fun ArchivalDocumentExhibit(media: ReportMedia) {
           alignment = Alignment.TopCenter,
           modifier = Modifier.fillMaxSize(),
         )
-        Box(
-          Modifier.align(Alignment.BottomStart)
-            .padding(8.dp)
-            .background(Ink.copy(alpha = 0.85f))
-            .border(1.dp, Paper)
-            .padding(horizontal = 8.dp, vertical = 3.dp),
-        ) {
-          MonoLabel("FACSIMILE · TAP TO READ FULL SCAN", color = Paper)
-        }
+        OverlayTag("FACSIMILE · TAP TO READ FULL SCAN", Modifier.align(Alignment.BottomStart))
       }
       SolidRule(color = Ink)
       if (viewing) ZoomableImageDialog(scan, "Scan of ${media.title}", onDismiss = { viewing = false })
@@ -794,11 +721,16 @@ private fun ArchivalDocumentExhibit(media: ReportMedia) {
   }
 }
 
-private fun formatSeconds(sec: Int): String {
-  val m = sec / 60
-  val s = sec % 60
-  return "%02d:%02d".format(m, s)
+/** A label pinned over a corner of a picture or player. */
+@Composable
+private fun OverlayTag(text: String, modifier: Modifier = Modifier) {
+  Box(modifier.padding(8.dp).background(Ink.copy(alpha = 0.85f)).border(1.dp, Paper).padding(horizontal = 8.dp, vertical = 3.dp)) {
+    MonoLabel(text, color = Paper)
+  }
 }
+
+// Padded by hand rather than with String.format, which would use the locale's digits.
+private fun formatSeconds(sec: Int): String = "${(sec / 60).toString().padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}"
 
 private fun parseTimestampSeconds(timestamp: String): Int {
   val parts = timestamp.split(":")
@@ -812,18 +744,41 @@ private fun parseTimestampSeconds(timestamp: String): Int {
 
 private typealias FigureDraw = DrawScope.() -> Unit
 
-private fun CacheDrawScope.diagramFor(figure: MediaFigure?): FigureDraw =
-  when (figure) {
-    MediaFigure.ArnoldCascadeTrack -> arnoldCascadeDiagram()
-    MediaFigure.MogulBalloonTrain -> mogulTrainDiagram()
-    MediaFigure.WashingtonRadarScope -> washingtonRadarDiagram()
-    MediaFigure.KecksburgAcornProfile -> kecksburgAcornProfile()
-    MediaFigure.ShagHarbourImpactChart -> shagHarbourDiagram()
-    MediaFigure.BerwynSeismograph -> berwynSeismographDiagram()
-    MediaFigure.RendleshamLandingTriangle -> rendleshamTriangleDiagram()
-    MediaFigure.PhoenixVFormation -> phoenixFormationDiagram()
-    MediaFigure.NimitzAltitudeDrop -> nimitzDropDiagram()
-    else -> arnoldCascadeDiagram()
+/** A drawn figure: the two legend lines under it and the builder that draws it. */
+private class Diagram(val legend: String, val note: String, val build: CacheDrawScope.() -> FigureDraw)
+
+/** Null for the photographic plates, which are drawables and not drawn here. */
+private fun MediaFigure.diagram(): Diagram? =
+  when (this) {
+    MediaFigure.ArnoldCascadeTrack -> Diagram("DIST: 47 MI (RAINIER → ADAMS)", "TIME: 1M 42S", CacheDrawScope::arnoldCascadeDiagram)
+
+    MediaFigure.MogulBalloonTrain -> Diagram("LENGTH: ~600 FT · NEOPRENE + ML-307", "NYU FLIGHT #4", CacheDrawScope::mogulTrainDiagram)
+
+    MediaFigure.WashingtonRadarScope -> Diagram("RANGE RINGS: 10 / 20 / 30 NM", "7 TARGETS LOGGED", CacheDrawScope::washingtonRadarDiagram)
+
+    MediaFigure.KecksburgAcornProfile -> Diagram("EST. HULL: 10–12 FT · BRONZE TONE", "RAISED BAND", CacheDrawScope::kecksburgAcornProfile)
+
+    MediaFigure.ShagHarbourImpactChart ->
+      Diagram("OFFSHORE: 250 M–½ MI · ACCOUNTS DIFFER", "FOAM ~80 FT WIDE", CacheDrawScope::shagHarbourDiagram)
+
+    MediaFigure.BerwynSeismograph -> Diagram(
+      "c. 20:38 · MAGNITUDE 3.5 (IGS)",
+      "ILLUSTRATIVE TRACE",
+      CacheDrawScope::berwynSeismographDiagram,
+    )
+
+    MediaFigure.RendleshamLandingTriangle ->
+      Diagram("BASE: ~2.5 M · PODS: 7\" DIA × 1.5\" DEEP", "PEAK: 0.1 mR/HR", CacheDrawScope::rendleshamTriangleDiagram)
+
+    MediaFigure.PhoenixVFormation -> Diagram(
+      "TRACK: NNW → SSE · ~200 MI CORRIDOR",
+      "19:50–22:00 MST",
+      CacheDrawScope::phoenixFormationDiagram,
+    )
+
+    MediaFigure.NimitzAltitudeDrop -> Diagram("ALT: 80,000 FT → 20,000 FT → 50 FT", "DROP: ~0.78 SEC", CacheDrawScope::nimitzDropDiagram)
+
+    MediaFigure.ArnoldOriginalSketch, MediaFigure.PhoenixEstrellasPhoto -> null
   }
 
 private val GridLine = Rule.copy(alpha = 0.45f)
