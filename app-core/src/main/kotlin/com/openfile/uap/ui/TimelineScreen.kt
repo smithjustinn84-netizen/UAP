@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,10 +17,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -32,10 +39,14 @@ import com.openfile.uap.data.TimelineEntry
 import com.openfile.uap.data.TimelineKind
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
+import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
 
 @Composable
 fun TimelineScreen(onOpenCase: (String) -> Unit) {
+  // Ordinal of the one kind being shown; -1 shows every kind.
+  var only by rememberSaveable { mutableIntStateOf(-1) }
+  val entries = remember(only) { Archive.timeline.filter { only == -1 || it.kind.ordinal == only } }
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
     Column(
@@ -45,37 +56,71 @@ fun TimelineScreen(onOpenCase: (String) -> Unit) {
       MonoLabel("Open File")
       TypeTitle("Timeline", size = 32.sp)
       Text(
-        "Reported sightings alongside the official inquiries and records that followed them.",
+        "Reported sightings alongside the inquiries that followed them and the books, films and broadcasts that retold them.",
         style = MaterialTheme.typography.bodyLarge,
         color = InkBody,
       )
     }
 
-    Row(
-      Modifier.padding(horizontal = ScreenPadding).fillMaxWidth().background(Paper).border(1.dp, Ink).padding(horizontal = 14.dp, vertical = 10.dp),
-      horizontalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-      TimelineKind.entries.forEach { kind ->
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-          KindMarker(kind)
-          Text(kind.label, style = MaterialTheme.typography.labelMedium, color = Ink)
+    // The key doubles as the filter: tap a kind to show only that kind, tap it again to show everything.
+    Column(Modifier.padding(horizontal = ScreenPadding).fillMaxWidth().background(Paper).border(1.dp, Ink)) {
+      TimelineKind.entries.forEachIndexed { index, kind ->
+        if (index > 0) SolidRule()
+        val selected = only == kind.ordinal
+        Row(
+          Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
+            .background(if (selected) Ink else Paper)
+            .toggleable(value = selected, role = Role.Checkbox) { only = if (it) kind.ordinal else -1 }
+            .padding(horizontal = 14.dp),
+          horizontalArrangement = Arrangement.spacedBy(10.dp),
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          KindMarker(kind, inverted = selected)
+          Text(
+            kind.label,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.labelMedium,
+            color = if (selected) Paper else Ink,
+          )
+          Text(
+            if (selected) "Only these · tap for all" else Archive.timeline.count { it.kind == kind }.toString(),
+            style = MaterialTheme.typography.labelMedium,
+            color = if (selected) Paper else InkSoft,
+          )
         }
       }
     }
 
     Column(Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp, bottom = 28.dp)) {
-      Archive.timeline.forEachIndexed { index, entry ->
-        val showYear = index == 0 || Archive.timeline[index - 1].year != entry.year
+      entries.forEachIndexed { index, entry ->
+        val showYear = index == 0 || entries[index - 1].year != entry.year
         TimelineRow(entry = entry, showYear = showYear, onOpenCase = onOpenCase)
       }
     }
   }
 }
 
-/** Filled for a sighting, hollow for an inquiry: told apart by fill, not by color. */
+/** Filled for a sighting, hollow for an inquiry, hollow with a dot for print or screen: told apart by fill, not by color. */
 @Composable
-private fun KindMarker(kind: TimelineKind) {
-  Box(Modifier.size(10.dp).background(if (kind == TimelineKind.Sighting) Ink else Paper).border(2.dp, Ink))
+private fun KindMarker(kind: TimelineKind, inverted: Boolean = false) {
+  val ink = if (inverted) Paper else Ink
+  val paper = if (inverted) Ink else Paper
+  Box(
+    Modifier.size(10.dp).background(
+      if (kind ==
+        TimelineKind.Sighting
+      ) {
+        ink
+      } else {
+        paper
+      },
+    ).border(2.dp, ink),
+    contentAlignment = Alignment.Center,
+  ) {
+    if (kind == TimelineKind.Culture) Box(Modifier.size(2.dp).background(ink))
+  }
 }
 
 @Composable

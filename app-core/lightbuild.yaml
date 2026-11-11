@@ -1,6 +1,9 @@
 platform: android
 type: library
 
+kotlin:
+  allWarningsAsErrors: true
+
 android:
   namespace: com.openfile.uap
   compileSdk:

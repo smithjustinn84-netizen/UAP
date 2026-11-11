@@ -35,6 +35,10 @@ data class CaseDetail(
   val explanations: List<Explanation>,
   val officialNote: String,
   val media: List<ReportMedia> = emptyList(),
+  /** How the account has been told since, oldest first. Written up in `Lore.kt`. */
+  val story: List<StoryEntry> = emptyList(),
+  /** Records that would bear on the case but are lost, destroyed, withheld or were never made. */
+  val gaps: List<RecordGap> = emptyList(),
 ) {
   fun mediaForEvidence(evidenceId: String): List<ReportMedia> = media.filter { it.evidenceId == evidenceId }
 }
@@ -124,9 +128,45 @@ data class Explanation(
   val drawsOn: List<String>,
 )
 
+/** What kind of step a [StoryEntry] is. Like a source label, it says how a detail arrived, never whether it is true. */
+enum class StoryKind(val label: String) {
+  AtTheTime("At the time"),
+  NewAccount("New account"),
+  PrintOrScreen("Print or screen"),
+  Inquiry("Inquiry or record"),
+  Revised("Revised or withdrawn"),
+}
+
+/** Where a statement in the archive can be checked: [label] is the citation as printed, [url] opens it. */
+data class Citation(val label: String, val url: String)
+
+/** One step in how a case has been told and retold. [year] orders the entries; [date] is what is shown. */
+data class StoryEntry(
+  val year: Int,
+  val date: String,
+  val kind: StoryKind,
+  val title: String,
+  val detail: String,
+  val source: Citation? = null,
+)
+
+data class RecordGap(val title: String, val detail: String, val source: Citation? = null)
+
+/** A pattern that recurs across files. It points at what the records share and draws no conclusion from it. */
+data class FileThread(
+  val id: String,
+  val title: String,
+  val summary: String,
+  val appearances: List<ThreadAppearance>,
+  val keepInMind: String,
+)
+
+data class ThreadAppearance(val caseId: String, val note: String)
+
 enum class TimelineKind(val label: String) {
   Sighting("Sighting"),
   Inquiry("Inquiry or record"),
+  Culture("Print or screen"),
 }
 
 data class TimelineEntry(
@@ -277,35 +317,197 @@ object Archive {
 
   fun case(id: String): CaseRecord? = cases.firstOrNull { it.id == id }
 
-  /** Filters by decade (null means all) and by a free-text query over title, place, date and file number. */
+  /** Cross-file patterns, in no particular order of weight. */
+  val threads: List<FileThread> = fileThreads
+
+  /**
+   * Filters by decade (null means all) and by a free-text query over title, place, date, file number, who reported it
+   * and the titles of the evidence and explanations on file.
+   */
   fun search(query: String, decade: Int?): List<CaseRecord> {
     val q = query.trim()
     return cases.filter { c ->
-      (decade == null || c.decade == decade) &&
-        (q.isEmpty() || listOf(c.title, c.place, c.date, c.id).any { it.contains(q, ignoreCase = true) })
+      (decade == null || c.decade == decade) && (q.isEmpty() || c.searchText().any { it.contains(q, ignoreCase = true) })
     }
   }
 
+  private fun CaseRecord.searchText(): List<String> =
+    listOf(title, place, date, id) +
+      detail?.let { d -> listOf(d.reportedBy) + d.evidence.map { it.title } + d.explanations.map { it.title } }.orEmpty()
+
   val timeline: List<TimelineEntry> =
     listOf(
-      TimelineEntry(1947, TimelineKind.Sighting, "Kenneth Arnold sighting", "24 June · Mount Rainier, Washington, USA", "OF-1947-01"),
-      TimelineEntry(1947, TimelineKind.Sighting, "Roswell incident", "July · Roswell, New Mexico, USA", "OF-1947-02"),
-      TimelineEntry(1952, TimelineKind.Inquiry, "Project Blue Book begins", "US Air Force study of UFO reports"),
-      TimelineEntry(1952, TimelineKind.Sighting, "Washington, D.C. radar sightings", "19–27 July · Washington, D.C., USA", "OF-1952-01"),
-      TimelineEntry(1965, TimelineKind.Sighting, "Kecksburg incident", "9 December · Kecksburg, Pennsylvania, USA", "OF-1965-01"),
-      TimelineEntry(1967, TimelineKind.Sighting, "Shag Harbour incident", "4 October · Shag Harbour, Nova Scotia, Canada", "OF-1967-01"),
+      TimelineEntry(
+        1947,
+        TimelineKind.Sighting,
+        "Kenneth Arnold sighting",
+        "24 June · Mount Rainier, Washington, USA",
+        "OF-1947-01",
+      ),
+      TimelineEntry(
+        1947,
+        TimelineKind.Culture,
+        "“Flying saucer” enters the language",
+        "Within days of Arnold’s report, newspaper headlines settle on “flying saucer” and “flying disc”",
+        "OF-1947-01",
+      ),
+      TimelineEntry(
+        1947,
+        TimelineKind.Sighting,
+        "Roswell incident",
+        "July · Roswell, New Mexico, USA",
+        "OF-1947-02",
+      ),
+      TimelineEntry(
+        1948,
+        TimelineKind.Inquiry,
+        "Project Sign begins",
+        "The first US Air Force study of the reports. It is followed by Project Grudge in 1949",
+      ),
+      TimelineEntry(
+        1950,
+        TimelineKind.Culture,
+        "“Behind the Flying Saucers”",
+        "Frank Scully’s bestseller tells of crashed saucers in the American Southwest. In 1952 True magazine reports that his sources were confidence men",
+      ),
+      TimelineEntry(
+        1952,
+        TimelineKind.Inquiry,
+        "Project Blue Book begins",
+        "US Air Force study of UFO reports",
+      ),
+      TimelineEntry(
+        1952,
+        TimelineKind.Sighting,
+        "Washington, D.C. radar sightings",
+        "19–27 July · Washington, D.C., USA",
+        "OF-1952-01",
+      ),
+      TimelineEntry(
+        1953,
+        TimelineKind.Inquiry,
+        "Robertson Panel",
+        "Scientists convened by the CIA review the Air Force’s cases and recommend steps to reduce public interest in the reports",
+      ),
+      TimelineEntry(
+        1956,
+        TimelineKind.Culture,
+        "“The Report on Unidentified Flying Objects”",
+        "Edward Ruppelt, former head of Project Blue Book, publishes an inside account and brings the term “UFO” into general use",
+      ),
+      TimelineEntry(
+        1965,
+        TimelineKind.Sighting,
+        "Kecksburg incident",
+        "9 December · Kecksburg, Pennsylvania, USA",
+        "OF-1965-01",
+      ),
+      TimelineEntry(
+        1966,
+        TimelineKind.Inquiry,
+        "First congressional hearing on UFOs",
+        "The House Armed Services Committee takes testimony on 5 April after a run of sightings in Michigan",
+      ),
+      TimelineEntry(
+        1967,
+        TimelineKind.Sighting,
+        "Shag Harbour incident",
+        "4 October · Shag Harbour, Nova Scotia, Canada",
+        "OF-1967-01",
+      ),
       TimelineEntry(
         1968,
         TimelineKind.Inquiry,
         "Condon Committee report",
-        "Scientific study commissioned by the US Air Force concludes no evidence of extraterrestrials",
+        "Scientific study commissioned by the US Air Force, completed in 1968 and released in January 1969, concludes no evidence of extraterrestrials",
       ),
-      TimelineEntry(1969, TimelineKind.Inquiry, "Project Blue Book closes", "The Air Force ends its study"),
-      TimelineEntry(1974, TimelineKind.Sighting, "Berwyn Mountains incident", "23 January · Berwyn Mountains, Wales, UK", "OF-1974-01"),
-      TimelineEntry(1980, TimelineKind.Sighting, "Rendlesham Forest incident", "26–28 December · Suffolk, England", "OF-1980-01"),
-      TimelineEntry(1997, TimelineKind.Sighting, "Phoenix Lights", "13 March · Arizona, USA", "OF-1997-01"),
-      TimelineEntry(2004, TimelineKind.Sighting, "USS Nimitz encounter", "14 November · Pacific, southwest of San Diego", "OF-2004-01"),
-      TimelineEntry(2015, TimelineKind.Sighting, "USS Theodore Roosevelt encounters", "January–March · Atlantic Coast, USA", "OF-2015-01"),
+      TimelineEntry(
+        1969,
+        TimelineKind.Inquiry,
+        "Project Blue Book closes",
+        "The Air Force ends its study",
+      ),
+      TimelineEntry(
+        1974,
+        TimelineKind.Sighting,
+        "Berwyn Mountains incident",
+        "23 January · Berwyn Mountains, Wales, UK",
+        "OF-1974-01",
+      ),
+      TimelineEntry(
+        1977,
+        TimelineKind.Culture,
+        "“Close Encounters of the Third Kind”",
+        "The film takes its title from a classification scale devised by J. Allen Hynek, formerly Project Blue Book’s scientific consultant",
+      ),
+      TimelineEntry(
+        1980,
+        TimelineKind.Culture,
+        "“The Roswell Incident”",
+        "The first book on the case, by Charles Berlitz and William Moore, puts accounts of a crashed craft and bodies in print",
+        "OF-1947-02",
+      ),
+      TimelineEntry(
+        1980,
+        TimelineKind.Sighting,
+        "Rendlesham Forest incident",
+        "26–28 December · Suffolk, England",
+        "OF-1980-01",
+      ),
+      TimelineEntry(
+        1993,
+        TimelineKind.Culture,
+        "“The X-Files” first airs",
+        "The television drama builds its story on crash retrievals and official secrecy",
+      ),
+      TimelineEntry(
+        1994,
+        TimelineKind.Inquiry,
+        "US Air Force Roswell report",
+        "The Air Force attributes the 1947 debris to Project Mogul. A second report follows in 1997",
+        "OF-1947-02",
+      ),
+      TimelineEntry(
+        1995,
+        TimelineKind.Inquiry,
+        "Government Accountability Office review",
+        "The GAO reports that some Roswell base records from the period were destroyed",
+        "OF-1947-02",
+      ),
+      TimelineEntry(
+        1995,
+        TimelineKind.Culture,
+        "“Alien autopsy” broadcast",
+        "Film presented as 1947 footage is shown on television worldwide. In 2006 its promoter says it was a re-creation",
+        "OF-1947-02",
+      ),
+      TimelineEntry(
+        1997,
+        TimelineKind.Sighting,
+        "Phoenix Lights",
+        "13 March · Arizona, USA",
+        "OF-1997-01",
+      ),
+      TimelineEntry(
+        2004,
+        TimelineKind.Sighting,
+        "USS Nimitz encounter",
+        "14 November · Pacific, southwest of San Diego",
+        "OF-2004-01",
+      ),
+      TimelineEntry(
+        2008,
+        TimelineKind.Inquiry,
+        "UK Ministry of Defence opens its UFO files",
+        "Release to the National Archives runs from 2008 to 2013. The Ministry closes its UFO desk in 2009",
+      ),
+      TimelineEntry(
+        2015,
+        TimelineKind.Sighting,
+        "USS Theodore Roosevelt encounters",
+        "January–March · Atlantic Coast, USA",
+        "OF-2015-01",
+      ),
       TimelineEntry(
         2017,
         TimelineKind.Inquiry,
@@ -325,10 +527,22 @@ object Archive {
         "A preliminary report on UAP is published by the Office of the Director of National Intelligence",
       ),
       TimelineEntry(
+        2022,
+        TimelineKind.Inquiry,
+        "All-domain Anomaly Resolution Office established",
+        "The US Department of Defense sets up a permanent office, known as AARO, to receive and analyse UAP reports",
+      ),
+      TimelineEntry(
         2023,
         TimelineKind.Inquiry,
         "Congressional UAP hearing",
         "House Oversight subcommittee hears public testimony from military aviators and former intelligence officials",
+      ),
+      TimelineEntry(
+        2024,
+        TimelineKind.Inquiry,
+        "AARO historical record report",
+        "The office’s review of US government inquiries since 1945 reports finding no evidence that any of them confirmed extraterrestrial technology",
       ),
     )
 }
@@ -493,6 +707,8 @@ private val rendlesham: CaseDetail
       officialNote =
         "The UK Ministry of Defence judged the events to be of no defence significance and took no further action. " +
           "That is a position on risk, not an explanation of what was seen.",
+      story = rendleshamStory,
+      gaps = rendleshamGaps,
       media =
         listOf(
           ReportMedia(
@@ -691,6 +907,8 @@ private val shagHarbour: CaseDetail
       officialNote =
         "The Canadian Department of National Defence and the Royal Canadian Mounted Police officially designated the event " +
           "as an unidentified flying object report after search operations failed to find debris or wreckage. The file remains an unsolved official case.",
+      story = shagHarbourStory,
+      gaps = shagHarbourGaps,
       media =
         listOf(
           ReportMedia(
@@ -861,6 +1079,8 @@ private val nimitz: CaseDetail
       officialNote =
         "The US Department of Defense officially declassified the Nimitz video in April 2020, confirming the footage was recorded " +
           "by naval personnel and stating that the observed aerial phenomena remain officially categorized as unidentified.",
+      story = nimitzStory,
+      gaps = nimitzGaps,
       media =
         listOf(
           ReportMedia(
@@ -1044,6 +1264,8 @@ private val arnold: CaseDetail
       officialNote =
         "The US Air Force reviewed the report in its UFO studies and no single explanation was agreed. " +
           "That is a statement about the file, not a finding of what Arnold saw.",
+      story = arnoldStory,
+      gaps = arnoldGaps,
       media =
         listOf(
           ReportMedia(
@@ -1217,6 +1439,8 @@ private val roswell: CaseDetail
       officialNote =
         "The US Air Force has said the debris came from a Project Mogul balloon train. " +
           "That is the official explanation on record. It is disputed, and it does not settle every account.",
+      story = roswellStory,
+      gaps = roswellGaps,
       media =
         listOf(
           ReportMedia(
@@ -1415,6 +1639,8 @@ private val washingtonRadar: CaseDetail
       officialNote =
         "The US Air Force said the reports came from a temperature inversion and ordinary lights. " +
           "That is the official explanation on record. It is disputed, and it does not account for every report.",
+      story = washingtonRadarStory,
+      gaps = washingtonRadarGaps,
       media =
         listOf(
           ReportMedia(
@@ -1585,6 +1811,8 @@ private val kecksburg: CaseDetail
       officialNote =
         "The US Air Force recorded the fireball as a meteor and said nothing was found in the woods. " +
           "That is the official explanation on record. It is disputed, and some witnesses say it does not fit what they saw.",
+      story = kecksburgStory,
+      gaps = kecksburgGaps,
       media =
         listOf(
           ReportMedia(
@@ -1727,6 +1955,8 @@ private val berwyn: CaseDetail
       officialNote =
         "The Ministry of Defence judged the reports to be a meteor and an earthquake, with no evidence of a crash. " +
           "That is the official explanation on record. It is disputed by some local accounts.",
+      story = berwynStory,
+      gaps = berwynGaps,
       media =
         listOf(
           ReportMedia(
@@ -1883,6 +2113,8 @@ private val phoenixLights: CaseDetail
       officialNote =
         "The Air National Guard said the later lights were flares from a training exercise. " +
           "That is the official explanation on record. It is disputed, and it does not address the earlier lights.",
+      story = phoenixLightsStory,
+      gaps = phoenixLightsGaps,
       media =
         listOf(
           ReportMedia(
@@ -2054,6 +2286,8 @@ private val rooseveltEncounters: CaseDetail
       officialNote =
         "The US Department of Defense confirmed the videos are authentic and said the objects in them remain unidentified. " +
           "That is a statement about identification, not an explanation of what was recorded.",
+      story = rooseveltEncountersStory,
+      gaps = rooseveltEncountersGaps,
       media =
         listOf(
           ReportMedia(

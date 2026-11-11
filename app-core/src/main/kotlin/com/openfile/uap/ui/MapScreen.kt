@@ -141,7 +141,9 @@ private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: String?, 
     }
   val measurer = rememberTextMeasurer()
   val labelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 11.sp, color = Paper)
-  val description = "Map of ${sheet.title} with ${pins.size} plotted ${if (pins.size == 1) "case" else "cases"}. The cases are listed below the map."
+  val description =
+    "Map of ${sheet.title} with ${pins.size} plotted ${if (pins.size == 1) "case" else "cases"}. " +
+      "The cases are listed below the map."
 
   Canvas(
     Modifier.fillMaxWidth()
@@ -158,7 +160,7 @@ private fun SheetMap(sheet: MapSheet, pins: List<Plotted>, selectedId: String?, 
             ?.takeIf { (_, at) -> (at - tap).getDistance() <= radius }
             ?.let { (p, _) -> onSelect(p.record.id) }
         }
-      }
+      },
   ) {
     drawGraticule(sheet)
     rings.forEach { ring ->

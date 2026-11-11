@@ -20,6 +20,9 @@ Guidance for Claude Code when working in this repository. See [README.md](README
 | Unit tests | `lightbuild --plain test app-core:hostTest` |
 | Run on device | `android run app/build/app-debug.apk` |
 | Update lockfiles after dependency changes | `lightbuild --plain resolve` (commit the `resolved.deps` files) |
+| Full quality gate (lint, tests, build) | `scripts/check` |
+| Lint only (ktlint + detekt) | `scripts/check lint` |
+| Auto-format Kotlin | `scripts/check format` |
 
 `lightbuild test app-core` fails ("No XML test reports found") because it also runs instrumentation tests and there
 are none. Use `app-core:hostTest`.
@@ -35,10 +38,13 @@ Build targets have no `//` prefix (`app-core`); module dependencies inside `ligh
 
 - Compose + Material 3, single activity. Navigation 3 with `@Serializable` keys in `NavigationKeys.kt`.
   Four top-level tabs (`Files`, `EventMap`, `Timeline`, `Method`) each wrapped in `AppFrame`; switching tabs
-  replaces the back stack. `CaseFile(id)` is pushed on top and keeps the tab it was opened from highlighted.
+  replaces the back stack. `CaseFile(id)` and `Threads` are pushed on top and keep the tab they were opened from
+  highlighted.
 - No ViewModels, network or persistence. All content is static Kotlin data in `data/Archive.kt`:
   `Archive.cases` (oldest first), `Archive.timeline`, `Archive.search(query, decade)`, `Archive.case(id)`.
   Each case's write-up is a private `CaseDetail` val further down the same file.
+- `data/Lore.kt` holds each case's `story` (how it has been retold, oldest first, each step with a `StoryKind`),
+  its `gaps` (records lost, destroyed, withheld or never made) and `Archive.threads` (patterns across files).
 - Media exhibits (`ReportMedia`) link to evidence by `evidenceId`. Drawn figures are `MediaFigure` enum values
   rendered in `ui/ReportMediaComponents.kt`; photographic plates are vector drawables `res/drawable/plate_*.xml`.
 - Map: `data/MapSheets.kt` defines sheet bounds and projection; outlines are `res/raw/map_*.txt`
@@ -58,14 +64,25 @@ The app's premise is neutrality; keep it when adding or editing cases.
   "Disputed").
 - Explanations are listed A–Z, never ranked, each with who holds it, what supports it, what complicates it and
   which evidence ids it draws on.
+- Lore entries are dated by when a detail first became public and say who introduced it. A `StoryKind` says how
+  it arrived, never whether it is true. Each case's story opens with an "At the time" entry.
+- Every lore entry and gap carries a `Citation` whose URL has been opened and read against the text. If the
+  original is unreachable, cite what was actually read and say so in the label ("transcription", "as syndicated by").
+- A gap says that a record is missing and who says so, never what it would have shown. Threads describe the
+  records, list their cases oldest first and carry a `keepInMind` that guards against reading a verdict into them.
 - `MapPoint.note` says what the pin stands for, since many locations are approximate.
 - Keep facts sourced and accurate; give media a `provenance` and `sourceUrl` where one exists.
 
 `ArchiveTest` enforces several of these (alphabetical explanations, valid evidence references, timeline case ids
-that resolve, media linked to real evidence). Run the unit tests after any content change.
+that resolve, media linked to real evidence, lore and timeline in date order, threads that resolve). Run the unit tests after any content change.
 
 ## Code style
 
+- Run `scripts/check` before finishing a change. ktlint (rules in `.editorconfig`) owns formatting and detekt
+  (`config/detekt.yml`) owns complexity, naming and likely bugs; both run as pinned standalone CLIs because Lightbuild
+  has no plugins (so no Spotless). Fix findings rather than suppressing them; relax a rule in config only with a
+  comment saying why.
+- Kotlin warnings are errors in `app-core` (`kotlin.allWarningsAsErrors`).
 - Kotlin, 2-space indent, lines up to ~140 characters, trailing commas in multi-line argument lists.
 - Comments are sparse and explain why; KDoc on data types where a field's meaning isn't obvious.
 - New third-party assets (fonts, map data, images) must be added to `THIRD-PARTY-NOTICES.md` with their licence.

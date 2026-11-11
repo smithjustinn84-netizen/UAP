@@ -1,0 +1,34 @@
+# Overrides on top of detekt's default rule set (run with --build-upon-default-config).
+# Formatting is ktlint's job (.editorconfig); detekt covers complexity, naming and likely bugs.
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    # Compose-style constants (theme colours, font families) are PascalCase.
+    constantPattern: '[A-Z][A-Za-z0-9_]*'
+
+complexity:
+  LongMethod:
+    ignoreAnnotated: ['Composable']
+  LongParameterList:
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable']
+  CyclomaticComplexMethod:
+    ignoreSimpleWhenEntries: true
+  TooManyFunctions:
+    # Screens keep their private composables in one file, and ui/Components.kt is the shared kit.
+    ignorePrivate: true
+    thresholdInFiles: 20
+
+style:
+  MaxLineLength:
+    # ktlint enforces the 140 limit and knows about the Archive.kt exemption.
+    active: false
+  MagicNumber:
+    # Layout dimensions, drawing coordinates and archive dates are all literal by nature.
+    active: false
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  ReturnCount:
+    excludeGuardClauses: true

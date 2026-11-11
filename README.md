@@ -6,12 +6,16 @@ on any of it.
 
 ## What's in the app
 
-- **Files** — the case list, searchable by name, place or year and filterable by decade.
+- **Files** — the case list, searchable by name, place, year or witness and filterable by decade.
+- **Threads** — patterns that recur across the files (late-arriving details, missing records, changed official
+  positions), each with what to keep in mind about it. Opened from the foot of the case list.
 - **Map** — every case plotted on hand-drawn sheets of North America and Britain and Ireland.
-- **Timeline** — sightings alongside the inquiries and records that followed them.
+- **Timeline** — sightings alongside the inquiries that followed them and the books, films and broadcasts that
+  retold them, filterable by kind.
 - **Method** — how the archive labels sources, status and explanations.
 - **Case file** — the full write-up: what was reported, what is and isn't in dispute, evidence with source labels,
-  media exhibits (diagrams, plates, audio/video transcripts, document excerpts) and explanations listed A–Z.
+  media exhibits (diagrams, plates, audio/video transcripts, document excerpts), explanations listed A–Z, the
+  records known to be missing, and the lore: how the story has been told since, in date order.
 
 Cases on file include Kenneth Arnold (1947), Roswell (1947), the Washington, D.C. radar sightings (1952),
 Kecksburg (1965), Shag Harbour (1967), Berwyn Mountains (1974), Rendlesham Forest (1980), the Phoenix Lights
@@ -37,6 +41,7 @@ app-core/                     Library module with all code and resources
     Navigation.kt             NavDisplay, tab switching, case-file routing
     NavigationKeys.kt         Files, EventMap, Timeline, Method, CaseFile(id)
     data/Archive.kt           Every case, its write-up, media and the timeline
+    data/Lore.kt              How each case has been retold, what is missing from its record, cross-file threads
     data/MapSheets.kt         Map sheet bounds, projection and outline parser
     theme/                    Colours, typography (Special Elite, IBM Plex), theme
     ui/                       One file per screen, plus shared components
@@ -59,6 +64,18 @@ android run app/build/app-debug.apk  # install and launch on a connected device 
 
 Add `--plain` for log-friendly output. Note that `lightbuild test app-core` also tries to run instrumentation
 tests on a device and currently fails because there are none; use `app-core:hostTest` for unit tests.
+
+## Code quality
+
+```shell
+scripts/check          # ktlint, detekt, unit tests and a debug build
+scripts/check lint     # ktlint and detekt only
+scripts/check format   # auto-format Kotlin with ktlint
+```
+
+Formatting rules live in `.editorconfig` and detekt overrides in `config/detekt.yml`. The script downloads pinned,
+checksum-verified ktlint and detekt CLIs into `build/quality-tools/` on first run (needs Java and `curl`).
+Kotlin compiler warnings fail the `app-core` build.
 
 ## Third-party material
 

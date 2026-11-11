@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# Quality gate: formatting (ktlint), static analysis (detekt), unit tests and a debug build.
+#
+#   scripts/check           run everything
+#   scripts/check lint      ktlint + detekt only
+#   scripts/check format    rewrite sources with ktlint, then report what it couldn't fix
+#
+# Lightbuild has no plugin mechanism, so the linters run as standalone CLIs. Their jars are pinned
+# here, verified by checksum and cached under build/quality-tools/ (git-ignored).
+set -euo pipefail
+
+KTLINT_VERSION=1.8.0
+KTLINT_SHA256=369ad2b789f95a011f807e1fcb690ccef80bd7cd014fd139e73ae82dcc0baeab
+DETEKT_VERSION=1.23.8
+DETEKT_SHA256=3afe89a11120303c73c9bdda3d8fe558dd9070a6937d27819ddc04b275381245
+
+MAVEN=https://repo1.maven.org/maven2
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+TOOLS="$ROOT/build/quality-tools"
+SOURCES='app-core/src/**/*.kt'
+
+cd "$ROOT"
+
+sha256() {
+  if command -v sha256sum >/dev/null; then sha256sum "$1"; else shasum -a 256 "$1"; fi | cut -d' ' -f1
+}
+
+# Prints the path of the cached jar, downloading and verifying it first if needed.
+fetch() {
+  local url=$1 expected=$2 jar="$TOOLS/${1##*/}"
+  if [[ ! -f $jar || $(sha256 "$jar") != "$expected" ]]; then
+    mkdir -p "$TOOLS"
+    echo "Downloading ${url##*/}" >&2
+    curl -fsSL -o "$jar.part" "$url"
+    if [[ $(sha256 "$jar.part") != "$expected" ]]; then
+      rm -f "$jar.part"
+      echo "Checksum mismatch for $url" >&2
+      exit 1
+    fi
+    mv "$jar.part" "$jar"
+  fi
+  echo "$jar"
+}
+
+ktlint() {
+  local jar
+  jar=$(fetch "$MAVEN/com/pinterest/ktlint/ktlint-cli/$KTLINT_VERSION/ktlint-cli-$KTLINT_VERSION-all.jar" "$KTLINT_SHA256")
+  java -jar "$jar" --relative "$@" "$SOURCES"
+}
+
+detekt() {
+  local jar
+  jar=$(fetch "$MAVEN/io/gitlab/arturbosch/detekt/detekt-cli/$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION-all.jar" "$DETEKT_SHA256")
+  java -jar "$jar" --input app-core/src --config config/detekt.yml --build-upon-default-config --base-path "$ROOT"
+}
+
+lightbuild() {
+  if command -v lightbuild >/dev/null; then
+    command lightbuild --plain "$@"
+  else
+    local version
+    version=$(sed -n '/^lightbuild:/,/^[^ ]/s/^ *version: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' project.lightbuild.yaml)
+    "$(android info sdk)/build/lightbuild/$version/cli/lightbuild" --plain "$@"
+  fi
+}
+
+step() { printf '\n== %s ==\n' "$1"; }
+
+lint() {
+  step "ktlint"
+  ktlint
+  step "detekt"
+  detekt
+}
+
+case "${1:-all}" in
+  format)
+    step "ktlint --format"
+    ktlint --format
+    ;;
+  lint)
+    lint
+    ;;
+  all)
+    lint
+    step "unit tests"
+    lightbuild test app-core:hostTest
+    step "build"
+    lightbuild build app
+    ;;
+  *)
+    echo "usage: scripts/check [all|lint|format]" >&2
+    exit 2
+    ;;
+esac
+
+printf '\nOK\n'

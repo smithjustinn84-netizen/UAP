@@ -11,4 +11,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object Method : NavKey
 
+@Serializable data object Threads : NavKey
+
 @Serializable data class CaseFile(val id: String) : NavKey

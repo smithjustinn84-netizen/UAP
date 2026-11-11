@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -21,18 +21,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.data.Archive
@@ -40,7 +40,9 @@ import com.openfile.uap.data.CaseDetail
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.data.Evidence
 import com.openfile.uap.data.Explanation
+import com.openfile.uap.data.RecordGap
 import com.openfile.uap.data.ReportMedia
+import com.openfile.uap.data.StoryEntry
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
@@ -52,6 +54,7 @@ private enum class Section(val label: String) {
   Evidence("Evidence"),
   Media("Media"),
   Explanations("Explanations"),
+  Lore("Lore"),
 }
 
 @Composable
@@ -107,19 +110,24 @@ fun CaseFileScreen(caseId: String, backLabel: String, onBack: () -> Unit) {
       ) {
         when (section) {
           Section.Summary -> SummarySection(record, detail, onOpen = { sectionIndex = it.ordinal })
+
           Section.Evidence ->
             EvidenceSection(
               detail = detail,
               onSeeMedia = { sectionIndex = Section.Media.ordinal },
               onSeeExplanations = { sectionIndex = Section.Explanations.ordinal },
             )
+
           Section.Media ->
             MediaSection(
               detail = detail,
               onSeeEvidence = { sectionIndex = Section.Evidence.ordinal },
               onSeeExplanations = { sectionIndex = Section.Explanations.ordinal },
             )
+
           Section.Explanations -> ExplanationsSection(detail, onSeeEvidence = { sectionIndex = Section.Evidence.ordinal })
+
+          Section.Lore -> LoreSection(detail)
         }
       }
     }
@@ -131,7 +139,8 @@ private fun SectionTabs(current: Section, onSelect: (Section) -> Unit) {
   Row(Modifier.padding(horizontal = ScreenPadding).fillMaxWidth().height(48.dp).background(Paper).border(1.dp, Ink)) {
     Section.entries.forEachIndexed { index, s ->
       if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-      TabCell(label = s.label, selected = s == current, onClick = { onSelect(s) }, modifier = Modifier.weight(1f))
+      // Width follows the length of the label, so five tabs fit a narrow phone without wrapping the longest.
+      TabCell(label = s.label, selected = s == current, onClick = { onSelect(s) }, modifier = Modifier.weight(s.label.length + 2f))
     }
   }
 }
@@ -187,6 +196,10 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
       }
       SolidRule()
       FileLink("Explanations", "${detail.explanations.size} angles, listed A–Z") { onOpen(Section.Explanations) }
+      if (detail.story.isNotEmpty()) {
+        SolidRule()
+        FileLink("Lore", "How the story has been told, ${detail.story.first().year}–${detail.story.last().year}") { onOpen(Section.Lore) }
+      }
     }
   }
 
@@ -223,11 +236,7 @@ private fun FileLink(title: String, subtitle: String, onClick: () -> Unit) {
 }
 
 @Composable
-private fun EvidenceSection(
-  detail: CaseDetail,
-  onSeeMedia: () -> Unit,
-  onSeeExplanations: () -> Unit,
-) {
+private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExplanations: () -> Unit) {
   Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(
       "Each item is labelled by the kind of source it is. A label describes where something comes from, not whether it is true.",
@@ -240,6 +249,7 @@ private fun EvidenceSection(
         attachedMedia = detail.mediaForEvidence(item.id),
       )
     }
+    if (detail.gaps.isNotEmpty()) MissingFromFile(detail.gaps)
     if (detail.media.isNotEmpty()) {
       TapRow(onClick = onSeeMedia, modifier = Modifier.defaultMinSize(minHeight = 52.dp).background(Paper).border(1.dp, Ink)) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -333,12 +343,75 @@ private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>) {
   }
 }
 
+/** Dashed like the "In dispute" sheet: these are the holes in the file, not items in it. */
 @Composable
-private fun MediaSection(
-  detail: CaseDetail,
-  onSeeEvidence: () -> Unit,
-  onSeeExplanations: () -> Unit,
-) {
+private fun MissingFromFile(gaps: List<RecordGap>) {
+  PaperSheet(dashed = true) {
+    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+      TypeTitle("Missing from the file", size = 19.sp)
+      Text(
+        "Records that would bear on this case but are lost, destroyed, withheld or were never made. " +
+          "A gap shows that a record is missing, not what it said.",
+        style = MaterialTheme.typography.bodySmall,
+        color = InkBody,
+      )
+      gaps.forEach { gap ->
+        DashedRule()
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+          MonoLabel(gap.title, color = Ink)
+          Text(gap.detail, style = MaterialTheme.typography.bodyMedium, color = Ink)
+          gap.source?.let { SourceRow(it) }
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun LoreSection(detail: CaseDetail) {
+  Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Text(
+      "How this case has been told since it was first reported, in date order: who added what, and when. " +
+        "A label says how a detail reached the public, not whether it is true.",
+      modifier = Modifier.padding(bottom = 4.dp),
+      style = MaterialTheme.typography.bodyMedium,
+      color = Ink,
+    )
+    detail.story.forEach { entry -> StoryCard(entry) }
+    Text(
+      "Late does not mean false, and early does not mean true. The dates show what can be checked against records made at the time.",
+      modifier = Modifier.padding(top = 4.dp),
+      style = MaterialTheme.typography.labelMedium,
+      color = InkSoft,
+    )
+  }
+}
+
+@Composable
+private fun StoryCard(entry: StoryEntry) {
+  PaperSheet {
+    Row(
+      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      MonoLabel(entry.date, color = Ink)
+      MonoLabel(entry.kind.label, color = Ink)
+    }
+    SolidRule(color = Ink)
+    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      TypeTitle(entry.title, size = 18.sp)
+      Text(entry.detail, style = MaterialTheme.typography.bodyMedium, color = Ink)
+    }
+    entry.source?.let {
+      SolidRule()
+      SourceRow(it, Modifier.padding(horizontal = 14.dp))
+    }
+  }
+}
+
+@Composable
+private fun MediaSection(detail: CaseDetail, onSeeEvidence: () -> Unit, onSeeExplanations: () -> Unit) {
   val evidenceTitles = detail.evidence.associate { it.id to it.title }
   Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(

@@ -1,12 +1,12 @@
 package com.openfile.uap.theme
 
 import androidx.compose.material3.Typography
-import com.openfile.uap.R
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.openfile.uap.R
 
 // Special Elite is Apache 2.0; IBM Plex Sans and Mono are SIL Open Font License 1.1 (see THIRD-PARTY-NOTICES.md at the project root).
 val TypewriterFamily: FontFamily = FontFamily(Font(R.font.special_elite_regular, FontWeight.Normal))

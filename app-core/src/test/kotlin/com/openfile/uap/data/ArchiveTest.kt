@@ -73,12 +73,15 @@ class ArchiveTest {
         assertTrue(detail.mediaForEvidence(item.evidenceId).contains(item))
         when (item.kind) {
           MediaKind.Diagram -> assertNotNull("${c.id} ${item.id} has figure", item.figure)
+
           MediaKind.Photo -> assertTrue("${c.id} ${item.id} has image or figure", item.image != null || item.figure != null)
+
           MediaKind.Audio, MediaKind.Video -> {
             // No more simulated players: every recording is either bundled or links to where it plays.
             assertTrue("${c.id} ${item.id} is bundled or linked", item.clip != null || item.sourceUrl != null)
             assertNotNull("${c.id} ${item.id} has duration", item.durationSeconds)
           }
+
           MediaKind.Document -> {
             assertTrue("${c.id} ${item.id} has excerpt", item.excerpt.isNotEmpty())
           }
@@ -87,5 +90,49 @@ class ArchiveTest {
     }
 
     assertEquals(MediaKind.entries.toSet(), allKinds)
+  }
+
+  @Test
+  fun queryMatchesWitnessesAndEvidenceTitles() {
+    assertEquals(listOf("OF-1980-01"), Archive.search("halt", null).map { it.id })
+    assertEquals(listOf("OF-1947-02"), Archive.search("mogul", null).map { it.id })
+  }
+
+  @Test
+  fun everyCaseHasItsLoreInDateOrderAndAtLeastOneGap() {
+    Archive.cases.forEach { c ->
+      val detail = c.detail!!
+      assertTrue("${c.id} has a story", detail.story.size >= 3)
+      val years = detail.story.map { it.year }
+      assertEquals("${c.id} story is in date order", years.sorted(), years)
+      assertTrue("${c.id} story starts no earlier than the event", years.first() >= c.year - 1)
+      assertEquals("${c.id} story opens with what was said at the time", StoryKind.AtTheTime, detail.story.first().kind)
+      assertTrue("${c.id} records what is missing", detail.gaps.isNotEmpty())
+      (detail.story.map { it.title to it.source } + detail.gaps.map { it.title to it.source }).forEach { (title, source) ->
+        assertNotNull("${c.id} “$title” cites a source", source)
+        assertTrue("${c.id} “$title” has a citation label", source!!.label.isNotBlank())
+        assertTrue("${c.id} “$title” links to its source", source.url.startsWith("http"))
+      }
+    }
+  }
+
+  @Test
+  fun timelineIsInDateOrder() {
+    val years = Archive.timeline.map { it.year }
+    assertEquals(years.sorted(), years)
+    assertEquals(TimelineKind.entries.toSet(), Archive.timeline.map { it.kind }.toSet())
+  }
+
+  @Test
+  fun everyThreadRunsThroughSeveralFilesThatExist() {
+    assertTrue(Archive.threads.isNotEmpty())
+    assertEquals(Archive.threads.map { it.id }.distinct(), Archive.threads.map { it.id })
+    Archive.threads.forEach { thread ->
+      val ids = thread.appearances.map { it.caseId }
+      assertTrue("${thread.id} appears in more than one file", ids.size >= 2)
+      assertEquals("${thread.id} lists each file once, oldest first", ids.distinct().sorted(), ids)
+      ids.forEach { assertNotNull("${thread.id} case $it exists", Archive.case(it)) }
+      assertTrue("${thread.id} says what to keep in mind", thread.keepInMind.isNotBlank())
+    }
   }
 }

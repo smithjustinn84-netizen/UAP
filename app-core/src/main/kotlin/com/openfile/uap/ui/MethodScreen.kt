@@ -31,6 +31,15 @@ private val statusTerms =
     "Disputed" to "Witnesses or researchers have publicly rejected an explanation.",
   )
 
+private val storyKinds =
+  listOf(
+    "At the time" to "Said, written or done within days or weeks of the event.",
+    "New account" to "A witness or researcher adds something that was not public before. The date is when it was first made public.",
+    "Print or screen" to "A book, article, film or broadcast that carried the story to a wider audience.",
+    "Inquiry or record" to "A public body or a study examines the case, or releases a record.",
+    "Revised or withdrawn" to "Someone changes or takes back what they said earlier.",
+  )
+
 @Composable
 fun MethodScreen() {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
@@ -61,13 +70,37 @@ fun MethodScreen() {
       Block("Explanations") {
         Body(
           "Listed A–Z, never ranked. Each one names who holds it, the points in its support and the points that " +
-            "complicate it, and links to the evidence it draws on."
+            "complicate it, and links to the evidence it draws on.",
+        )
+      }
+      Block("Lore") {
+        Body(
+          "Each file follows how its story has been told since, in date order. These cases are folklore as well as " +
+            "record, and the retelling is part of what happened. Every step carries a label for how it reached the public.",
+        )
+        Glossary(storyKinds)
+        Body(
+          "Each step and each gap names a source you can open. Where the original could not be reached, the citation " +
+            "says what was read in its place: a syndicated copy, a transcription or a summary.",
+        )
+        Body("Late does not mean false, and early does not mean true. The dates show what can be checked against records made at the time.")
+      }
+      Block("Missing from the file") {
+        Body(
+          "Where a record is known to be lost, destroyed, withheld or never made, the file says so. " +
+            "A gap shows that a record is missing. It cannot show what the record said.",
+        )
+      }
+      Block("Threads") {
+        Body(
+          "Some patterns recur from one file to the next. The threads list where each one appears and what should be " +
+            "kept in mind about it. They describe the records and draw no conclusion about the events.",
         )
       }
       Block("Why keep these files") {
         Body(
           "Whatever their cause, these reports have become part of modern lore. They are worth knowing accurately: " +
-            "what was said, by whom, and what has been offered to account for it."
+            "what was said, by whom, and what has been offered to account for it.",
         )
       }
     }

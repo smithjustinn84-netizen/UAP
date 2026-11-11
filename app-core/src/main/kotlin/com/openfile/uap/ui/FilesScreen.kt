@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -37,9 +40,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.data.Archive
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.statusBars
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -47,7 +47,7 @@ import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
 
 @Composable
-fun FilesScreen(onOpenCase: (String) -> Unit) {
+fun FilesScreen(onOpenCase: (String) -> Unit, onOpenThreads: () -> Unit) {
   var query by rememberSaveable { mutableStateOf("") }
   var decade by rememberSaveable { mutableStateOf<Int?>(null) }
   val results = remember(query, decade) { Archive.search(query, decade) }
@@ -74,7 +74,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit) {
     if (results.isEmpty()) {
       item(key = "empty") {
         Text(
-          "No files match. Try a place, a year or a name, or clear the decade filter.",
+          "No files match. Try a place, a year, a name or a witness, or clear the decade filter.",
           modifier = Modifier.padding(horizontal = ScreenPadding),
           style = MaterialTheme.typography.bodyMedium,
           color = InkBody,
@@ -84,6 +84,7 @@ fun FilesScreen(onOpenCase: (String) -> Unit) {
     items(results, key = { it.id }) { record ->
       FolderCard(record = record, onClick = { onOpenCase(record.id) }, modifier = Modifier.padding(horizontal = ScreenPadding))
     }
+    item(key = "threads") { ThreadsLink(onClick = onOpenThreads, modifier = Modifier.padding(horizontal = ScreenPadding)) }
   }
 }
 
@@ -106,6 +107,24 @@ private fun FilesHeader() {
   }
 }
 
+/** The way in to the cross-file threads. Sits after the folders, like the index sheet at the back of a drawer. */
+@Composable
+private fun ThreadsLink(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  TapRow(onClick = onClick, onClickLabel = "Open threads", modifier = modifier.defaultMinSize(minHeight = 64.dp).background(Ink)) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Text("Threads across the files", style = MaterialTheme.typography.labelLarge, color = Paper)
+        Text(
+          "${Archive.threads.size} patterns that recur from one case to the next",
+          style = MaterialTheme.typography.labelMedium,
+          color = Paper,
+        )
+      }
+      Chevron(color = Paper)
+    }
+  }
+}
+
 @Composable
 private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
   Column(Modifier.padding(horizontal = ScreenPadding), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -124,7 +143,7 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
           contentAlignment = Alignment.CenterStart,
         ) {
           if (query.isEmpty()) {
-            Text("Place, year or name", style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp), color = InkSoft)
+            Text("Place, year, name or witness", style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp), color = InkSoft)
           }
           field()
         }

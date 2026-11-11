@@ -30,11 +30,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -100,11 +100,7 @@ import kotlinx.coroutines.delay
  * Full archival media exhibit card used in the Media tab and inline on Evidence cards.
  */
 @Composable
-fun ReportMediaCard(
-  media: ReportMedia,
-  evidenceTitle: String? = null,
-  onOpenEvidence: (() -> Unit)? = null,
-) {
+fun ReportMediaCard(media: ReportMedia, evidenceTitle: String? = null, onOpenEvidence: (() -> Unit)? = null) {
   val uriHandler = LocalUriHandler.current
   PaperSheet {
     Row(
@@ -635,11 +631,7 @@ private fun ArchivalAudioExhibit(media: ReportMedia) {
 }
 
 @Composable
-private fun TranscriptList(
-  cues: List<TranscriptCue>,
-  elapsedSeconds: Int,
-  onSeek: ((Int) -> Unit)?,
-) {
+private fun TranscriptList(cues: List<TranscriptCue>, elapsedSeconds: Int, onSeek: ((Int) -> Unit)?) {
   val cueSeconds = cues.map { parseTimestampSeconds(it.timestamp) }
   val activeIndex = cueSeconds.indexOfLast { it <= elapsedSeconds }.coerceAtLeast(0)
 
@@ -648,21 +640,21 @@ private fun TranscriptList(
       val isActive = onSeek != null && index == activeIndex
       val rowModifier = Modifier.background(if (isActive) Manila.copy(alpha = 0.55f) else Color.Transparent)
       val cueRow: @Composable () -> Unit = {
-          Row(
-            Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.Top,
-          ) {
-            MonoLabel(
-              cue.timestamp,
-              color = if (isActive) StampRed else InkSoft,
-              modifier = Modifier.width(44.dp).padding(top = 2.dp),
-            )
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-              MonoLabel(cue.speaker, color = Ink)
-              Text(cue.text, style = MaterialTheme.typography.bodySmall, color = InkBody)
-            }
+        Row(
+          Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
+          horizontalArrangement = Arrangement.spacedBy(10.dp),
+          verticalAlignment = Alignment.Top,
+        ) {
+          MonoLabel(
+            cue.timestamp,
+            color = if (isActive) StampRed else InkSoft,
+            modifier = Modifier.width(44.dp).padding(top = 2.dp),
+          )
+          Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            MonoLabel(cue.speaker, color = Ink)
+            Text(cue.text, style = MaterialTheme.typography.bodySmall, color = InkBody)
           }
+        }
       }
       if (onSeek != null) {
         TapRow(onClick = { onSeek(cueSeconds[index]) }, onClickLabel = "Jump to ${cue.timestamp}", modifier = rowModifier, content = cueRow)

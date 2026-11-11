@@ -12,21 +12,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -53,6 +54,7 @@ import com.openfile.uap.EventMap
 import com.openfile.uap.Files
 import com.openfile.uap.Method
 import com.openfile.uap.Timeline
+import com.openfile.uap.data.Citation
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -86,7 +88,7 @@ fun AppFrame(current: NavKey, onTab: (NavKey) -> Unit, content: @Composable () -
     Modifier.fillMaxSize()
       .background(Manila)
       .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-      .imePadding()
+      .imePadding(),
   ) {
     Box(Modifier.weight(1f).fillMaxWidth()) { content() }
     Box(Modifier.fillMaxWidth().height(2.dp).background(Ink))
@@ -155,15 +157,16 @@ fun PaperSheet(modifier: Modifier = Modifier, dashed: Boolean = false, content: 
   Column(modifier.fillMaxWidth().background(Paper).then(outline), content = content)
 }
 
-fun Modifier.dashedBorder(color: Color, width: Dp = 1.dp): Modifier = drawBehind {
-  val stroke = width.toPx()
-  drawRect(
-    color = color,
-    topLeft = Offset(stroke / 2, stroke / 2),
-    size = size.copy(width = size.width - stroke, height = size.height - stroke),
-    style = Stroke(width = stroke, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))),
-  )
-}
+fun Modifier.dashedBorder(color: Color, width: Dp = 1.dp): Modifier =
+  drawBehind {
+    val stroke = width.toPx()
+    drawRect(
+      color = color,
+      topLeft = Offset(stroke / 2, stroke / 2),
+      size = size.copy(width = size.width - stroke, height = size.height - stroke),
+      style = Stroke(width = stroke, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))),
+    )
+  }
 
 @Composable
 fun SolidRule(modifier: Modifier = Modifier, color: Color = Rule) {
@@ -181,7 +184,7 @@ fun DashedRule(modifier: Modifier = Modifier) {
         strokeWidth = size.height,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx())),
       )
-    }
+    },
   )
 }
 
@@ -218,6 +221,22 @@ fun TapRow(onClick: () -> Unit, modifier: Modifier = Modifier, onClickLabel: Str
   }
 }
 
+/** A tappable citation at the foot of a sheet. Opens the source outside the app. */
+@Composable
+fun SourceRow(source: Citation, modifier: Modifier = Modifier) {
+  val uriHandler = LocalUriHandler.current
+  TapRow(onClick = { runCatching { uriHandler.openUri(source.url) } }, onClickLabel = "Open source", modifier = modifier) {
+    Row(
+      Modifier.fillMaxWidth().padding(vertical = 10.dp),
+      horizontalArrangement = Arrangement.spacedBy(12.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Text("Source: ${source.label}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, color = Ink)
+      Chevron()
+    }
+  }
+}
+
 /** A small drawn chevron: pointing right for "go to", down for "open or close". */
 @Composable
 fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, color: Color = Ink) {
@@ -225,8 +244,11 @@ fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, color: Color =
     val w = size.width
     val stroke = 2.dp.toPx()
     val points =
-      if (down) listOf(Offset(w * 0.15f, w * 0.35f), Offset(w * 0.5f, w * 0.7f), Offset(w * 0.85f, w * 0.35f))
-      else listOf(Offset(w * 0.35f, w * 0.15f), Offset(w * 0.7f, w * 0.5f), Offset(w * 0.35f, w * 0.85f))
+      if (down) {
+        listOf(Offset(w * 0.15f, w * 0.35f), Offset(w * 0.5f, w * 0.7f), Offset(w * 0.85f, w * 0.35f))
+      } else {
+        listOf(Offset(w * 0.35f, w * 0.15f), Offset(w * 0.7f, w * 0.5f), Offset(w * 0.35f, w * 0.85f))
+      }
     drawLine(color, points[0], points[1], strokeWidth = stroke, cap = StrokeCap.Round)
     drawLine(color, points[1], points[2], strokeWidth = stroke, cap = StrokeCap.Round)
   }
