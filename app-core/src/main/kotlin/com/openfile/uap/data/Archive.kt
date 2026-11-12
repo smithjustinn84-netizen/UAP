@@ -60,6 +60,7 @@ enum class SourceLabel(val label: String, val meaning: String) {
 /** Interactive graphics drawn in code for one particular file; `ui/casefile` has a composable for each. */
 enum class Infographic {
   NimitzBriefing,
+  TehranBriefing,
 }
 
 /** [sourceLabel] says where an item comes from, never whether it is true. */
@@ -2704,8 +2705,8 @@ private val tehran: CaseDetail
         listOf(
           "In the early morning hours of 19 September 1976, civilians in Tehran reported a brilliant glowing object in the night sky.",
           "The Imperial Iranian Air Force scrambled an F-4 Phantom II jet from Shahrokhi Airbase. When the pilot approached within 25 nautical miles of the object, his instrumentation and UHF communications lost power, returning to normal once he turned away.",
-          "A second F-4 piloted by Lt. Parviz Jafari established radar lock at 27 nautical miles. As the F-4 closed to 25 nm, the object accelerated away.",
-          "A smaller luminous object then detached from the primary object and approached the F-4. Jafari attempted to fire an AIM-9 Sidewinder missile, but the weapons release control panel lost power. The pilot executed a high-G dive to evade.",
+          "A second F-4 piloted by Maj. Parviz Jafari established radar lock at 27 nautical miles. As the F-4 closed to 25 nm, the object moved away and held that range.",
+          "A smaller luminous object then detached from the primary object and approached the F-4. Jafari attempted to fire an AIM-9 Sidewinder missile, but the weapons control panel went off and communications were lost. The pilot turned away in a negative-G dive.",
           "The secondary object descended to the ground in a dry lake bed south of Tehran, while the primary object departed at high speed.",
         ),
       notInDispute =
@@ -2728,8 +2729,8 @@ private val tehran: CaseDetail
             sourceLabel = SourceLabel.OfficialRecord,
             title = "US Defense Intelligence Agency report",
             description =
-              "Declassified DIA information report titled 'An Outstanding Report of an Unidentified Flying Object'.",
-            caveat = "compiled from US military attache debriefings with Iranian officers, not direct US observation.",
+              "Declassified US Defense Attaché Office cable to DIA (IR 6 846 0139 76, 23 September 1976), filed with a DIA evaluation form rating the information as confirmed by other sources and of high value.",
+            caveat = "the attaché office obtained it in conversation with a source, a sub-source and the pilot of one of the F-4s; no US personnel observed the events.",
           ),
           Evidence(
             id = "E-02",
@@ -2792,12 +2793,13 @@ private val tehran: CaseDetail
               ),
             complicates =
               listOf(
-                "Mehrabad ground radar and an airborne APQ-120 radar both recorded returns.",
+                "The DIA evaluation noted that the visual sightings were confirmed by radar.",
                 "Flight crews were experienced military aviators trained in celestial navigation.",
               ),
             drawsOn = listOf("E-01", "E-02", "E-03"),
           ),
         ),
+      infographic = Infographic.TehranBriefing,
       officialNote =
         "The US Defense Intelligence Agency marked the report with high credibility and noted that the visual and radar observations were confirmed by multiple independent witnesses. " +
           "The agency did not conclude what the phenomenon was.",
@@ -2810,22 +2812,24 @@ private val tehran: CaseDetail
             evidenceId = "E-01",
             kind = MediaKind.Document,
             sourceLabel = SourceLabel.OfficialRecord,
-            title = "US Defense Intelligence Agency evaluation memo (1976)",
-            caption = "Declassified joint intelligence report summarizing the scramble of two F-4s and radar tracking.",
-            provenance = "US Defense Intelligence Agency / Joint Chiefs of Staff · Released under FOIA · National Security Archive collection",
+            title = "US Defense Attaché cable to DIA (1976)",
+            caption = "Teletype from the attaché office in Tehran relaying the Iranian account of the two F-4 scrambles. Excerpts are verbatim, set in sentence case from the all-capitals original.",
+            provenance = "USDAO Tehran to DIA, 230630Z Sep 1976 · Released under FOIA with the DIA evaluation form and a 1978 routing slip · Scan hosted by NICAP",
             documentHeader =
               listOf(
-                "ORIGINATOR" to "DIA / JCS Washington D.C.",
-                "DATE" to "September 1976",
-                "SUBJECT" to "IRAN: Joint Staff Information Report (UFO Sighting)",
+                "FROM" to "USDAO Tehran (Col. Frank B. McKenzie, USAF, DATT)",
+                "TO" to "DIA Washington; info SecDef, CIA, NSA, White House and others",
+                "DATE" to "23 September 1976",
+                "SUBJECT" to "Reported UFO sighting · IR 6 846 0139 76",
                 "CLASSIFICATION" to "Confidential (Declassified)",
               ),
             excerpt =
               listOf(
-                "A visual sighting of an intense, brightly glowing object was reported by multiple witnesses over Tehran. Two F-4 Phantom aircraft were scrambled successively.",
-                "When the second F-4 approached to within 25 NM, all instrumentation and communications failed. As a missile was prepared for launch, the weapons panel lost power.",
-                "An evaluation report noted: 'An outstanding report. This case is a classic which meets all the criteria necessary for a valid study of the UFO phenomenon.'",
+                "At about 1230 AM on 19 Sep 76 the Imperial Iranian Air Force (IIAF) command post received four telephone calls from citizens living in the Shemiran area of Tehran saying that they had seen strange objects in the sky.",
+                "As the F-4 approached a range of 25 NM he lost all instrumentation and communications (UHF and intercom). He broke off the intercept and headed back to Shahrokhi.",
+                "The pilot attempted to fire an AIM-9 missile at the object but at that instant his weapons control panel went off and he lost all communications (UHF and interphone).",
               ),
+            sourceUrl = "http://nicap.org/reports/760919routing_slip_ufo_iran.pdf",
           ),
           ReportMedia(
             id = "M-02",
@@ -2837,7 +2841,7 @@ private val tehran: CaseDetail
             provenance = "National Press Club UAP press conference, 12 November 2007",
             documentHeader =
               listOf(
-                "SPEAKER" to "Brig. Gen. Parviz Jafari (IIAF Ret.)",
+                "SPEAKER" to "Gen. Parviz Jafari (IIAF, ret.)",
                 "VENUE" to "National Press Club, Washington D.C.",
                 "DATE" to "12 November 2007",
               ),

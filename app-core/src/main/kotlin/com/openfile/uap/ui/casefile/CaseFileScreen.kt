@@ -324,6 +324,13 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
             onOpenEvidence = { onOpen(Section.Evidence) },
             onOpenMedia = { onOpen(Section.Media) },
           )
+
+        Infographic.TehranBriefing ->
+          TehranIncidentInfographic(
+            caseId = record.id,
+            onOpenEvidence = { onOpen(Section.Evidence) },
+            onOpenMedia = { onOpen(Section.Media) },
+          )
       }
     }
   }

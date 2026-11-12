@@ -387,43 +387,43 @@ internal val tehranStory: List<StoryEntry> =
       1976,
       "19 Sep 1976",
       "Scramble over the capital",
-      "Tehran newspapers and international wires reported that the Imperial Iranian Air Force scrambled two F-4 Phantom interceptors over the city after civilian reports of an intensely brilliant light. Both flight crews experienced loss of communications and weapons avionics as they attempted interception.",
-      Citation("Tehran Journal, 20 September 1976 (transcription via Project 1947)", "http://www.project1947.com/fig/1976tehran.htm"),
+      "The Teheran Journal carried a report of the night's events the following day. Its text has not been checked for this file; the citation is a case page that lists it as a reference.",
+      Citation("Patrick Gross, “Tehran, Iran, September 19, 1976” (lists Teheran Journal, 20 Sep 1976; article text not reproduced)", "https://ufology.patrickgross.org/htm/tehe76.htm"),
     ),
     inquiry(
       1976,
-      "Oct 1976",
-      "The DIA evaluation memo",
-      "A joint US Defense Intelligence Agency and Joint Chiefs of Staff cable evaluated the Iranian intercept as an outstanding report with high credibility, noting simultaneous radar tracking and electronic interference.",
-      Citation("US Defense Intelligence Agency, Information Report: An Outstanding Report of a UFO, 1976 (National Security Archive)", "https://nsarchive.gwu.edu/document/27982-document-1-defense-intelligence-agency-information-report-outstanding-report-ufo"),
+      "23 Sep 1976",
+      "The attaché cable and DIA evaluation",
+      "The US Defense Attaché Office in Tehran cabled DIA an account of the two scrambles, obtained from Iranian sources and the pilot of one F-4, and it was distributed to the CIA, NSA and White House among others. A DIA evaluation form rated the information as confirmed by other sources and of high value, noting that the visual sightings were confirmed by radar and that similar electromagnetic effects were reported by three separate aircraft.",
+      Citation("USDAO Tehran cable IR 6 846 0139 76 with DIA evaluation form and 1978 routing slip (FOIA release, scan hosted by NICAP)", "http://nicap.org/reports/760919routing_slip_ufo_iran.pdf"),
     ),
     printOrScreen(
-      1979,
-      "1979",
+      1983,
+      "1983",
       "The Jupiter hypothesis",
-      "Aviation journalist Philip J. Klass argued that the pilots had sighted the planet Jupiter and experienced coincidental mechanical malfunctions compounded by pilot error.",
-      Citation("Philip J. Klass, UFOs: The Public Deceived (1983), ch. 18", "https://archive.org/details/ufospublicdeceiv0000klas"),
+      "In UFOs: The Public Deceived, aviation journalist Philip J. Klass suggested the light was the planet Jupiter and pointed to the second F-4's history of intermittent electrical outages and to night pilots' habit of taking evasive action against lights they misjudge.",
+      Citation("Brian Dunning, Skeptoid #315, “The Tehran 1976 UFO” (2012), summarising Klass (1983), pp. 111–124", "https://skeptoid.com/episodes/315"),
     ),
     newAccount(
       2007,
       "12 Nov 2007",
       "General Jafari at the National Press Club",
-      "Retired Brigadier General Parviz Jafari, the pilot of the second F-4, spoke publicly in Washington, D.C., describing the primary object, the release of the smaller glowing craft, and the total shutdown of his weapons release console.",
-      Citation("Maj. Gen. Parviz Jafari, National Press Club statement, Washington D.C., 12 Nov 2007", "https://www.theblackvault.com/casefiles/the-1976-tehran-iran-military-ufo-incident-case-file/"),
+      "Parviz Jafari, the pilot of the second F-4 and by then a retired general, spoke publicly in Washington, D.C., describing the primary object, the release of the smaller glowing craft, and the total shutdown of his weapons release console.",
+      Citation("The Black Vault, “The 1976 Iran Incident” case file (on Jafari's 2007 National Press Club appearance)", "https://www.theblackvault.com/casefiles/the-1976-iran-incident/"),
     ),
   )
 
 internal val tehranGaps: List<RecordGap> =
   listOf(
     RecordGap(
-      "No radar tape recordings preserved",
-      "While the DIA report states that the second F-4 locked onto the target with its APQ-120 airborne radar at 27 nautical miles and Mehrabad control tower tracked the object, no magnetic tape or scope photographs of the radar returns have been published.",
-      Citation("US Defense Intelligence Agency, Information Report: An Outstanding Report of a UFO, 1976 (National Security Archive)", "https://nsarchive.gwu.edu/document/27982-document-1-defense-intelligence-agency-information-report-outstanding-report-ufo"),
+      "No radar recordings published",
+      "The attaché cable says the second F-4's backseater acquired a radar lock at 27 nautical miles and describes the size of the return. No film, photograph or recording of that radar scope has been published.",
+      Citation("USDAO Tehran cable IR 6 846 0139 76 (FOIA release, scan hosted by NICAP)", "http://nicap.org/reports/760919routing_slip_ufo_iran.pdf"),
     ),
     RecordGap(
-      "Dry lake bed search report",
-      "The DIA memo noted that Iranian military personnel were dispatched by helicopter the following morning to inspect the dry lake bed where the secondary object landed. No report of their findings has been released.",
-      Citation("The Black Vault, “The 1976 Tehran UFO Incident Declassified Files”", "https://www.theblackvault.com/documentarchive/the-1976-tehran-iran-ufo-incident/"),
+      "Radiation check results",
+      "The cable says the aircraft and the area where the object was believed to have landed were being checked for possible radiation, and that more information would be forwarded. The Wikipedia summary of the case notes that the results were not reported.",
+      Citation("Wikipedia, “1976 Tehran UFO incident”", "https://en.wikipedia.org/wiki/1976_Tehran_UFO_incident"),
     ),
   )
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,24 +54,12 @@ import com.openfile.uap.theme.OpenFileTheme
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
 import com.openfile.uap.theme.StampRed
-import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.SolidRule
 import com.openfile.uap.ui.TabCell
-import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TypeTitle
-import com.openfile.uap.ui.dashedBorder
-
-private data class MetricCellData(
-  val figure: String,
-  val unit: String,
-  val label: String,
-  val sourceLabel: SourceLabel,
-  val evidenceRef: String,
-  val note: String,
-)
 
 private data class TacticalStation(
   val number: Int,
@@ -85,12 +72,6 @@ private data class TacticalStation(
   val summary: String,
   val caveat: String,
 )
-
-private enum class RecordState(val label: String) {
-  Preserved("On file"),
-  AccountOnly("Account only"),
-  Missing("Not preserved"),
-}
 
 private data class SequenceStep(
   val phase: String,
@@ -272,7 +253,15 @@ fun NimitzIncidentInfographic(caseId: String, onOpenEvidence: () -> Unit, onOpen
   val activeStation = tacticalStations[selectedStationIndex.coerceIn(0, tacticalStations.lastIndex)]
 
   Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-    InfographicMetricsSheet(caseId)
+    BriefingMetricsSheet(
+      caseId = caseId,
+      dateTag = "14 NOV 2004 · CSG-11",
+      title = "Carrier Strike Group 11 · Encounter Synthesis",
+      lead =
+        "A side-by-side schematic of what was reported by radar operators and flight crews on 14 November 2004, " +
+          "and what survives in the public record. Labels show the source of each figure, never a verdict.",
+      metrics = nimitzMetrics,
+    )
     TacticalTheaterSheet(
       selectedStation = activeStation,
       onSelectStation = { index -> selectedStationIndex = index },
@@ -283,81 +272,13 @@ fun NimitzIncidentInfographic(caseId: String, onOpenEvidence: () -> Unit, onOpen
 }
 
 @Composable
-private fun InfographicMetricsSheet(caseId: String) {
-  PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().background(Manila).padding(horizontal = 12.dp, vertical = 7.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("DOSSIER BRIEFING SHEET · $caseId", color = Ink)
-      MonoLabel("14 NOV 2004 · CSG-11", color = StampRed)
-    }
-    SolidRule(color = Ink)
-    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      TypeTitle("Carrier Strike Group 11 · Encounter Synthesis", size = 20.sp)
-      Text(
-        "A side-by-side schematic of what was reported by radar operators and flight crews on 14 November 2004, " +
-          "and what survives in the public record. Labels show the source of each figure, never a verdict.",
-        style = MaterialTheme.typography.bodySmall,
-        color = InkBody,
-      )
-    }
-    SolidRule(color = Ink)
-    // 2x2 metric grid with rules between cells
-    Column(Modifier.fillMaxWidth()) {
-      Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-        MetricCell(nimitzMetrics[0], Modifier.weight(1f))
-        Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-        MetricCell(nimitzMetrics[1], Modifier.weight(1f))
-      }
-      SolidRule(color = Ink)
-      Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-        MetricCell(nimitzMetrics[2], Modifier.weight(1f))
-        Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-        MetricCell(nimitzMetrics[3], Modifier.weight(1f))
-      }
-    }
-  }
-}
-
-@Composable
-private fun MetricCell(data: MetricCellData, modifier: Modifier = Modifier) {
-  Column(
-    modifier.padding(12.dp),
-    verticalArrangement = Arrangement.spacedBy(4.dp),
-  ) {
-    Row(
-      Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel(data.sourceLabel.label, color = StampRed)
-      MonoLabel(data.evidenceRef, color = InkSoft)
-    }
-    TypeTitle(data.figure, size = 21.sp)
-    MonoLabel("${data.unit} · ${data.label}", color = Ink)
-    DashedRule(Modifier.padding(vertical = 2.dp))
-    Text(data.note, style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 16.sp), color = InkBody)
-  }
-}
-
-@Composable
 private fun TacticalTheaterSheet(selectedStation: TacticalStation, onSelectStation: (Int) -> Unit) {
   val measurer = rememberTextMeasurer()
   val pinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Paper)
   val chartTagStyle = TextStyle(fontFamily = MonoFamily, fontSize = 10.sp, color = InkSoft)
 
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().background(Manila).padding(horizontal = 12.dp, vertical = 7.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("PANEL I · SOCAL OPAREA GEOMETRY", color = Ink)
-      MonoLabel("TAP STATION [1–4]", color = InkSoft)
-    }
-    SolidRule(color = Ink)
+    PanelHeader("PANEL I · SOCAL OPAREA GEOMETRY", "TAP STATION [1–4]", asideColor = InkSoft)
     Canvas(
       Modifier.fillMaxWidth()
         .height(216.dp)
@@ -380,7 +301,7 @@ private fun TacticalTheaterSheet(selectedStation: TacticalStation, onSelectStati
           }
         },
     ) {
-      drawTacticalGrid()
+      drawChartGrid()
       drawTacticalTheater(
         stations = tacticalStations,
         selectedNumber = selectedStation.number,
@@ -426,20 +347,6 @@ private fun TacticalTheaterSheet(selectedStation: TacticalStation, onSelectStati
         color = InkBody,
       )
     }
-  }
-}
-
-private fun DrawScope.drawTacticalGrid() {
-  val step = 24.dp.toPx()
-  var x = step
-  while (x < size.width) {
-    drawLine(Rule.copy(alpha = 0.45f), Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f)
-    x += step
-  }
-  var y = step
-  while (y < size.height) {
-    drawLine(Rule.copy(alpha = 0.45f), Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
-    y += step
   }
 }
 
@@ -567,15 +474,7 @@ private fun AltitudeProfileSheet() {
   val calloutStyle = TextStyle(fontFamily = MonoFamily, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = Ink)
 
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().background(Manila).padding(horizontal = 12.dp, vertical = 7.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("PANEL II · VERTICAL ALTITUDE PROFILE", color = Ink)
-      MonoLabel("80,000 FT → SEA LEVEL", color = StampRed)
-    }
-    SolidRule(color = Ink)
+    PanelHeader("PANEL II · VERTICAL ALTITUDE PROFILE", "80,000 FT → SEA LEVEL", asideColor = StampRed)
     Canvas(
       Modifier.fillMaxWidth()
         .height(212.dp)
@@ -586,7 +485,7 @@ private fun AltitudeProfileSheet() {
             "F/A-18F spiral visual merge down from 20,000 feet over a 50 to 100 metre water disturbance, and ATFLIR lock at 20,000 feet."
         },
     ) {
-      drawTacticalGrid()
+      drawChartGrid()
       drawAltitudeCrossSection(measurer, labelStyle, calloutStyle)
     }
     SolidRule(color = Rule)
@@ -756,84 +655,20 @@ private fun DrawScope.drawAtflirLockTrack(bounds: AltitudeBounds, measurer: Text
 @Composable
 private fun SequenceMatrixSheet(onOpenEvidence: () -> Unit, onOpenMedia: () -> Unit) {
   PaperSheet {
-    Row(
-      Modifier.fillMaxWidth().background(Manila).padding(horizontal = 12.dp, vertical = 7.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      MonoLabel("PANEL III · SEQUENCE & RECORD MATRIX", color = Ink)
-      MonoLabel("2004 → 2023", color = InkSoft)
-    }
-    SolidRule(color = Ink)
-    // Legend row: told apart by fill/outline, not color verdict
-    Row(
-      Modifier.fillMaxWidth().background(Paper).padding(horizontal = 12.dp, vertical = 8.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      RecordLegendItem(RecordState.Preserved)
-      RecordLegendItem(RecordState.AccountOnly)
-      RecordLegendItem(RecordState.Missing)
-    }
-    SolidRule(color = Ink)
+    PanelHeader("PANEL III · SEQUENCE & RECORD MATRIX", "2004 → 2023", asideColor = InkSoft)
+    RecordLegendRow()
     sequenceSteps.forEachIndexed { index, step ->
       if (index > 0) SolidRule()
       SequenceStepRow(step)
     }
-    SolidRule(color = Ink)
-    TapRow(
-      onClick = onOpenEvidence,
-      onClickLabel = "Inspect all 5 evidence items and 2 record gaps",
-      modifier = Modifier.background(Manila.copy(alpha = 0.4f)),
-    ) {
-      Row(
-        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        MonoLabel("OPEN EVIDENCE & RECORD GAPS (E-01 TO E-05)", color = Ink)
-        Chevron(color = Ink)
-      }
-    }
-    SolidRule(color = Ink)
-    TapRow(
-      onClick = onOpenMedia,
-      onClickLabel = "Inspect FLIR1 video and archival exhibits",
-      modifier = Modifier.background(Ink),
-    ) {
-      Row(
-        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        MonoLabel("OPEN ATFLIR VIDEO & EXHIBITS (M-01 TO M-04)", color = Paper)
-        Chevron(color = Paper)
-      }
-    }
-  }
-}
-
-@Composable
-private fun RecordLegendItem(state: RecordState) {
-  Row(
-    horizontalArrangement = Arrangement.spacedBy(6.dp),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    RecordStateBadge(state)
-    MonoLabel(state.label, color = Ink)
-  }
-}
-
-/**
- * Like `TimelineScreen.KindMarker`, uses fill and border geometry (filled, hollow, or dashed)
- * rather than color to distinguish what survives on file from what rests on testimony or is missing.
- */
-@Composable
-private fun RecordStateBadge(state: RecordState) {
-  when (state) {
-    RecordState.Preserved -> Box(Modifier.size(10.dp).background(Ink).border(1.5.dp, Ink))
-    RecordState.AccountOnly -> Box(Modifier.size(10.dp).background(Paper).border(1.5.dp, Ink))
-    RecordState.Missing -> Box(Modifier.size(10.dp).background(Paper).dashedBorder(Dash, width = 1.dp))
+    BriefingLinkRows(
+      evidenceLabel = "OPEN EVIDENCE & RECORD GAPS (E-01 TO E-05)",
+      evidenceClickLabel = "Inspect all 5 evidence items and 2 record gaps",
+      onOpenEvidence = onOpenEvidence,
+      mediaLabel = "OPEN ATFLIR VIDEO & EXHIBITS (M-01 TO M-04)",
+      mediaClickLabel = "Inspect FLIR1 video and archival exhibits",
+      onOpenMedia = onOpenMedia,
+    )
   }
 }
 
