@@ -42,11 +42,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.theme.Ink
@@ -56,6 +58,7 @@ import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenPadding
@@ -294,5 +297,49 @@ private fun FolderCard(record: CaseRecord, onClick: () -> Unit, modifier: Modifi
         }
       }
     }
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun FilesScreenPreview() {
+  DeskPreview {
+    FilesScreen(
+      uiState =
+        FilesUiState(
+          decades = Archive.decades,
+          selectedDecade = null,
+          results = Archive.cases,
+          threadCount = Archive.threads.size,
+        ),
+      query = "",
+      onQueryChange = {},
+      onDecadeSelect = {},
+      onOpenCase = {},
+      onOpenThreads = {},
+      onOpenMethod = {},
+    )
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 640)
+@Composable
+private fun FilesScreenEmptyPreview() {
+  DeskPreview {
+    FilesScreen(
+      uiState =
+        FilesUiState(
+          decades = Archive.decades,
+          selectedDecade = 1970,
+          results = emptyList(),
+          threadCount = Archive.threads.size,
+        ),
+      query = "antarctica",
+      onQueryChange = {},
+      onDecadeSelect = {},
+      onOpenCase = {},
+      onOpenThreads = {},
+      onOpenMethod = {},
+    )
   }
 }

@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -23,6 +25,7 @@ import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.ui.BackLink
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
@@ -98,5 +101,19 @@ private fun ThreadCard(threadUi: ThreadUi, onOpenCase: (String) -> Unit) {
     }
     SolidRule(color = Ink)
     LeadText("Keep in mind", thread.keepInMind, Modifier.padding(14.dp))
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun ThreadsScreenPreview() {
+  val uiState =
+    ThreadsUiState(
+      Archive.threads.map { thread ->
+        ThreadUi(thread, thread.appearances.mapNotNull { a -> Archive.case(a.caseId)?.let { ThreadAppearanceUi(it, a.note) } })
+      },
+    )
+  DeskPreview {
+    ThreadsScreen(uiState = uiState, onOpenCase = {}, onBack = {})
   }
 }

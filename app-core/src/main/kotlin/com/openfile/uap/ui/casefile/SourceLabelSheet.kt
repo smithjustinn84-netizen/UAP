@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.data.SourceLabel
@@ -30,6 +31,7 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.PaperPreview
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenPadding
 import com.openfile.uap.ui.TapRow
@@ -56,6 +58,25 @@ fun SourceLabelSheet(label: SourceLabel, inThisFile: List<String>, onSeeAllLabel
     scrimColor = Ink.copy(alpha = 0.5f),
     dragHandle = null,
   ) {
+    // Both buttons let the sheet slide away before it leaves the composition.
+    val hideThen: (() -> Unit) -> Unit = { then -> scope.launch { sheetState.hide() }.invokeOnCompletion { then() } }
+    SourceLabelSheetContent(
+      label = label,
+      inThisFile = inThisFile,
+      onSeeAllLabels = {
+        hideThen {
+          onDismiss()
+          onSeeAllLabels()
+        }
+      },
+      onClose = { hideThen(onDismiss) },
+    )
+  }
+}
+
+@Composable
+private fun SourceLabelSheetContent(label: SourceLabel, inThisFile: List<String>, onSeeAllLabels: () -> Unit, onClose: () -> Unit) {
+  Column {
     Box(Modifier.fillMaxWidth().height(2.dp).background(Ink))
     Column(
       Modifier.verticalScroll(rememberScrollState()).padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp, bottom = 24.dp),
@@ -75,21 +96,14 @@ fun SourceLabelSheet(label: SourceLabel, inThisFile: List<String>, onSeeAllLabel
       if (inThisFile.isNotEmpty()) {
         Text("In this file: ${inThisFile.joinToString(" · ")}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
       }
-      // Both buttons let the sheet slide away before it leaves the composition.
-      val hideThen: (() -> Unit) -> Unit = { then -> scope.launch { sheetState.hide() }.invokeOnCompletion { then() } }
       Row(Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         SheetButton(
           text = "All ${SourceLabel.entries.size} labels",
           solid = false,
-          onClick = {
-            hideThen {
-              onDismiss()
-              onSeeAllLabels()
-            }
-          },
+          onClick = onSeeAllLabels,
           modifier = Modifier.weight(1f),
         )
-        SheetButton(text = "Close", solid = true, onClick = { hideThen(onDismiss) }, modifier = Modifier.weight(1f))
+        SheetButton(text = "Close", solid = true, onClick = onClose, modifier = Modifier.weight(1f))
       }
     }
   }
@@ -105,6 +119,19 @@ private fun SheetButton(text: String, solid: Boolean, onClick: () -> Unit, modif
       textAlign = TextAlign.Center,
       style = MaterialTheme.typography.labelLarge,
       color = if (solid) Paper else Ink,
+    )
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun SourceLabelSheetPreview() {
+  PaperPreview(padding = 0.dp) {
+    SourceLabelSheetContent(
+      label = SourceLabel.PrimaryRecord,
+      inThisFile = listOf("E-01 Halt memorandum", "E-02 Field tape recording"),
+      onSeeAllLabels = {},
+      onClose = {},
     )
   }
 }

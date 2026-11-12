@@ -28,8 +28,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.Evidence
 import com.openfile.uap.data.SourceLabel
@@ -40,6 +42,7 @@ import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
@@ -246,5 +249,14 @@ private fun Glossary(terms: List<Pair<String, String>>) {
         if (index < terms.lastIndex) SolidRule()
       }
     }
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 1200)
+@Composable
+private fun MethodScreenPreview() {
+  val sample = Archive.cases.firstNotNullOfOrNull { it.detail?.evidence?.firstOrNull() }
+  DeskPreview {
+    MethodScreen(sample = sample)
   }
 }

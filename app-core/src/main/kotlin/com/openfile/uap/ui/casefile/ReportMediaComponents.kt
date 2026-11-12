@@ -55,11 +55,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -76,6 +78,7 @@ import androidx.media3.ui.PlayerView
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.openfile.uap.R
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.MediaClip
 import com.openfile.uap.data.MediaFigure
 import com.openfile.uap.data.MediaImage
@@ -94,6 +97,7 @@ import com.openfile.uap.theme.StampRed
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
@@ -226,10 +230,9 @@ private fun ArchivalPhotoExhibit(media: ReportMedia) {
       MonoLabel("ARCHIVAL PLATE · ${media.id}", color = Ink)
       MonoLabel(if (realImage != null) "TAP TO ENLARGE" else "DRAWN PLATE", color = InkSoft)
     }
-    if (image != null) {
-      // Coil decodes off the main thread and at the displayed size; painterResource would decode the full JPEG in composition.
-      AsyncImage(
-        model = realImage,
+    if (image != null && realImage != null) {
+      BundledImage(
+        resId = realImage,
         contentDescription = media.title,
         contentScale = ContentScale.FillWidth,
         modifier =
@@ -695,8 +698,8 @@ private fun ArchivalDocumentExhibit(media: ReportMedia) {
           .background(Paper)
           .clickable(onClickLabel = "View full scan") { viewing = true },
       ) {
-        AsyncImage(
-          model = scan,
+        BundledImage(
+          resId = scan,
           contentDescription = "Scan of ${media.title}",
           contentScale = ContentScale.Crop,
           alignment = Alignment.TopCenter,
@@ -1100,4 +1103,85 @@ private fun CacheDrawScope.nimitzDropDiagram(): FigureDraw {
     drawPath(track, color = StampRed, style = trackStroke)
     turns.forEach { pt -> drawCircle(color = Ink, radius = 4.dp.toPx(), center = pt) }
   }
+}
+
+/**
+ * Uses Coil off the main thread at runtime, and [painterResource] in Compose previews where async loaders do not run.
+ */
+@Composable
+private fun BundledImage(
+  @DrawableRes resId: Int,
+  contentDescription: String,
+  contentScale: ContentScale,
+  modifier: Modifier = Modifier,
+  alignment: Alignment = Alignment.Center,
+) {
+  if (LocalInspectionMode.current) {
+    Image(
+      painter = painterResource(resId),
+      contentDescription = contentDescription,
+      contentScale = contentScale,
+      alignment = alignment,
+      modifier = modifier,
+    )
+  } else {
+    AsyncImage(
+      model = resId,
+      contentDescription = contentDescription,
+      contentScale = contentScale,
+      alignment = alignment,
+      modifier = modifier,
+    )
+  }
+}
+
+@Composable
+private fun ReportMediaCardPreview(media: ReportMedia) {
+  DeskPreview(padding = 16.dp) {
+    ReportMediaCard(
+      media = media,
+      onLabelClick = {},
+      evidenceTitle = "Sample linked evidence",
+      onOpenEvidence = {},
+    )
+  }
+}
+
+private fun findPreviewMedia(predicate: (ReportMedia) -> Boolean): ReportMedia =
+  Archive.cases.asSequence().mapNotNull { it.detail }.flatMap { it.media }.first(predicate)
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaDiagramPreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Diagram })
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaPhotoPreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Photo && it.image != null })
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaPlatePreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Photo && it.figure?.plate == true })
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaDocumentPreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Document && it.image != null })
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaAudioPreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Audio })
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun ReportMediaVideoPreview() {
+  ReportMediaCardPreview(findPreviewMedia { it.kind == MediaKind.Video && it.clip != null })
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -126,4 +127,30 @@ fun LeadText(lead: String, text: String, modifier: Modifier = Modifier) {
     style = MaterialTheme.typography.bodySmall,
     color = InkBody,
   )
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun SheetPartsPreview() {
+  DeskPreview(padding = 16.dp) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+      BackLink("Files", onBack = {})
+      ScreenHeader(
+        label = "Open File",
+        title = "Sheet Parts",
+        intro = "Shared headers, titled blocks, card headers and action rows.",
+        top = 0.dp,
+      )
+      TitledBlock("Card and lead text") {
+        PaperSheet {
+          CardHeader("E-01 · Official report", "Primary record", onEndClick = {})
+          Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LeadText("Keep in mind", "A label says where an item comes from, not whether it is true.")
+          }
+        }
+      }
+      ActionRow("Primary action", onClick = {})
+      ActionRow("Secondary action", onClick = {}, solid = false)
+    }
+  }
 }

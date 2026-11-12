@@ -45,14 +45,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.MapOutlineRepository
 import com.openfile.uap.data.MapSheet
+import com.openfile.uap.data.MapSheets
 import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
@@ -64,6 +67,7 @@ import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenHeader
@@ -319,5 +323,36 @@ private fun SelectedCard(p: PlottedCase, onOpen: () -> Unit) {
       LeadText("What the pin stands for", p.record.point.note)
     }
     ActionRow("Open file", onClick = onOpen)
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun MapScreenPreview() {
+  val plotted = Archive.cases.mapIndexed { index, record -> PlottedCase(index + 1, record) }
+  val previewOutline =
+    listOf(
+      listOf(
+        -124.7f to 48.4f, -124.0f to 40.4f, -117.1f to 32.5f, -109.0f to 23.0f, -97.1f to 25.9f, -81.0f to 25.1f, -66.9f to 44.8f,
+        -82.0f to 46.5f, -124.7f to 48.4f,
+      ),
+    )
+  val sheets =
+    MapSheets.all.map { sheet ->
+      MapSheetUiState(
+        sheet = sheet,
+        pins = plotted.filter { MapSheets.sheetFor(it.record.point) == sheet },
+        outline = if (sheet == MapSheets.northAmerica) previewOutline else emptyList(),
+      )
+    }
+  val selectedId = sheets.first().pins.firstOrNull()?.record?.id
+  DeskPreview {
+    MapScreen(
+      uiState = MapUiState(sheets = sheets, sheetId = MapSheets.northAmerica.id, selectedId = selectedId),
+      selectedId = { selectedId },
+      onSheetSelect = {},
+      onPinSelect = {},
+      onOpenCase = {},
+    )
   }
 }

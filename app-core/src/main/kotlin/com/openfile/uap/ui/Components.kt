@@ -45,12 +45,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
+import com.openfile.uap.Files
 import com.openfile.uap.TopLevelSection
+import com.openfile.uap.TopLevelSections
 import com.openfile.uap.data.Citation
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
@@ -266,4 +269,57 @@ fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, up: Boolean = 
       drawLine(color, tip, to, strokeWidth = stroke, cap = StrokeCap.Round)
     },
   )
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 320)
+@Composable
+private fun AppFramePreview() {
+  DeskPreview {
+    AppFrame(tabs = TopLevelSections, current = Files, onTab = {}) {
+      Column(Modifier.padding(ScreenPadding), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        MonoLabel("Archive of reported sightings")
+        TypeTitle("Open File", size = 32.sp)
+        PaperSheet {
+          Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            MonoLabel("OF-1947-01 · Sample sheet", color = Ink)
+            Text("Manila desk with bottom navigation strip.", style = MaterialTheme.typography.bodyMedium, color = InkBody)
+          }
+        }
+      }
+    }
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412)
+@Composable
+private fun SharedComponentsPreview() {
+  DeskPreview(padding = 16.dp) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+      Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        MonoLabel("Mono label")
+        Stamp("No verdicts")
+      }
+      PaperSheet {
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 4.dp)) {
+          RecordField("Date", "24 June 1947")
+          RecordField("Place", "Near Mount Rainier, Washington, USA", showRule = false)
+        }
+        SolidRule(color = Ink)
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+          BulletList(listOf("Point supported on record", "Second corroborating detail"))
+          DashedRule()
+          BulletList(listOf("Point that complicates the account"), hollow = true)
+        }
+        SolidRule()
+        SourceRow(Citation("Official archive record", "https://example.org"), Modifier.padding(horizontal = 14.dp))
+      }
+      PaperSheet(dashed = true) {
+        Text(
+          "Dashed sheet for disputes or missing records.",
+          modifier = Modifier.padding(14.dp),
+          style = MaterialTheme.typography.bodySmall,
+        )
+      }
+    }
+  }
 }

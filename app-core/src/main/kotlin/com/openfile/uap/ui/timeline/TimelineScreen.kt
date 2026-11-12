@@ -40,11 +40,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.TimelineEntry
 import com.openfile.uap.data.TimelineKind
@@ -53,6 +55,7 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.ui.Chevron
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.ScreenHeader
 import com.openfile.uap.ui.ScreenPadding
@@ -228,5 +231,32 @@ private fun TimelineRow(entry: TimelineEntry, showYear: Boolean, onOpenCase: (St
         }
       }
     }
+  }
+}
+
+private fun previewTimelineState(only: TimelineKind?): TimelineUiState {
+  val all = Archive.timeline
+  val filtered = all.filter { only == null || it.kind == only }
+  return TimelineUiState(
+    only = only,
+    entries = filtered,
+    kindCounts = all.groupingBy { it.kind }.eachCount(),
+    decadeStarts = decadeStarts(filtered),
+  )
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun TimelineScreenPreview() {
+  DeskPreview {
+    TimelineScreen(uiState = previewTimelineState(only = null), onFilterChange = {}, onOpenCase = {})
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun TimelineScreenFilteredPreview() {
+  DeskPreview {
+    TimelineScreen(uiState = previewTimelineState(only = TimelineKind.Inquiry), onFilterChange = {}, onOpenCase = {})
   }
 }

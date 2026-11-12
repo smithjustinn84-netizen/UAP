@@ -42,9 +42,11 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseDetail
 import com.openfile.uap.data.CaseRecord
@@ -66,6 +68,7 @@ import com.openfile.uap.ui.BulletList
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
+import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
@@ -650,5 +653,81 @@ private fun EvidenceChip(id: String, title: String?, onClick: () -> Unit) {
   ) {
     Text(id, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium), color = Ink)
     if (title != null) Text(title, style = MaterialTheme.typography.labelMedium, color = InkSoft)
+  }
+}
+
+@Composable
+private fun CaseFileSectionPreview(caseId: String, section: Section) {
+  val record = requireNotNull(Archive.case(caseId))
+  val detail = requireNotNull(record.detail)
+  DeskPreview {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+      FileTopBar(caseId = record.id, backLabel = "Files", onBack = {})
+      Column(
+        Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+      ) {
+        TypeTitle(record.title, size = if (section == Section.Summary) 30.sp else 22.sp)
+        if (section == Section.Summary) Stamp(detail.stamp)
+      }
+      SectionTabs(current = section, onSelect = {})
+      FileSection(
+        section = section,
+        record = record,
+        detail = detail,
+        targetEvidence = null,
+        actions = FileActions(open = {}, openEvidence = {}, onTargetPlaced = {}, onOpenMethod = {}),
+      )
+    }
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun CaseFileSummaryPreview() {
+  val record = requireNotNull(Archive.case("OF-2004-01"))
+  DeskPreview {
+    CaseFileScreen(uiState = CaseFileUiState.Found(record), backLabel = "Files", onBack = {}, onOpenMethod = {})
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun CaseFileEvidencePreview() {
+  CaseFileSectionPreview(caseId = "OF-1980-01", section = Section.Evidence)
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun CaseFileMediaPreview() {
+  CaseFileSectionPreview(caseId = "OF-1980-01", section = Section.Media)
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun CaseFileExplanationsPreview() {
+  CaseFileSectionPreview(caseId = "OF-2004-01", section = Section.Explanations)
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 915)
+@Composable
+private fun CaseFileLorePreview() {
+  CaseFileSectionPreview(caseId = "OF-1947-02", section = Section.Lore)
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 640)
+@Composable
+private fun CaseFileUnwrittenPreview() {
+  val record = Archive.cases.first().copy(detail = null)
+  DeskPreview {
+    CaseFileScreen(uiState = CaseFileUiState.Found(record), backLabel = "Files", onBack = {}, onOpenMethod = {})
+  }
+}
+
+@Preview(showBackground = true, widthDp = 412, heightDp = 360)
+@Composable
+private fun CaseFileNotFoundPreview() {
+  DeskPreview {
+    CaseFileScreen(uiState = CaseFileUiState.NotFound("OF-1999-99"), backLabel = "Files", onBack = {}, onOpenMethod = {})
   }
 }
