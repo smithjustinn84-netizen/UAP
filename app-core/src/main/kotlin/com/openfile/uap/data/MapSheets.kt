@@ -46,7 +46,17 @@ object MapSheets {
       north = 40.0,
     )
 
-  val all: List<MapSheet> = listOf(northAmerica, britishIsles, southEastAustralia, middleEast)
+  val centralEurope =
+    MapSheet(
+      id = "central_europe",
+      title = "Central Europe",
+      west = 4.0,
+      south = 44.0,
+      east = 16.0,
+      north = 54.0,
+    )
+
+  val all: List<MapSheet> = listOf(northAmerica, britishIsles, southEastAustralia, middleEast, centralEurope)
 
   fun sheetFor(point: MapPoint): MapSheet? = all.firstOrNull { it.contains(point.lat, point.lon) }
 

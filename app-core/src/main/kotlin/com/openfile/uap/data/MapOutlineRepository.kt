@@ -37,6 +37,7 @@ class RawResourceMapOutlineRepository(private val resources: Resources, private 
       MapSheets.britishIsles -> R.raw.map_british_isles
       MapSheets.southEastAustralia -> R.raw.map_south_east_australia
       MapSheets.middleEast -> R.raw.map_middle_east
+      MapSheets.centralEurope -> R.raw.map_central_europe
       else -> error("No outline is bundled for map sheet ${sheet.id}")
     }
 }

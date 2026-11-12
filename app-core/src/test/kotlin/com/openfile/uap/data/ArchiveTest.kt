@@ -27,7 +27,8 @@ class ArchiveTest {
 
   @Test
   fun decadeFilterKeepsOnlyThatDecade() {
-    assertEquals(listOf("OF-1947-01", "OF-1947-02"), Archive.search("", 1940).map { it.id })
+    assertEquals(listOf("OF-1561-01"), Archive.search("", 1560).map { it.id })
+    assertEquals(listOf("OF-1942-01", "OF-1944-01", "OF-1947-01", "OF-1947-02"), Archive.search("", 1940).map { it.id })
     assertEquals(listOf("OF-1965-01", "OF-1966-01", "OF-1967-01"), Archive.search("", 1960).map { it.id })
     assertEquals(listOf("OF-1974-01", "OF-1976-01", "OF-1978-01"), Archive.search("", 1970).map { it.id })
     assertEquals(listOf("OF-1980-01"), Archive.search("", 1980).map { it.id })

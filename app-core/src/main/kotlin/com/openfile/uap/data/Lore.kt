@@ -813,3 +813,148 @@ internal val fileThreads: List<FileThread> =
       keepInMind = "An explanation that fits one part of a case is sometimes offered, or rejected, as if it covered the whole.",
     ),
   )
+
+internal val nuremberg1561Story: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1561,
+      "14 Apr 1561",
+      "The broadsheet is printed",
+      "Hans Glaser printed an illustrated sheet at Nuremberg describing a sight in the sky at dawn on 14 April, with globes, tubes, crosses and spear-like lines, and the globes seeming to fight one another.",
+      Citation("Wikipedia, “1561 celestial phenomenon over Nuremberg”", "https://en.wikipedia.org/wiki/1561_celestial_phenomenon_over_Nuremberg"),
+    ),
+    atTheTime(
+      1561,
+      "1561",
+      "Read as a sign from God",
+      "The sheet presents the sight as a divine warning and urges repentance. Printed sky signs of the period were commonly read as omens.",
+      Citation("Wikipedia, “1561 celestial phenomenon over Nuremberg”", "https://en.wikipedia.org/wiki/1561_celestial_phenomenon_over_Nuremberg"),
+    ),
+    printOrScreen(
+      1958,
+      "1958",
+      "Jung and the modern myth",
+      "The psychologist Carl Jung discussed the sheet in his book on flying saucers as a modern myth, as an example of sky sights read through the beliefs of the time.",
+      Citation("Wikipedia, “Flying Saucers: A Modern Myth of Things Seen in the Skies”", "https://en.wikipedia.org/wiki/Flying_Saucers:_A_Modern_Myth_of_Things_Seen_in_the_Skies"),
+    ),
+  )
+
+internal val nuremberg1561Gaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No named witness",
+      "The sheet says many men and women saw the sight but names no one, so no individual account can be checked.",
+      Citation("Wikipedia, “1561 celestial phenomenon over Nuremberg”", "https://en.wikipedia.org/wiki/1561_celestial_phenomenon_over_Nuremberg"),
+    ),
+    RecordGap(
+      "No measurement or independent record",
+      "Nothing in the sources reviewed records the sight by instrument, and the sheet is the main surviving account.",
+      Citation("Wikipedia, “1561 celestial phenomenon over Nuremberg”", "https://en.wikipedia.org/wiki/1561_celestial_phenomenon_over_Nuremberg"),
+    ),
+  )
+
+internal val battleOfLosAngelesStory: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1942,
+      "24–25 Feb 1942",
+      "Alert, blackout and a barrage",
+      "An air-raid alert and blackout were ordered. Anti-aircraft batteries fired about 1,430 rounds in about an hour at objects reported over the city. No bombs fell and no aircraft were brought down.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+    atTheTime(
+      1942,
+      "25 Feb 1942",
+      "Conflicting statements",
+      "Navy Secretary Frank Knox called the episode a false alarm. The War Department said unidentified aircraft were probably over the city.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+    inquiry(
+      1942,
+      "26 Feb 1942",
+      "Marshall’s memorandum to the President",
+      "General George C. Marshall reported to President Roosevelt that unidentified aircraft, not American planes, were probably over Los Angeles, and gave the number of rounds fired.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+    printOrScreen(
+      1942,
+      "26 Feb 1942",
+      "The searchlight photograph",
+      "The Los Angeles Times published a photograph of searchlights converging on a point in the sky. The printed version had been retouched to sharpen the beams.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+    printOrScreen(
+      1979,
+      "1979",
+      "“1941”",
+      "Steven Spielberg’s comedy film 1941 is built around a fictional panic on the Los Angeles coast, drawing on the 1942 alarm.",
+      Citation("Wikipedia, “1941 (film)”", "https://en.wikipedia.org/wiki/1941_(film)"),
+    ),
+    printOrScreen(
+      2011,
+      "2011",
+      "“Battle: Los Angeles”",
+      "A science-fiction film opens with the 1942 event as a pretext for its story of an alien invasion.",
+      Citation("Wikipedia, “Battle: Los Angeles”", "https://en.wikipedia.org/wiki/Battle:_Los_Angeles"),
+    ),
+  )
+
+internal val battleOfLosAngelesGaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No aircraft, wreckage or bombs found",
+      "Despite about 1,430 rounds fired at reported targets, no aircraft, wreckage or bomb was found, and no enemy flight over the city has been shown from postwar records.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+    RecordGap(
+      "What was first fired on is unclear",
+      "Accounts differ on what the batteries first fired at, and on how the firing spread from one battery to its neighbours.",
+      Citation("Wikipedia, “Battle of Los Angeles”", "https://en.wikipedia.org/wiki/Battle_of_Los_Angeles"),
+    ),
+  )
+
+internal val fooFightersStory: List<StoryEntry> =
+  listOf(
+    atTheTime(
+      1944,
+      "Late 1944",
+      "Lights on the Rhine patrols",
+      "Crews of the US 415th Night Fighter Squadron reported glowing lights that followed their aircraft on night patrols along the Rhine. A radar observer in the unit, Donald Meiers, is credited with the name “foo fighters”.",
+      Citation("Wikipedia, “Foo fighter”", "https://en.wikipedia.org/wiki/Foo_fighter"),
+    ),
+    atTheTime(
+      1945,
+      "Early 1945",
+      "The name reaches the newspapers",
+      "Newspapers carried the term “foo fighters” and reports of glowing balls following Allied aircraft, some calling them a possible German secret weapon.",
+      Citation("Wikipedia, “Foo fighter”", "https://en.wikipedia.org/wiki/Foo_fighter"),
+    ),
+    printOrScreen(
+      1956,
+      "1956",
+      "Ruppelt’s account",
+      "Edward Ruppelt, who had led the Air Force’s UFO study, wrote of the wartime reports in his book on the subject, placing them in the early history of flying-saucer sightings.",
+      Citation("Wikipedia, “The Report on Unidentified Flying Objects”", "https://en.wikipedia.org/wiki/The_Report_on_Unidentified_Flying_Objects"),
+    ),
+    printOrScreen(
+      1995,
+      "1995",
+      "A band takes the name",
+      "The American rock band Foo Fighters took its name from the wartime term and released its first album that year.",
+      Citation("Wikipedia, “Foo Fighters”", "https://en.wikipedia.org/wiki/Foo_Fighters"),
+    ),
+  )
+
+internal val fooFightersGaps: List<RecordGap> =
+  listOf(
+    RecordGap(
+      "No photograph or physical trace",
+      "No object was captured, and no photograph or film of one is cited in the histories of the reports.",
+      Citation("Wikipedia, “Foo fighter”", "https://en.wikipedia.org/wiki/Foo_fighter"),
+    ),
+    RecordGap(
+      "No radar track for most reports",
+      "Histories say most of the lights were not seen on radar, so there is no instrument record to test the crews’ accounts against.",
+      Citation("Wikipedia, “Foo fighter”", "https://en.wikipedia.org/wiki/Foo_fighter"),
+    ),
+  )

@@ -208,6 +208,45 @@ object Archive {
   val cases: List<CaseRecord> =
     listOf(
       CaseRecord(
+        id = "OF-1561-01",
+        title = "Nuremberg celestial phenomenon",
+        year = 1561,
+        dateShort = "14 Apr 1561",
+        placeShort = "Nuremberg, Germany",
+        date = "14 April 1561",
+        place = "Nuremberg, Holy Roman Empire (now Germany)",
+        onFile = "printed broadsheet, later commentary",
+        status = "Natural explanation proposed · disputed",
+        point = MapPoint(49.45, 11.08, "Plotted at Nuremberg. The broadsheet says the sights were seen above and around the city."),
+        detail = nuremberg1561,
+      ),
+      CaseRecord(
+        id = "OF-1942-01",
+        title = "Battle of Los Angeles",
+        year = 1942,
+        dateShort = "24–25 Feb 1942",
+        placeShort = "Los Angeles, USA",
+        date = "24–25 February 1942",
+        place = "Los Angeles and the southern California coast, USA",
+        onFile = "official memoranda, press reports, photograph, testimony",
+        status = "Official statements conflict · disputed",
+        point = MapPoint(34.05, -118.24, "Plotted at Los Angeles. Anti-aircraft fire was reported across the city and along the coast."),
+        detail = battleOfLosAngeles,
+      ),
+      CaseRecord(
+        id = "OF-1944-01",
+        title = "Foo fighters",
+        year = 1944,
+        dateShort = "Late 1944",
+        placeShort = "Rhine front, France and Germany",
+        date = "Late 1944 to early 1945",
+        place = "Night skies along the Rhine, France and Germany",
+        onFile = "crew accounts, intelligence reports, press reports",
+        status = "No agreed explanation · several proposed",
+        point = MapPoint(48.58, 7.75, "Plotted at Strasbourg. Night-fighter crews reported the lights along the Rhine. Similar reports came from other theatres."),
+        detail = fooFighters,
+      ),
+      CaseRecord(
         id = "OF-1947-01",
         title = "Kenneth Arnold sighting",
         year = 1947,
@@ -420,18 +459,21 @@ object Archive {
         TimelineKind.Sighting,
         "Nuremberg celestial phenomenon",
         "14 April · Nuremberg, Holy Roman Empire. A broadsheet by Hans Glaser describes globes, crosses and cylindrical shapes reported in the morning sky",
+        "OF-1561-01",
       ),
       TimelineEntry(
         1942,
         TimelineKind.Sighting,
         "Battle of Los Angeles",
         "24–25 February · Los Angeles, California, USA. Anti-aircraft artillery fires over 1,400 shells following radar tracks and visual reports of unidentified aerial objects during a blackout",
+        "OF-1942-01",
       ),
       TimelineEntry(
         1944,
         TimelineKind.Sighting,
         "Foo fighters",
         "November 1944 · European and Pacific theaters. Allied aircrews report glowing nocturnal spheres pacing their aircraft, investigated by military intelligence without a confirmed explanation",
+        "OF-1944-01",
       ),
       TimelineEntry(
         1947,
@@ -3105,6 +3147,510 @@ private val tehran2026: CaseDetail
               listOf(
                 "Multiple videos recorded in late September 2026 showed an aerial light source hovering over northern Tehran.",
                 "Technical analysts emphasized that consumer UAV platforms with LED arrays can produce similar visual signatures, while noting that electronic warfare reconnaissance platforms were active in the wider Persian Gulf region.",
+              ),
+          ),
+        ),
+    )
+
+private val nuremberg1561: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "Natural explanation proposed · disputed",
+      reportedBy = "Unnamed residents of Nuremberg, as relayed in a printed broadsheet by Hans Glaser",
+      officialPosition = "There is no official position. The event predates any state body that studied sky reports. Modern historians and astronomers generally read it as a weather display described in the language of its day.",
+      reported =
+        listOf(
+          "A broadsheet printed in Nuremberg in 1561 says that at about dawn on 14 April, between four and five in the morning, many men and women saw a strange sight in the sky.",
+          "It lists globes or balls, some red, blue-black or white, and cylinder-like tubes, with smaller balls standing in them. It also lists crosses and lines like blood-red spears.",
+          "It says the globes seemed to fight one another over about an hour, around the sun.",
+          "It says many of them then appeared to fall to earth, burning and giving off smoke, and that a dark spear-shaped form was seen as well.",
+          "The text reads the sight as a sign from God and calls on readers to repent.",
+        ),
+      notInDispute =
+        listOf(
+          "A broadsheet with a woodcut was printed in Nuremberg in 1561, signed by the printer Hans Glaser, and copies survive.",
+          "Sky sights of this kind were printed and sold as news across 16th-century Europe and were commonly read as warnings.",
+        ),
+      inDispute =
+        listOf(
+          "Whether the sheet records one real sight or a composite of several, with moral and visual embellishment added in print.",
+          "Whether the objects were a natural halo display, something else in the sky, or largely the work of the printer.",
+          "How many people actually saw the sight, since no witness is named.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Document",
+            sourceLabel = SourceLabel.PrimaryRecord,
+            title = "Glaser broadsheet and woodcut",
+            description =
+              "A single printed sheet issued at Nuremberg in 1561 with an illustrated woodcut and a German text describing the sky at dawn on 14 April.",
+            caveat = "the printer was not claimed to be a witness, no one who saw it is named, and the sheet was made to sell as news and to teach a lesson.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Document",
+            sourceLabel = SourceLabel.PrimaryRecord,
+            title = "Sixteenth-century sky-sign broadsheet collections",
+            description =
+              "Broadsheets reporting comets, halos and other sky signs were gathered by contemporaries. A copy of this sheet is held in the Wickiana collection at the Zentralbibliothek Zürich.",
+            caveat = "the collection shows that such sheets were common and widely copied. It does not confirm what any single sheet describes.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Commentary",
+            sourceLabel = SourceLabel.Reported,
+            title = "Later commentary on the sheet",
+            description =
+              "The sheet has been discussed since the 20th century, including in the psychologist Carl Jung's 1958 book on flying saucers as modern myth, and by writers who see a battle of craft or a halo display.",
+            caveat = "these are interpretations written centuries later, and none adds new first-hand evidence.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "Atmospheric optics (halos and sun dogs)",
+            heldBy = "historians of science and astronomers",
+            supports =
+              listOf(
+                "Ice crystals near the sun can produce bright spots, rings, arcs and crossing lines, which are reported at dawn and dusk.",
+                "The woodcut and text place the sight around the sun, as such displays appear.",
+              ),
+            complicates =
+              listOf(
+                "The text describes motion, fighting and objects falling, which a steady halo does not account for.",
+                "The printer’s wording cannot be checked against a measured observation.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "Broadsheet embellishment",
+            heldBy = "historians of early print",
+            supports =
+              listOf(
+                "Printers competed to sell vivid sky news, and woodcuts and texts were often reworked.",
+                "The sheet frames the sight as a divine warning, which suggests the text was shaped for its message.",
+              ),
+            complicates =
+              listOf(
+                "Embellishment alone does not say what, if anything, residents actually saw.",
+                "The sheet says many people saw it, and no rival account has been cited.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+          Explanation(
+            title = "Craft or battle in the sky (modern ufological reading)",
+            heldBy = "some UFO writers",
+            supports =
+              listOf(
+                "The text uses terms such as globes, tubes and objects that appear to fight and fall.",
+              ),
+            complicates =
+              listOf(
+                "Sixteenth-century readers saw the sight as a sign from God, and the sheet’s own words reflect that.",
+                "No physical trace or independent record is cited.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+        ),
+      officialNote =
+        "No government or scientific body has issued a finding on this event. The archive lists it as a printed record whose meaning is disputed, " +
+          "and it does not rule on what happened over Nuremberg.",
+      story = nuremberg1561Story,
+      gaps = nuremberg1561Gaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.PrimaryRecord,
+            title = "Glaser broadsheet, Nuremberg (1561), summary of the text",
+            caption = "A paraphrase of what the printed sheet says. It is not a transcription of the original German.",
+            provenance = "Summary of the Hans Glaser broadsheet, Nuremberg, 1561 · copy held in the Wickiana, Zentralbibliothek Zürich",
+            documentHeader =
+              listOf(
+                "PRINTER" to "Hans Glaser, Nuremberg",
+                "YEAR" to "1561",
+                "FORM" to "Illustrated broadsheet with woodcut",
+                "NOTE" to "Paraphrase, not a transcription",
+              ),
+            excerpt =
+              listOf(
+                "On 14 April 1561, at about daybreak, many men and women saw a strange sight in the sky above and around the city.",
+                "The sky showed globes and tubes, crosses and spear-like lines, and the globes seemed to fight one another around the sun for about an hour.",
+                "Afterwards many of the objects seemed to fall to earth, burning, with smoke. The text treats the sight as a sign from God and urges repentance.",
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-03",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.Reported,
+            title = "Later commentary: how the sheet has been read",
+            caption = "A summary of the two main modern readings of the sheet, not a quotation from either.",
+            provenance = "Summary of commentary since 1958, including C. G. Jung, “Flying Saucers: A Modern Myth of Things Seen in the Skies”",
+            documentHeader =
+              listOf(
+                "SOURCE" to "Commentary written after 1958",
+                "NOTE" to "Paraphrase, not a quotation",
+              ),
+            excerpt =
+              listOf(
+                "Jung discussed the sheet as an example of sky sights that people have read through the beliefs of their time, long before the modern flying saucer.",
+                "Other modern writers read the same text as a halo display seen at sunrise, or as a battle between craft.",
+                "None of the readings rests on a record other than the printed sheet.",
+              ),
+          ),
+        ),
+    )
+
+private val battleOfLosAngeles: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "Official statements conflict · disputed",
+      reportedBy = "Anti-aircraft crews, air-raid wardens and residents of Los Angeles, and US Army and Navy officials",
+      officialPosition = "War Department (1942): unidentified aircraft were probably over the city. Navy Secretary Knox: a false alarm. Later official histories: no enemy aircraft were found.",
+      reported =
+        listOf(
+          "On the night of 24 February 1942, less than three months after Pearl Harbor and a day after a Japanese submarine shelled the coast near Santa Barbara, an air-raid alert was sounded in southern California.",
+          "A blackout was ordered and searchlights swept the sky. Anti-aircraft batteries began firing shortly after 3 a.m. and kept firing for about an hour.",
+          "Army records say the 37th Coast Artillery Brigade fired about 1,430 rounds. Observers reported aircraft and shell bursts over the city and the coast.",
+          "No bombs fell and no aircraft were shot down. Falling shell fragments damaged buildings and cars, and the blackout panic was linked to several deaths.",
+        ),
+      notInDispute =
+        listOf(
+          "An air-raid alert and blackout were ordered, and about 1,430 rounds were fired.",
+          "No bombs were dropped and no aircraft or wreckage were found.",
+          "Senior officials gave conflicting public explanations in the days that followed.",
+        ),
+      inDispute =
+        listOf(
+          "Whether any aircraft at all were over Los Angeles that night.",
+          "What was first fired on, and why neighbouring batteries joined in.",
+          "How much the radar and visual reports can be relied on.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Document",
+            sourceLabel = SourceLabel.OfficialRecord,
+            title = "Army Chief of Staff memorandum to the President",
+            description =
+              "A memorandum from General George C. Marshall to President Roosevelt, dated 26 February 1942, summarizing the Army’s information about the night.",
+            caveat = "it was written within two days from first reports, and it records estimates that were not confirmed.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Statement",
+            sourceLabel = SourceLabel.Reported,
+            title = "Navy Secretary Knox’s “false alarm” statement",
+            description =
+              "A public statement by Navy Secretary Frank Knox soon after the night, calling the episode a false alarm. It was carried in the press.",
+            caveat = "it is known from press coverage, and the Army’s own view was different.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Photograph",
+            sourceLabel = SourceLabel.PrimaryRecord,
+            title = "Searchlight photograph published in the Los Angeles Times",
+            description =
+              "A photograph of searchlights converging on a point in the sky, published on 26 February 1942 and widely reprinted.",
+            caveat = "the published print was retouched to sharpen the beams, and it does not show an aircraft clearly.",
+          ),
+          Evidence(
+            id = "E-04",
+            kind = "Testimony",
+            sourceLabel = SourceLabel.FirstHand,
+            title = "Eyewitness accounts of the barrage",
+            description =
+              "Accounts by residents, wardens and gun crews of searchlights, shell bursts and objects seen in the sky, collected in press coverage and later histories.",
+            caveat = "the accounts were given in a blackout, under fear of attack, and differ on how many objects were seen.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "Enemy or unidentified aircraft (War Department view)",
+            heldBy = "the US War Department in 1942",
+            supports =
+              listOf(
+                "The Army’s memorandum said unidentified aircraft were probably in the area.",
+                "Several batteries and observers reported targets at the same time.",
+              ),
+            complicates =
+              listOf(
+                "No aircraft or wreckage were found.",
+                "Postwar Japanese accounts record no aircraft over Los Angeles that night.",
+              ),
+            drawsOn = listOf("E-01", "E-04"),
+          ),
+          Explanation(
+            title = "False alarm from war nerves (Navy view)",
+            heldBy = "the Navy Secretary in 1942 and later historians",
+            supports =
+              listOf(
+                "The alert came a day after the coast was shelled, in a city braced for attack.",
+                "Once guns opened fire, shell bursts and searchlight beams could be mistaken for targets.",
+              ),
+            complicates =
+              listOf(
+                "The Army did not agree at the time.",
+                "It does not say what was first fired on.",
+              ),
+            drawsOn = listOf("E-02", "E-03", "E-04"),
+          ),
+          Explanation(
+            title = "Unidentified craft of unknown origin (ufological reading)",
+            heldBy = "some UFO writers",
+            supports =
+              listOf(
+                "The Army memorandum said the aircraft were not American planes.",
+                "Reports describe objects that did not respond to the barrage.",
+              ),
+            complicates =
+              listOf(
+                "No object, trace or clear image was ever recovered.",
+                "The photograph was retouched and shows only searchlights.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+          Explanation(
+            title = "Weather balloons, flares and shell bursts",
+            heldBy = "later historians and analysts",
+            supports =
+              listOf(
+                "Lit balloons and flares were in use around the coast at the time.",
+                "Shell bursts lit by searchlights can look like aircraft in a blackout.",
+              ),
+            complicates =
+              listOf(
+                "Records do not say which balloon or flare, if any, was first fired on.",
+                "It does not account for every report of aircraft.",
+              ),
+            drawsOn = listOf("E-03", "E-04"),
+          ),
+        ),
+      officialNote =
+        "The Army and the Navy gave different accounts in 1942, and no enemy aircraft were ever found. " +
+          "The archive records both statements and does not rule on what, if anything, was in the sky.",
+      story = battleOfLosAngelesStory,
+      gaps = battleOfLosAngelesGaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.OfficialRecord,
+            title = "Marshall memorandum to President Roosevelt (26 February 1942), summary",
+            caption = "A paraphrase of the memorandum’s main points. It is not a verbatim transcription.",
+            provenance = "Summary of a memorandum from the Army Chief of Staff to the President, 26 February 1942",
+            documentHeader =
+              listOf(
+                "FROM" to "General George C. Marshall, Army Chief of Staff",
+                "TO" to "President Franklin D. Roosevelt",
+                "DATE" to "26 February 1942",
+                "NOTE" to "Paraphrase, not a transcription",
+              ),
+            excerpt =
+              listOf(
+                "Unidentified aircraft, other than American Army or Navy planes, were probably over Los Angeles.",
+                "Estimates of the number of aircraft ran up to about fifteen, at differing speeds and altitudes.",
+                "Anti-aircraft batteries fired about 1,430 rounds. No bombs were dropped and no enemy aircraft were brought down.",
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-02",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.Reported,
+            title = "Knox statement and press coverage (25–26 February 1942), summary",
+            caption = "A summary of how the conflicting statements were reported, not a quotation from any newspaper.",
+            provenance = "Summary of press coverage, 25–26 February 1942",
+            documentHeader =
+              listOf(
+                "SPEAKER" to "Frank Knox, Secretary of the Navy",
+                "DATE" to "25–26 February 1942",
+                "NOTE" to "Paraphrase, not a quotation",
+              ),
+            excerpt =
+              listOf(
+                "The Navy Secretary called the episode a false alarm.",
+                "The War Department said unidentified aircraft were probably over the city, and the press carried both statements.",
+                "Newspapers reported the barrage, the blackout and the damage on the ground.",
+              ),
+          ),
+        ),
+    )
+
+private val fooFighters: CaseDetail
+  get() =
+    CaseDetail(
+      stamp = "No agreed explanation · several proposed",
+      reportedBy = "Allied night-fighter and bomber crews, including the US 415th Night Fighter Squadron, and wartime newspapers",
+      officialPosition = "No single official finding. Wartime intelligence staff did not identify the lights, and no German or Japanese weapon matching them was found after the war.",
+      reported =
+        listOf(
+          "From late 1944, Allied aircrews reported glowing lights that followed or paced their aircraft at night, over Europe and later in the Pacific.",
+          "Crews described balls of orange, red or white light, sometimes in groups or in lines, that kept pace with the aircraft and then moved away.",
+          "Crews of the 415th Night Fighter Squadron, flying along the Rhine, were among those whose reports circulated most widely. The name “foo fighters” was coined in the unit.",
+          "Many crews feared a new German weapon. The lights were not reported to attack, and most were not seen on radar.",
+          "Newspapers carried the term in the weeks that followed.",
+        ),
+      notInDispute =
+        listOf(
+          "Allied crews reported unexplained lights at night in late 1944 and 1945, and the name “foo fighters” was in use at the time.",
+          "No aircraft was reported shot down by one.",
+          "No German or Japanese weapon matching the reports was identified after the war.",
+        ),
+      inDispute =
+        listOf(
+          "What the lights were, and whether the reports describe one phenomenon or several.",
+          "How closely they followed the aircraft, and whether they reacted to what crews did.",
+          "How much the later retellings changed what crews first reported.",
+        ),
+      evidence =
+        listOf(
+          Evidence(
+            id = "E-01",
+            kind = "Testimony",
+            sourceLabel = SourceLabel.Reported,
+            title = "Crew accounts from the Rhine night patrols",
+            description =
+              "Accounts from crews of the 415th Night Fighter Squadron and other units of orange and red lights following their aircraft, as retold in histories and interviews.",
+            caveat = "the surviving retellings come from histories and later interviews, and the original reports are not available to check here.",
+          ),
+          Evidence(
+            id = "E-02",
+            kind = "Document",
+            sourceLabel = SourceLabel.OfficialRecord,
+            title = "Wartime air-intelligence reports",
+            description =
+              "Allied air-intelligence staff collected the reports at the time and recorded that crews feared an enemy weapon.",
+            caveat = "the record shows the reports were taken seriously. It does not record a finding on what the lights were.",
+          ),
+          Evidence(
+            id = "E-03",
+            kind = "Press",
+            sourceLabel = SourceLabel.Reported,
+            title = "Newspaper coverage in early 1945",
+            description =
+              "Allied and American newspapers carried stories of “foo fighters” in the weeks after the reports, often as a possible secret weapon.",
+            caveat = "the press stories repeated what crews were said to have reported, and several carried the lights as a German weapon without evidence.",
+          ),
+        ),
+      explanations =
+        listOf(
+          Explanation(
+            title = "Electrostatic discharge (St. Elmo’s fire)",
+            heldBy = "postwar analysts and sceptics",
+            supports =
+              listOf(
+                "Glowing discharges can form on aircraft and in electrically charged air, and they appear to move with the aircraft.",
+                "Most reports describe steady lights that kept pace without attacking.",
+              ),
+            complicates =
+              listOf(
+                "Some crews described lights seen at a distance from the aircraft.",
+                "Not every report was made in conditions where discharge would be expected.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+          Explanation(
+            title = "Enemy secret weapon (wartime fear)",
+            heldBy = "many crews and press stories in 1944–45",
+            supports =
+              listOf(
+                "Crews knew the Germans were developing new aircraft and weapons.",
+                "The lights seemed to follow the aircraft like a device meant to disrupt them.",
+              ),
+            complicates =
+              listOf(
+                "No such weapon was found after the war.",
+                "Similar reports came from the Pacific.",
+              ),
+            drawsOn = listOf("E-02", "E-03"),
+          ),
+          Explanation(
+            title = "Reflections and misidentified lights",
+            heldBy = "sceptics and later investigators",
+            supports =
+              listOf(
+                "At night, flares, searchlights, stars, planets and reflections on canopies can be mistaken for objects in motion.",
+                "Tired crews flying long night missions were prone to misjudging distance.",
+              ),
+            complicates =
+              listOf(
+                "It does not account for reports of lights in groups that kept pace for long periods.",
+                "The crews were trained observers.",
+              ),
+            drawsOn = listOf("E-01", "E-02"),
+          ),
+          Explanation(
+            title = "Unidentified phenomenon of unknown origin",
+            heldBy = "some veterans and UFO writers",
+            supports =
+              listOf(
+                "Crews’ accounts agree on the general behaviour of the lights.",
+                "No explanation has been agreed in the decades since.",
+              ),
+            complicates =
+              listOf(
+                "No object, photograph or radar track was ever produced.",
+                "A mystery is not itself evidence of a particular cause.",
+              ),
+            drawsOn = listOf("E-01", "E-03"),
+          ),
+        ),
+      officialNote =
+        "No Allied agency issued a single finding on the foo fighters, and no weapon matching them was found. " +
+          "The archive records the accounts and the proposed explanations without choosing between them.",
+      story = fooFightersStory,
+      gaps = fooFightersGaps,
+      media =
+        listOf(
+          ReportMedia(
+            id = "M-01",
+            evidenceId = "E-01",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.Reported,
+            title = "Night patrol accounts, 415th Night Fighter Squadron, summary",
+            caption = "A paraphrase of how crew accounts describe the lights, not a quotation from any one report.",
+            provenance = "Summary of crew accounts of late 1944, as retold in histories of the 415th Night Fighter Squadron",
+            documentHeader =
+              listOf(
+                "UNIT" to "415th Night Fighter Squadron, US Army Air Forces",
+                "PERIOD" to "Late 1944",
+                "NOTE" to "Paraphrase, not a transcription",
+              ),
+            excerpt =
+              listOf(
+                "On night patrols along the Rhine, crews reported glowing orange or red lights that followed their aircraft and kept pace with it.",
+                "The lights sometimes appeared in groups or in lines. They were not reported to attack and were mostly not seen on radar.",
+                "The squadron’s crews called them “foo fighters”.",
+              ),
+          ),
+          ReportMedia(
+            id = "M-02",
+            evidenceId = "E-03",
+            kind = MediaKind.Document,
+            sourceLabel = SourceLabel.Reported,
+            title = "Press coverage of the “foo fighters” (early 1945), summary",
+            caption = "A summary of how the press told the story, not a quotation from any newspaper.",
+            provenance = "Summary of Allied and American press coverage, early 1945",
+            documentHeader =
+              listOf(
+                "SOURCE" to "Newspaper coverage, early 1945",
+                "NOTE" to "Paraphrase, not a quotation",
+              ),
+            excerpt =
+              listOf(
+                "Newspapers reported glowing balls that followed Allied aircraft over Europe and called them “foo fighters”.",
+                "Some stories described them as a possible German secret weapon.",
+                "The stories gave no proof of what the lights were.",
               ),
           ),
         ),
