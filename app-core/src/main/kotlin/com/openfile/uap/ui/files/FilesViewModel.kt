@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseRecord
 import com.openfile.uap.data.MapOutlineRepository
-import com.openfile.uap.data.MapSheets
 import com.openfile.uap.data.SheetOutline
+import com.openfile.uap.ui.casefile.locatorSheets
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,16 +43,12 @@ class FilesViewModel(
   val uiState: StateFlow<FilesUiState> = _uiState.asStateFlow()
 
   init {
-    archive.cases
-      .filter { it.detail?.hero == null }
-      .mapNotNull { MapSheets.sheetFor(it.point) }
-      .distinct()
-      .forEach { sheet ->
-        viewModelScope.launch {
-          val outline = outlines.outline(sheet)
-          _uiState.update { it.copy(outlines = it.outlines + (sheet.id to outline)) }
-        }
+    locatorSheets(archive.cases).forEach { sheet ->
+      viewModelScope.launch {
+        val outline = outlines.outline(sheet)
+        _uiState.update { it.copy(outlines = it.outlines + (sheet.id to outline)) }
       }
+    }
   }
 
   fun onQueryChange(newQuery: String) {

@@ -181,6 +181,10 @@ private fun LocatorHero(record: CaseRecord, sheet: MapSheet, outline: SheetOutli
   }
 }
 
+/** The sheets whose land the locator maps for [cases] need: one for each sheet holding a file without a picture. */
+fun locatorSheets(cases: List<CaseRecord>): List<MapSheet> =
+  cases.filter { it.detail?.hero == null }.mapNotNull { MapSheets.sheetFor(it.point) }.distinct()
+
 /**
  * Pictured files show their [CaseHero] picture, cropped and washed like the banner; the rest show a still locator map.
  * Purely decorative: the card around it already names the file, place and date.

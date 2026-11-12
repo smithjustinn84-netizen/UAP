@@ -58,7 +58,7 @@ class ViewModelTest {
 
   @Test
   fun timelineFilterShowsOneKindAndKeepsTheFullCounts() {
-    val viewModel = TimelineViewModel(archive, SavedStateHandle())
+    val viewModel = TimelineViewModel(archive, RecordingOutlines(), SavedStateHandle())
     val allCounts = viewModel.uiState.value.kindCounts
 
     viewModel.onFilterChange(TimelineKind.Sighting)
@@ -70,8 +70,22 @@ class ViewModelTest {
   }
 
   @Test
+  fun timelineKnowsEveryLinkedFileAndKeepsItsMapsAcrossFilters() {
+    val outlines = RecordingOutlines()
+    val viewModel = TimelineViewModel(archive, outlines, SavedStateHandle())
+    val linked = archive.timeline.mapNotNull { it.caseId }.toSet()
+    assertEquals(linked, viewModel.uiState.value.files.keys)
+    assertEquals(outlines.requested.size, outlines.requested.distinct().size)
+
+    val loaded = viewModel.uiState.value.outlines
+    assertTrue(loaded.isNotEmpty())
+    viewModel.onFilterChange(TimelineKind.Inquiry)
+    assertEquals(loaded, viewModel.uiState.value.outlines)
+  }
+
+  @Test
   fun timelineDecadeJumpsPointAtTheFirstEntryOfEachDecadeUnderTheFilter() {
-    val viewModel = TimelineViewModel(archive, SavedStateHandle())
+    val viewModel = TimelineViewModel(archive, RecordingOutlines(), SavedStateHandle())
     viewModel.onFilterChange(TimelineKind.Culture)
     val state = viewModel.uiState.value
 

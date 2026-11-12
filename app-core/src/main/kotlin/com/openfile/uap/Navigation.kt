@@ -59,7 +59,7 @@ fun MainNavigation(container: AppContainer) {
             )
           }
           entry<EventMap> { MapRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
-          entry<Timeline> { TimelineRoute(archive = archive, onOpenCase = openCase) }
+          entry<Timeline> { TimelineRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
           entry<Method> { MethodRoute(archive = archive) }
           entry<Threads> { ThreadsRoute(archive = archive, onOpenCase = openCase, onBack = { backStack.removeLastOrNull() }) }
           entry<CaseFile> { key ->
