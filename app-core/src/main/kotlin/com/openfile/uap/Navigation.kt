@@ -1,5 +1,11 @@
 package com.openfile.uap
 
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
@@ -37,6 +43,10 @@ fun MainNavigation(container: AppContainer) {
       // Each entry gets its own ViewModelStore, so two open files never share a ViewModel and a popped entry's
       // ViewModel is cleared. The saveable state decorator must come first: the ViewModel store builds on it.
       entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
+      transitionSpec = { forwardTransition() },
+      popTransitionSpec = { backTransition() },
+      // Drives the transition from the system back gesture, so the screen below shows through as the user swipes.
+      predictivePopTransitionSpec = { backTransition() },
       entryProvider =
         entryProvider {
           entry<Files> { FilesRoute(archive = archive, onOpenCase = openCase, onOpenThreads = openThreads, onOpenMethod = openMethod) }
@@ -59,6 +69,12 @@ fun MainNavigation(container: AppContainer) {
     )
   }
 }
+
+private fun forwardTransition(): ContentTransform =
+  (slideInHorizontally(initialOffsetX = { it }) togetherWith (slideOutHorizontally(targetOffsetX = { -it / 4 }) + fadeOut()))
+
+private fun backTransition(): ContentTransform =
+  ((slideInHorizontally(initialOffsetX = { -it / 4 }) + fadeIn()) togetherWith slideOutHorizontally(targetOffsetX = { it }))
 
 private fun sectionLabel(key: NavKey): String = (TopLevelSections.firstOrNull { it.key == key } ?: TopLevelSections.first()).label
 
