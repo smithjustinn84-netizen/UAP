@@ -250,11 +250,26 @@ fun BulletList(items: List<String>, modifier: Modifier = Modifier, hollow: Boole
   }
 }
 
-/** A full-width tappable row at least 48dp tall. */
+/**
+ * A full-width tappable row at least 48dp tall. A standalone button surface sets [pressIn] so its background and border
+ * press in with it; rows ruled into a sheet leave it off, since shrinking would pull them away from the rules.
+ */
 @Composable
-fun TapRow(onClick: () -> Unit, modifier: Modifier = Modifier, onClickLabel: String? = null, content: @Composable () -> Unit) {
+fun TapRow(
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  onClickLabel: String? = null,
+  pressIn: Boolean = false,
+  content: @Composable () -> Unit,
+) {
+  val tap =
+    if (pressIn) {
+      Modifier.pressable(onClickLabel = onClickLabel, onClick = onClick).then(modifier)
+    } else {
+      modifier.clickable(onClickLabel = onClickLabel, role = Role.Button, onClick = onClick)
+    }
   Box(
-    modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp).clickable(onClickLabel = onClickLabel, role = Role.Button, onClick = onClick),
+    tap.fillMaxWidth().defaultMinSize(minHeight = 48.dp),
     contentAlignment = Alignment.CenterStart,
   ) {
     content()

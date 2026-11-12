@@ -70,6 +70,8 @@ import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.casefile.CaseThumbnail
 import com.openfile.uap.ui.countOf
 import com.openfile.uap.ui.pressable
+import com.openfile.uap.ui.rememberTick
+import com.openfile.uap.ui.selectionColor
 import kotlinx.coroutines.launch
 
 @Composable
@@ -191,18 +193,23 @@ fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> 
 /** The key doubles as the filter: tap a kind to show only that kind, tap it again to show everything. */
 @Composable
 private fun KindFilter(only: TimelineKind?, kindCounts: Map<TimelineKind, Int>, onChange: (TimelineKind?) -> Unit) {
+  val tick = rememberTick()
   Column(Modifier.padding(horizontal = ScreenPadding)) {
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).background(Paper).border(1.dp, Ink)) {
       TimelineKind.entries.forEachIndexed { index, kind ->
         if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
         val selected = only == kind
+        val ink = selectionColor(selected, Paper, Ink)
         Column(
           Modifier
             .weight(1f)
             .fillMaxHeight()
             .defaultMinSize(minHeight = 64.dp)
-            .background(if (selected) Ink else Paper)
-            .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind else null) }
+            .background(selectionColor(selected, Ink, Paper))
+            .toggleable(value = selected, role = Role.Checkbox) {
+              tick()
+              onChange(if (it) kind else null)
+            }
             .padding(horizontal = 10.dp, vertical = 8.dp),
           verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
         ) {
@@ -211,10 +218,10 @@ private fun KindFilter(only: TimelineKind?, kindCounts: Map<TimelineKind, Int>, 
             Text(
               (kindCounts[kind] ?: 0).toString(),
               style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Medium),
-              color = if (selected) Paper else Ink,
+              color = ink,
             )
           }
-          Text(kind.label, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = if (selected) Paper else Ink)
+          Text(kind.label, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = ink)
         }
       }
     }

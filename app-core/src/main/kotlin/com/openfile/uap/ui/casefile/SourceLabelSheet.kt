@@ -112,7 +112,7 @@ private fun SourceLabelSheetContent(label: SourceLabel, inThisFile: List<String>
 @Composable
 private fun SheetButton(text: String, solid: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
   val surface = if (solid) Modifier.background(Ink) else Modifier.border(1.dp, Ink)
-  TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface)) {
+  TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface), pressIn = true) {
     Text(
       text,
       modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),

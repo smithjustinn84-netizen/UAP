@@ -1,5 +1,6 @@
 package com.openfile.uap.ui.method
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import com.openfile.uap.theme.Paper
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
 import com.openfile.uap.ui.DeskPreview
+import com.openfile.uap.ui.FoldOut
 import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
@@ -53,6 +55,8 @@ import com.openfile.uap.ui.StatusBarSpacer
 import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TitledBlock
 import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.UnfoldIn
+import com.openfile.uap.ui.rememberTick
 
 private val sourceLabels = SourceLabel.entries.map { it.label to it.meaning }
 
@@ -198,12 +202,16 @@ private fun Explained(number: Int, term: String, meaning: String) {
 @Composable
 private fun Topics() {
   var open by rememberSaveable { mutableStateOf<Int?>(null) }
+  val tick = rememberTick()
   PaperSheet {
     topics.forEachIndexed { index, topic ->
       if (index > 0) SolidRule()
       val expanded = open == index
       TapRow(
-        onClick = { open = if (expanded) null else index },
+        onClick = {
+          tick()
+          open = if (expanded) null else index
+        },
         onClickLabel = if (expanded) "Close" else "Open",
         modifier = Modifier.defaultMinSize(minHeight = 56.dp).semantics { stateDescription = if (expanded) "Open" else "Closed" },
       ) {
@@ -223,7 +231,7 @@ private fun Topics() {
           Chevron(down = !expanded, up = expanded)
         }
       }
-      if (expanded) {
+      AnimatedVisibility(visible = expanded, enter = UnfoldIn, exit = FoldOut) {
         Column(Modifier.padding(start = 14.dp, end = 14.dp, bottom = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
           topic.body()
         }

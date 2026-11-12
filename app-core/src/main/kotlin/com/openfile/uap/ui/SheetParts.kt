@@ -2,7 +2,6 @@ package com.openfile.uap.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,8 +49,8 @@ fun ScreenHeader(label: String, title: String, intro: String, top: Dp = 28.dp, t
 fun BackLink(label: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
   Box(
     modifier
+      .pressable(onClickLabel = "Back to ${label.lowercase()}", onClick = onBack)
       .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-      .clickable(onClickLabel = "Back to ${label.lowercase()}", role = Role.Button, onClick = onBack)
       .padding(horizontal = 12.dp),
     contentAlignment = Alignment.Center,
   ) {
@@ -86,8 +84,8 @@ fun CardHeader(start: String, end: String, onEndClick: (() -> Unit)? = null) {
     } else {
       Box(
         Modifier
+          .pressable(onClickLabel = "See what this label means", onClick = onEndClick)
           .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-          .clickable(onClickLabel = "See what this label means", role = Role.Button, onClick = onEndClick)
           .padding(horizontal = 14.dp),
         contentAlignment = Alignment.Center,
       ) {
@@ -107,7 +105,7 @@ fun CardHeader(start: String, end: String, onEndClick: (() -> Unit)? = null) {
 fun ActionRow(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, solid: Boolean = true) {
   val surface = if (solid) Modifier.background(Ink) else Modifier.background(Paper).border(1.dp, Ink)
   val ink = if (solid) Paper else Ink
-  TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface)) {
+  TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface), pressIn = true) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
       Text(text, modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = ink)
       Chevron(color = ink)

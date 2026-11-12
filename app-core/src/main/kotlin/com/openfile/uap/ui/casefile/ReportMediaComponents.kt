@@ -105,6 +105,8 @@ import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.SolidRule
 import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.pressable
+import com.openfile.uap.ui.rememberToggle
 import kotlin.math.sin
 import kotlinx.coroutines.delay
 
@@ -521,18 +523,21 @@ private fun RecordedVideoExhibit(media: ReportMedia, clip: MediaClip) {
         Modifier.align(Alignment.BottomStart),
       )
     }
+    val toggle = rememberToggle()
     Row(
       Modifier.fillMaxWidth().background(Manila).padding(horizontal = 10.dp, vertical = 4.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Box(
-        Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-          .clickable(
-            role = Role.Button,
+        Modifier
+          .pressable(
             onClickLabel = if (playing) "Pause video" else "Play video",
-            onClick = playback::toggle,
-          )
+            onClick = {
+              toggle(!playing)
+              playback.toggle()
+            },
+          ).defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
           .background(Ink)
           .padding(horizontal = 14.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center,
@@ -541,12 +546,9 @@ private fun RecordedVideoExhibit(media: ReportMedia, clip: MediaClip) {
       }
       MonoLabel("TAPE ${formatSeconds(elapsed)} / ${formatSeconds(totalSeconds)}", color = Ink)
       Box(
-        Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-          .clickable(
-            role = Role.Button,
-            onClickLabel = "Step forward 10 seconds",
-            onClick = playback::stepForward,
-          )
+        Modifier
+          .pressable(onClickLabel = "Step forward 10 seconds", onClick = playback::stepForward)
+          .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
           .border(1.dp, Ink)
           .background(Paper)
           .padding(horizontal = 10.dp, vertical = 8.dp),

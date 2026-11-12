@@ -81,3 +81,12 @@ fun rememberTick(): () -> Unit {
   val haptics = LocalHapticFeedback.current
   return remember(haptics) { { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) } }
 }
+
+/** A switch-like click for something turned on or off (a tape playing or paused), given the state it moves to. */
+@Composable
+fun rememberToggle(): (on: Boolean) -> Unit {
+  val haptics = LocalHapticFeedback.current
+  return remember(haptics) {
+    { on -> haptics.performHapticFeedback(if (on) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff) }
+  }
+}
