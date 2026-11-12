@@ -8,12 +8,13 @@ on any of it.
 
 - **Files** — the case list, searchable by name, place, year or witness and filterable by decade.
 - **Threads** — patterns that recur across the files (late-arriving details, missing records, changed official
-  positions), each with what to keep in mind about it. Opened from the foot of the case list.
+  positions), each with what to keep in mind about it. Opened from a tile at the top of the case list.
 - **Map** — every case plotted on hand-drawn sheets of North America, Britain and Ireland, South-East Australia
-  and the Middle East.
+  and the Middle East, shown one sheet at a time.
 - **Timeline** — sightings alongside the inquiries that followed them and the books, films and broadcasts that
-  retold them, filterable by kind.
-- **Method** — how the archive labels sources, status and explanations.
+  retold them, filterable by kind, with a jump to each decade.
+- **Method** — how to read a file: a sample item with its parts explained, the source labels, and how the archive
+  treats status, explanations, lore and missing records.
 - **Case file** — the full write-up: what was reported, what is and isn't in dispute, evidence with source labels,
   media exhibits (diagrams, plates, audio/video transcripts, document excerpts), explanations listed A–Z, the
   records known to be missing, and the lore: how the story has been told since, in date order.

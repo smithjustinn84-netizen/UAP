@@ -39,7 +39,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -123,7 +122,6 @@ private fun KindFilter(only: TimelineKind?, kindCounts: Map<TimelineKind, Int>, 
             .defaultMinSize(minHeight = 64.dp)
             .background(if (selected) Ink else Paper)
             .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind else null) }
-            .semantics { stateDescription = if (selected) "Showing only these" else "Showing all kinds" }
             .padding(horizontal = 10.dp, vertical = 8.dp),
           verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
         ) {

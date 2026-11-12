@@ -27,8 +27,10 @@ fun MainNavigation(container: AppContainer) {
   val archive = container.archiveRepository
 
   // The frame sits outside NavDisplay so the desk and tab strip are composed once, not once per destination.
-  // A file or the threads belong to whichever section they were opened from, so that tab stays lit.
-  AppFrame(tabs = TopLevelSections, current = backStack.firstOrNull() ?: Files, onTab = switchTab) {
+  // The lit tab is the topmost section on the stack: a file or the threads belong to whichever section they were
+  // opened from, while Method opened from a tile or a label sheet lights Method.
+  val currentSection = backStack.lastOrNull { key -> TopLevelSections.any { it.key == key } } ?: Files
+  AppFrame(tabs = TopLevelSections, current = currentSection, onTab = switchTab) {
     NavDisplay(
       backStack = backStack,
       onBack = { backStack.removeLastOrNull() },

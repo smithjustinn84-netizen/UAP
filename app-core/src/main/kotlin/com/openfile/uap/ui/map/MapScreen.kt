@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -123,17 +122,14 @@ fun MapScreen(
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       SheetTabs(sheets = uiState.sheets, currentId = uiState.sheetId, onSelect = onSheetSelect)
-      // Keyed by sheet so each sheet keeps its own cached drawing when the reader switches back to it.
-      key(shown.sheet.id) {
-        Box {
-          SheetMap(sheet = shown.sheet, pins = shown.pins, outline = shown.outline, selectedId = selectedId, onSelect = onPinSelect)
-          Text(
-            "Pins are approximate",
-            modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 6.dp),
-            style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
-            color = InkSoft,
-          )
-        }
+      Box {
+        SheetMap(sheet = shown.sheet, pins = shown.pins, outline = shown.outline, selectedId = selectedId, onSelect = onPinSelect)
+        Text(
+          "Pins are approximate",
+          modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 6.dp),
+          style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+          color = InkSoft,
+        )
       }
       shown.pins.firstOrNull { it.record.id == uiState.selectedId }?.let { SelectedCard(it, onOpen = { onOpenCase(it.record.id) }) }
 

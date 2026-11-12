@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -171,7 +172,10 @@ fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Un
       SectionTabs(
         current = section,
         onSelect = open,
-        modifier = Modifier.onPlaced { anchors.tabsTop = it.positionInParent().y.roundToInt() },
+        // While the pinned copy shows, this one is hidden from screen readers so the tabs are announced once.
+        modifier =
+          Modifier.onPlaced { anchors.tabsTop = it.positionInParent().y.roundToInt() }
+            .then(if (pinned) Modifier.clearAndSetSemantics {} else Modifier),
       )
       FileSection(
         section = section,
