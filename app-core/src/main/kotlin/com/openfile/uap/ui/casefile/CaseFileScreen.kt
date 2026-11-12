@@ -38,6 +38,7 @@ import com.openfile.uap.data.Explanation
 import com.openfile.uap.data.Infographic
 import com.openfile.uap.data.RecordGap
 import com.openfile.uap.data.ReportMedia
+import com.openfile.uap.data.SourceLabel
 import com.openfile.uap.data.StoryEntry
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
@@ -91,6 +92,7 @@ fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Un
   val caseId = uiState.caseId
   val record = (uiState as? CaseFileUiState.Found)?.record
   var section by rememberSaveable { mutableStateOf(Section.Summary) }
+  var shownLabel by rememberSaveable { mutableStateOf<SourceLabel?>(null) }
 
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
@@ -136,6 +138,7 @@ fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Un
           Section.Evidence ->
             EvidenceSection(
               detail = detail,
+              onLabelClick = { shownLabel = it },
               onSeeMedia = { section = Section.Media },
               onSeeExplanations = { section = Section.Explanations },
             )
@@ -143,6 +146,7 @@ fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Un
           Section.Media ->
             MediaSection(
               detail = detail,
+              onLabelClick = { shownLabel = it },
               onSeeEvidence = { section = Section.Evidence },
               onSeeExplanations = { section = Section.Explanations },
             )
@@ -151,6 +155,13 @@ fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Un
 
           Section.Lore -> LoreSection(detail)
         }
+      }
+      shownLabel?.let { label ->
+        SourceLabelSheet(
+          label = label,
+          inThisFile = detail.evidence.filter { it.sourceLabel == label }.map { "${it.id} ${it.title}" },
+          onDismiss = { shownLabel = null },
+        )
       }
     }
   }
@@ -263,10 +274,16 @@ private fun FileLink(title: String, subtitle: String, onClick: () -> Unit) {
 }
 
 @Composable
-private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExplanations: () -> Unit) {
+private fun EvidenceSection(
+  detail: CaseDetail,
+  onLabelClick: (SourceLabel) -> Unit,
+  onSeeMedia: () -> Unit,
+  onSeeExplanations: () -> Unit,
+) {
   Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(
-      "Each item is labelled by the kind of source it is. A label describes where something comes from, not whether it is true.",
+      "Each item is labelled by the kind of source it is. A label describes where something comes from, not whether it is true. " +
+        "Tap a label to see what it means.",
       style = MaterialTheme.typography.bodyMedium,
       color = Ink,
     )
@@ -274,6 +291,7 @@ private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExp
       EvidenceCard(
         item = item,
         attachedMedia = detail.mediaForEvidence(item.id),
+        onLabelClick = onLabelClick,
       )
     }
     if (detail.gaps.isNotEmpty()) MissingFromFile(detail.gaps)
@@ -285,10 +303,10 @@ private fun EvidenceSection(detail: CaseDetail, onSeeMedia: () -> Unit, onSeeExp
 }
 
 @Composable
-private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>) {
+private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>, onLabelClick: (SourceLabel) -> Unit) {
   var showMedia by rememberSaveable(item.id) { mutableStateOf(false) }
   PaperSheet {
-    CardHeader("${item.id} · ${item.kind}", item.sourceLabel.label)
+    CardHeader("${item.id} · ${item.kind}", item.sourceLabel.label, onEndClick = { onLabelClick(item.sourceLabel) })
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       TypeTitle(item.title, size = 19.sp)
       Text(item.description, style = MaterialTheme.typography.bodyMedium, color = Ink)
@@ -327,7 +345,7 @@ private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>) {
           verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
           attachedMedia.forEach { media ->
-            ReportMediaCard(media = media)
+            ReportMediaCard(media = media, onLabelClick = onLabelClick)
           }
         }
       }
@@ -395,7 +413,12 @@ private fun StoryCard(entry: StoryEntry) {
 }
 
 @Composable
-private fun MediaSection(detail: CaseDetail, onSeeEvidence: () -> Unit, onSeeExplanations: () -> Unit) {
+private fun MediaSection(
+  detail: CaseDetail,
+  onLabelClick: (SourceLabel) -> Unit,
+  onSeeEvidence: () -> Unit,
+  onSeeExplanations: () -> Unit,
+) {
   val evidenceTitles = detail.evidence.associate { it.id to it.title }
   Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(
@@ -408,6 +431,7 @@ private fun MediaSection(detail: CaseDetail, onSeeEvidence: () -> Unit, onSeeExp
       ReportMediaCard(
         media = media,
         evidenceTitle = evidenceTitles[media.evidenceId],
+        onLabelClick = onLabelClick,
         onOpenEvidence = onSeeEvidence,
       )
     }

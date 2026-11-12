@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -66,16 +67,35 @@ fun TitledBlock(title: String, content: @Composable () -> Unit) {
   }
 }
 
-/** The reference line across the top of a card (file number on the left, source on the right) and the rule under it. */
+/**
+ * The reference line across the top of a card (file number on the left, source on the right) and the rule under it.
+ * With [onEndClick] the right-hand label is underlined and opens its meaning; the row grows to a 48dp touch target.
+ */
 @Composable
-fun CardHeader(start: String, end: String) {
+fun CardHeader(start: String, end: String, onEndClick: (() -> Unit)? = null) {
   Row(
-    Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
+    Modifier.fillMaxWidth().padding(start = 14.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    MonoLabel(start, color = Ink, modifier = Modifier.weight(1f))
-    MonoLabel(end, color = Ink)
+    MonoLabel(start, color = Ink, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
+    if (onEndClick == null) {
+      MonoLabel(end, color = Ink, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 14.dp))
+    } else {
+      Box(
+        Modifier
+          .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+          .clickable(onClickLabel = "See what this label means", role = Role.Button, onClick = onEndClick)
+          .padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center,
+      ) {
+        Text(
+          end.uppercase(),
+          style = MaterialTheme.typography.labelSmall.copy(textDecoration = TextDecoration.Underline),
+          color = Ink,
+        )
+      }
+    }
   }
   SolidRule(color = Ink)
 }

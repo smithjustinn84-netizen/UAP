@@ -81,6 +81,7 @@ import com.openfile.uap.data.MediaFigure
 import com.openfile.uap.data.MediaImage
 import com.openfile.uap.data.MediaKind
 import com.openfile.uap.data.ReportMedia
+import com.openfile.uap.data.SourceLabel
 import com.openfile.uap.data.TranscriptCue
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
@@ -106,10 +107,15 @@ import kotlinx.coroutines.delay
  * Full archival media exhibit card used in the Media tab and inline on Evidence cards.
  */
 @Composable
-fun ReportMediaCard(media: ReportMedia, evidenceTitle: String? = null, onOpenEvidence: (() -> Unit)? = null) {
+fun ReportMediaCard(
+  media: ReportMedia,
+  onLabelClick: (SourceLabel) -> Unit,
+  evidenceTitle: String? = null,
+  onOpenEvidence: (() -> Unit)? = null,
+) {
   val uriHandler = LocalUriHandler.current
   PaperSheet {
-    CardHeader("${media.id} · ${media.kind.label}", media.sourceLabel.label)
+    CardHeader("${media.id} · ${media.kind.label}", media.sourceLabel.label, onEndClick = { onLabelClick(media.sourceLabel) })
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
       TypeTitle(media.title, size = 19.sp)
       when (media.kind) {
