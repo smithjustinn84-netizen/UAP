@@ -10,13 +10,17 @@ The font files in `app-core/src/main/res/font/` were downloaded from Google Font
 | `ibm_plex_sans_regular.ttf`, `ibm_plex_sans_semibold.ttf` | IBM Plex Sans (IBM Corp.) | SIL Open Font License 1.1 — https://openfontlicense.org |
 | `ibm_plex_mono_regular.ttf`, `ibm_plex_mono_medium.ttf` | IBM Plex Mono (IBM Corp.) | SIL Open Font License 1.1 — https://openfontlicense.org |
 
-Both licenses ask that the license text travel with the fonts when they are redistributed. Before
-publishing the app, include the full license texts (for example on an in-app licenses screen).
+Both licenses ask that the license text travel with the fonts when they are redistributed. The full texts are
+bundled as `app-core/src/main/res/raw/licence_apache_2_0.txt` (from apache.org) and `licence_ofl_1_1.txt` (IBM Plex's
+own `LICENSE.txt`, with its copyright line) and shown on the in-app Licences screen (Method > About and licences).
+
+Everything in this file is also listed in `app-core/src/main/kotlin/com/openfile/uap/data/Notices.kt`, which the
+Licences screen reads. Keep the two in step.
 
 ## Map outlines
 
-`app-core/src/main/res/raw/map_north_america.txt`, `map_british_isles.txt`, `map_south_east_australia.txt`
-and `map_middle_east.txt` are clipped and simplified from Natural Earth land data (public domain).
+`app-core/src/main/res/raw/map_north_america.txt`, `map_british_isles.txt`, `map_south_east_australia.txt`,
+`map_middle_east.txt` and `map_central_europe.txt` are clipped and simplified from Natural Earth land data (public domain).
 Natural Earth is in the public domain; no attribution is required, but it is credited here.
 
 ## Video clips

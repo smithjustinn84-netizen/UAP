@@ -41,6 +41,7 @@ import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
 import com.openfile.uap.ui.DeskPreview
@@ -114,14 +115,14 @@ private val topics: List<MethodTopic> =
   )
 
 @Composable
-fun MethodRoute(archive: ArchiveRepository) {
+fun MethodRoute(archive: ArchiveRepository, onOpenAbout: () -> Unit) {
   // Any real item will do to show how an item reads; the first written-up one keeps it stable.
   val sample = remember(archive) { archive.cases.firstNotNullOfOrNull { it.detail?.evidence?.firstOrNull() } }
-  MethodScreen(sample = sample)
+  MethodScreen(sample = sample, onOpenAbout = onOpenAbout)
 }
 
 @Composable
-fun MethodScreen(sample: Evidence?) {
+fun MethodScreen(sample: Evidence?, onOpenAbout: () -> Unit) {
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
     ScreenHeader(
@@ -140,6 +141,7 @@ fun MethodScreen(sample: Evidence?) {
       if (sample != null) TitledBlock("One item, three things to read") { AnnotatedItem(sample) }
       TitledBlock("Source labels") { Glossary(sourceLabels) }
       TitledBlock("More on method") { Topics() }
+      TitledBlock("This app") { ActionRow("About and licences", onOpenAbout, solid = false) }
     }
   }
 }
@@ -265,6 +267,6 @@ private fun Glossary(terms: List<Pair<String, String>>) {
 private fun MethodScreenPreview() {
   val sample = Archive.cases.firstNotNullOfOrNull { it.detail?.evidence?.firstOrNull() }
   DeskPreview {
-    MethodScreen(sample = sample)
+    MethodScreen(sample = sample, onOpenAbout = {})
   }
 }

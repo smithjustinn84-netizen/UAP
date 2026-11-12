@@ -15,6 +15,8 @@ on any of it.
   retold them, filterable by kind, with a jump to each decade.
 - **Method** — how to read a file: a sample item with its parts explained, the source labels, and how the archive
   treats status, explanations, lore and missing records.
+- **About and licences** — version, privacy (no network, nothing collected) and the licence of every bundled font,
+  library, image, clip and map outline, with the full Apache 2.0 and OFL texts. Opened from the foot of Method.
 - **Case file** — the full write-up: what was reported, what is and isn't in dispute, evidence with source labels,
   media exhibits (diagrams, plates, audio/video transcripts, document excerpts), explanations listed A–Z, the
   records known to be missing, and the lore: how the story has been told since, in date order.
@@ -43,13 +45,14 @@ app-core/                     Library module with all code and resources
   src/main/kotlin/com/openfile/uap/
     MainActivity.kt
     Navigation.kt             NavDisplay, tab switching, case-file routing
-    NavigationKeys.kt         Files, EventMap, Timeline, Method, Threads, CaseFile(id)
+    NavigationKeys.kt         Files, EventMap, Timeline, Method, Threads, About, Licences, CaseFile(id)
     data/Archive.kt           Every case, its write-up, media and the timeline
     data/Lore.kt              How each case has been retold, what is missing from its record, cross-file threads
     data/MapSheets.kt         Map sheet bounds, projection and outline parser
+    data/Notices.kt           Third-party notices and licences shown on the Licences screen
     theme/                    Colours, typography (Special Elite, IBM Plex), theme
     ui/                       One file per screen, shared components, infographics
-  src/main/res/raw/           Map outlines (Natural Earth, simplified) and bundled video clips
+  src/main/res/raw/           Map outlines (Natural Earth, simplified), bundled video clips and licence texts
   src/main/res/drawable/      Vector "photographic plates" used as media exhibits
   src/main/res/drawable-nodpi/ Bundled photographic plates and document scans
   src/test/                   JVM unit tests for the archive and map sheets

@@ -4,15 +4,19 @@ import androidx.lifecycle.SavedStateHandle
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.BundledArchiveRepository
 import com.openfile.uap.data.FileThread
+import com.openfile.uap.data.Licence
 import com.openfile.uap.data.MapOutlineRepository
 import com.openfile.uap.data.MapSheet
 import com.openfile.uap.data.MapSheets
+import com.openfile.uap.data.Notice
+import com.openfile.uap.data.NoticesRepository
 import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.data.ThreadAppearance
 import com.openfile.uap.data.TimelineKind
 import com.openfile.uap.ui.casefile.CaseFileUiState
 import com.openfile.uap.ui.casefile.CaseFileViewModel
 import com.openfile.uap.ui.files.FilesViewModel
+import com.openfile.uap.ui.licences.LicencesViewModel
 import com.openfile.uap.ui.map.MapViewModel
 import com.openfile.uap.ui.threads.ThreadsViewModel
 import com.openfile.uap.ui.timeline.TimelineViewModel
@@ -195,6 +199,27 @@ class ViewModelTest {
 
     viewModel.onQueryChange("Westall")
     assertEquals(needed.map { it.id }.toSet(), viewModel.uiState.value.outlines.keys)
+  }
+
+  @Test
+  fun licencesGroupNoticesInLicenceOrderAndFillInBundledTexts() {
+    val notices =
+      listOf(
+        Notice("Photo", "Someone", Licence.CcBySa40),
+        Notice("Font", "Foundry", Licence.Ofl11),
+        Notice("Library", "Authors", Licence.Apache2),
+        Notice("Other library", "Authors", Licence.Apache2),
+      )
+    val viewModel = LicencesViewModel(FakeNotices(notices, mapOf(Licence.Apache2 to "APACHE")))
+    val groups = viewModel.uiState.value.groups
+    assertEquals(listOf(Licence.Apache2, Licence.Ofl11, Licence.CcBySa40), groups.map { it.licence })
+    assertEquals(2, groups.first().notices.size)
+    assertEquals("APACHE", groups.first().fullText)
+    assertNull(groups[1].fullText)
+  }
+
+  private class FakeNotices(override val notices: List<Notice>, private val texts: Map<Licence, String>) : NoticesRepository {
+    override suspend fun fullText(licence: Licence): String? = texts[licence]
   }
 
   private class RecordingOutlines : MapOutlineRepository {

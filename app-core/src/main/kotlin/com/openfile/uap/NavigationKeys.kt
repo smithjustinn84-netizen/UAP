@@ -13,6 +13,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object Threads : NavKey
 
+@Serializable data object About : NavKey
+
+@Serializable data object Licences : NavKey
+
 @Serializable data class CaseFile(val id: String) : NavKey
 
 /** A destination on the bottom tab strip. [label] is also how a file's back link names the section it came from. */

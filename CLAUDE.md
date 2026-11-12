@@ -79,4 +79,5 @@ anywhere else. Run the unit tests after any content change.
   comment saying why.
 - Kotlin warnings are errors in `app-core` (`kotlin.allWarningsAsErrors`).
 - Comments are sparse and explain why; KDoc on data types where a field's meaning isn't obvious.
-- New third-party assets (fonts, map data, images) must be added to `THIRD-PARTY-NOTICES.md` with their licence.
+- New third-party assets (fonts, map data, images, libraries) must be added to `THIRD-PARTY-NOTICES.md` with their
+  licence, and as a `Notice` in `data/Notices.kt` so the in-app Licences screen lists them.

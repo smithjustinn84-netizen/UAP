@@ -15,8 +15,10 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.openfile.uap.ui.AppFrame
+import com.openfile.uap.ui.about.AboutRoute
 import com.openfile.uap.ui.casefile.CaseFileRoute
 import com.openfile.uap.ui.files.FilesRoute
+import com.openfile.uap.ui.licences.LicencesRoute
 import com.openfile.uap.ui.map.MapRoute
 import com.openfile.uap.ui.method.MethodRoute
 import com.openfile.uap.ui.threads.ThreadsRoute
@@ -30,6 +32,7 @@ fun MainNavigation(container: AppContainer) {
   val openThreads: () -> Unit = { backStack.add(Threads) }
   // Opened on top of the current screen, not as a tab switch, so Back returns to the file or list it came from.
   val openMethod: () -> Unit = { if (backStack.lastOrNull() != Method) backStack.add(Method) }
+  val back: () -> Unit = { backStack.removeLastOrNull() }
   val archive = container.archiveRepository
 
   // The frame sits outside NavDisplay so the desk and tab strip are composed once, not once per destination.
@@ -60,8 +63,10 @@ fun MainNavigation(container: AppContainer) {
           }
           entry<EventMap> { MapRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
           entry<Timeline> { TimelineRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
-          entry<Method> { MethodRoute(archive = archive) }
-          entry<Threads> { ThreadsRoute(archive = archive, onOpenCase = openCase, onBack = { backStack.removeLastOrNull() }) }
+          entry<Method> { MethodRoute(archive = archive, onOpenAbout = { backStack.add(About) }) }
+          entry<About> { AboutRoute(version = container.appVersion, onOpenLicences = { backStack.add(Licences) }, onBack = back) }
+          entry<Licences> { LicencesRoute(notices = container.noticesRepository, onBack = back) }
+          entry<Threads> { ThreadsRoute(archive = archive, onOpenCase = openCase, onBack = back) }
           entry<CaseFile> { key ->
             // Back names where the file was opened from.
             val backLabel = if (Threads in backStack) "Threads" else sectionLabel(backStack.firstOrNull() ?: Files)
@@ -70,7 +75,7 @@ fun MainNavigation(container: AppContainer) {
               outlines = container.mapOutlineRepository,
               caseId = key.id,
               backLabel = backLabel,
-              onBack = { backStack.removeLastOrNull() },
+              onBack = back,
               onOpenMethod = openMethod,
             )
           }
