@@ -31,11 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -57,12 +53,10 @@ import com.openfile.uap.data.MapOutlineRepository
 import com.openfile.uap.data.MapSheet
 import com.openfile.uap.data.MapSheets
 import com.openfile.uap.data.SheetOutline
-import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.MonoFamily
 import com.openfile.uap.theme.Paper
-import com.openfile.uap.theme.Rule
 import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
@@ -77,8 +71,9 @@ import com.openfile.uap.ui.StatusBarSpacer
 import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.countOf
+import com.openfile.uap.ui.rememberTick
+import com.openfile.uap.ui.selectionColor
 
-private val Land = Color(0xFFE4D7B4)
 private val PinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 11.sp, color = Paper)
 private val SelectedPinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Ink)
 
@@ -160,12 +155,16 @@ private fun SheetTabs(sheets: List<MapSheetUiState>, currentId: String, onSelect
         row.forEachIndexed { index, s ->
           if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
           val selected = s.sheet.id == currentId
+          val tick = rememberTick()
           Row(
             Modifier
               .weight(1f)
               .defaultMinSize(minHeight = 48.dp)
-              .background(if (selected) Ink else Paper)
-              .selectable(selected = selected, role = Role.Tab) { onSelect(s.sheet.id) }
+              .background(selectionColor(selected, Ink, Paper))
+              .selectable(selected = selected, role = Role.Tab) {
+                if (!selected) tick()
+                onSelect(s.sheet.id)
+              }
               .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -174,9 +173,9 @@ private fun SheetTabs(sheets: List<MapSheetUiState>, currentId: String, onSelect
               s.sheet.title,
               modifier = Modifier.weight(1f),
               style = MaterialTheme.typography.labelMedium,
-              color = if (selected) Paper else Ink,
+              color = selectionColor(selected, Paper, Ink),
             )
-            Text(s.pins.size.toString(), style = MaterialTheme.typography.labelMedium, color = if (selected) Paper else InkSoft)
+            Text(s.pins.size.toString(), style = MaterialTheme.typography.labelMedium, color = selectionColor(selected, Paper, InkSoft))
           }
         }
         // An odd sheet out keeps its half width.
@@ -236,26 +235,13 @@ private fun SheetMap(
       }
       // The coastline paths and pin labels are built once per size, not on every draw.
       .drawWithCache {
-        val land =
-          outline.map { ring ->
-            Path().apply {
-              ring.forEachIndexed { i, (lon, lat) ->
-                val at = sheet.project(lat.toDouble(), lon.toDouble())
-                if (i == 0) moveTo(at.x * size.width, at.y * size.height) else lineTo(at.x * size.width, at.y * size.height)
-              }
-              close()
-            }
-          }
-        val coast = Stroke(width = 0.75.dp.toPx())
+        val land = outline.toLandPaths(sheet, size)
         val pinCentres = pins.map { pinOffset(sheet, it, size.width, size.height) }
         val pinLabels = pins.map { measurer.measure(it.number.toString(), PinLabelStyle) }
         val selectedLabels = pins.map { measurer.measure(it.number.toString(), SelectedPinLabelStyle) }
         onDrawBehind {
           drawGraticule(sheet)
-          land.forEach { path ->
-            drawPath(path, Land)
-            drawPath(path, Dash, style = coast)
-          }
+          drawLand(land)
 
           // Selected pin last so its ring sits on top. All pins share one ink: the map never codes a verdict.
           val selected = pins.indexOfFirst { it.record.id == selectedId() }
@@ -284,25 +270,6 @@ private fun DrawScope.drawPin(at: Offset, label: TextLayoutResult, selected: Boo
 private fun pinOffset(sheet: MapSheet, p: PlottedCase, width: Float, height: Float): Offset {
   val at = sheet.project(p.record.point.lat, p.record.point.lon)
   return Offset(at.x * width, at.y * height)
-}
-
-/** Faint dashed lines every 10 degrees (5 on a small sheet), like the grid on a printed chart. */
-private fun DrawScope.drawGraticule(sheet: MapSheet) {
-  val step = if (sheet.north - sheet.south > 20) 10 else 5
-  val dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx()))
-  val stroke = 0.75.dp.toPx()
-  var lon = Math.ceil(sheet.west / step) * step
-  while (lon <= sheet.east) {
-    val x = sheet.project(sheet.north, lon).x * size.width
-    drawLine(Rule, Offset(x, 0f), Offset(x, size.height), strokeWidth = stroke, pathEffect = dash)
-    lon += step
-  }
-  var lat = Math.ceil(sheet.south / step) * step
-  while (lat <= sheet.north) {
-    val y = sheet.project(lat, sheet.west).y * size.height
-    drawLine(Rule, Offset(0f, y), Offset(size.width, y), strokeWidth = stroke, pathEffect = dash)
-    lat += step
-  }
 }
 
 @Composable

@@ -41,6 +41,8 @@ data class CaseDetail(
   val gaps: List<RecordGap> = emptyList(),
   /** A briefing graphic drawn for this file alone, shown on its summary. */
   val infographic: Infographic? = null,
+  /** The picture heading the file. Without one, the file is headed by a locator map of [CaseRecord.point]. */
+  val hero: CaseHero? = null,
 ) {
   fun mediaForEvidence(evidenceId: String): List<ReportMedia> = media.filter { it.evidenceId == evidenceId }
 }
@@ -112,7 +114,22 @@ enum class MediaImage {
   MogulReflectorTrain,
   KecksburgReplica,
   SamfordMinutes,
+  NurembergBroadsheet,
+  LosAngelesTimesPage,
+  NightFighterBeaufighter,
+  MountRainier,
+  ShagHarbour,
+  BerwynRidge,
+  UssNimitz,
+  UssTheodoreRoosevelt,
 }
+
+/**
+ * The picture at the head of a file: a record made at the time or a view of the setting, never a later
+ * reconstruction of what was reported. [caption] says only what the picture is; [credit] names its maker, source and
+ * licence, and is always shown. [focus] is where to crop vertically, from 0 (top) to 1 (bottom).
+ */
+data class CaseHero(val image: MediaImage, val caption: String, val credit: String, val focus: Float = 0.5f)
 
 data class TranscriptCue(val timestamp: String, val speaker: String, val text: String)
 
@@ -717,6 +734,13 @@ object Archive {
 private val rendlesham: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.HaltMemo,
+          caption = "Memorandum by Lt Col Charles Halt, 13 January 1981",
+          credit = "US Air Force, 1981 · via Wikimedia Commons · Public domain",
+          focus = 0.15f,
+        ),
       stamp = "No official explanation",
       reportedBy = "US Air Force security personnel and the deputy base commander, Lt Col Charles Halt",
       officialPosition = "UK Ministry of Defence: no defence significance. No explanation was published.",
@@ -941,6 +965,12 @@ private val rendlesham: CaseDetail
 private val shagHarbour: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.ShagHarbour,
+          caption = "Shag Harbour, Nova Scotia, from the air",
+          credit = "Photograph by J5255, 2017 · Wikimedia Commons, CC BY-SA 4.0",
+        ),
       stamp = "Unsolved official inquiry",
       reportedBy = "Local residents, RCMP officers, and fishing boat crews",
       officialPosition = "Canadian Department of National Defence: object remained unidentified following naval dive search.",
@@ -1121,6 +1151,12 @@ private val shagHarbour: CaseDetail
 private val nimitz: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.UssNimitz,
+          caption = "USS Nimitz under way",
+          credit = "US Navy photograph · via Wikimedia Commons · Public domain",
+        ),
       stamp = "Official military inquiry · unidentified",
       reportedBy = "US Navy strike fighter aviators (VFA-41 'Black Aces') and USS Princeton radar operators",
       officialPosition = "US Department of Defense: unidentified aerial phenomena exhibiting anomalous flight characteristics.",
@@ -1320,6 +1356,13 @@ private val nimitz: CaseDetail
 private val arnold: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.MountRainier,
+          caption = "Mount Rainier from the west",
+          credit = "Photograph by Stan Shebs, 2005 · Wikimedia Commons, CC BY-SA 3.0",
+          focus = 0.4f,
+        ),
       stamp = "No agreed explanation",
       reportedBy = "Kenneth Arnold, a pilot and businessman from Boise, Idaho",
       officialPosition = "US Air Force: reviewed the report and its reviewers later suggested a mirage. No explanation was agreed.",
@@ -1485,6 +1528,13 @@ private val arnold: CaseDetail
 private val roswell: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.RoswellDailyRecord,
+          caption = "Roswell Daily Record, 8 July 1947, front page",
+          credit = "Roswell Daily Record, 1947 · via Wikimedia Commons · Public domain (copyright not renewed)",
+          focus = 0.1f,
+        ),
       stamp = "Official explanation on record",
       reportedBy = "Rancher W. W. “Mac” Brazel, and personnel of the Roswell Army Air Field",
       officialPosition = "US Air Force (1994 and 1997 reports): debris from a Project Mogul balloon train. The reported bodies were test dummies and misremembered events.",
@@ -1685,6 +1735,13 @@ private val roswell: CaseDetail
 private val washingtonRadar: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.SamfordMinutes,
+          caption = "Transcript of the Pentagon press conference, 29 July 1952, page 1",
+          credit = "US Air Force, 1952 · via Wikimedia Commons · Public domain",
+          focus = 0.15f,
+        ),
       stamp = "Official explanation on record",
       reportedBy = "Air traffic controllers, radar operators, and airline and Air Force pilots",
       officialPosition = "US Air Force: false radar returns from a temperature inversion, and ordinary lights seen in the sky.",
@@ -2010,6 +2067,13 @@ private val kecksburg: CaseDetail
 private val berwyn: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.BerwynRidge,
+          caption = "The Berwyn ridge from Cadair Berwyn",
+          credit = "Photograph by Colin Park · geograph.org.uk via Wikimedia Commons, CC BY-SA 2.0",
+          focus = 0.6f,
+        ),
       stamp = "Official explanation on record",
       reportedBy = "Residents of North Wales, local police, and the British Geological Survey",
       officialPosition = "UK Ministry of Defence: a bright meteor and a coincident earthquake. No evidence of a crashed object.",
@@ -2332,6 +2396,12 @@ private val phoenixLights: CaseDetail
 private val rooseveltEncounters: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.UssTheodoreRoosevelt,
+          caption = "USS Theodore Roosevelt under way in the Atlantic, 2014",
+          credit = "US Navy photograph by MC3 Stephane Belcher · via Wikimedia Commons · Public domain",
+        ),
       stamp = "Official inquiry on record · unidentified",
       reportedBy = "US Navy strike fighter aviators flying from USS Theodore Roosevelt",
       officialPosition = "US Department of Defense: the videos are authentic and the objects they show remain unidentified.",
@@ -3159,6 +3229,13 @@ private val tehran2026: CaseDetail
 private val nuremberg1561: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.NurembergBroadsheet,
+          caption = "Broadsheet printed by Hans Glaser, Nuremberg, 1561",
+          credit = "Hans Glaser, 1561 · Zentralbibliothek Zürich via Wikimedia Commons · Public domain",
+          focus = 0.2f,
+        ),
       stamp = "Natural explanation proposed · disputed",
       reportedBy = "Unnamed residents of Nuremberg, as relayed in a printed broadsheet by Hans Glaser",
       officialPosition = "There is no official position. The event predates any state body that studied sky reports. Modern historians and astronomers generally read it as a weather display described in the language of its day.",
@@ -3313,6 +3390,13 @@ private val nuremberg1561: CaseDetail
 private val battleOfLosAngeles: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.LosAngelesTimesPage,
+          caption = "Los Angeles Times, 26 February 1942, page B",
+          credit = "Los Angeles Times, 1942 · via Wikimedia Commons · Public domain (copyright not renewed)",
+          focus = 0.25f,
+        ),
       stamp = "Official statements conflict · disputed",
       reportedBy = "Anti-aircraft crews, air-raid wardens and residents of Los Angeles, and US Army and Navy officials",
       officialPosition = "War Department (1942): unidentified aircraft were probably over the city. Navy Secretary Knox: a false alarm. Later official histories: no enemy aircraft were found.",
@@ -3493,6 +3577,12 @@ private val battleOfLosAngeles: CaseDetail
 private val fooFighters: CaseDetail
   get() =
     CaseDetail(
+      hero =
+        CaseHero(
+          image = MediaImage.NightFighterBeaufighter,
+          caption = "A Beaufighter of the 415th Night Fighter Squadron, USAAF, 1943",
+          credit = "US Army Air Forces · via Wikimedia Commons · Public domain",
+        ),
       stamp = "No agreed explanation · several proposed",
       reportedBy = "Allied night-fighter and bomber crews, including the US 415th Night Fighter Squadron, and wartime newspapers",
       officialPosition = "No single official finding. Wartime intelligence staff did not identify the lights, and no German or Japanese weapon matching them was found after the war.",

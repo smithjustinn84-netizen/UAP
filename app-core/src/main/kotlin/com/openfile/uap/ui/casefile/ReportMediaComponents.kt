@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -188,7 +189,7 @@ private fun MediaFigure?.toDrawableRes(): Int? =
   }
 
 @DrawableRes
-private fun MediaImage.toDrawableRes(): Int =
+internal fun MediaImage.toDrawableRes(): Int =
   when (this) {
     MediaImage.HaltMemo -> R.drawable.scan_halt_memo
     MediaImage.RoswellDailyRecord -> R.drawable.scan_roswell_daily_record
@@ -196,6 +197,14 @@ private fun MediaImage.toDrawableRes(): Int =
     MediaImage.MogulReflectorTrain -> R.drawable.fig_mogul_balloon_train
     MediaImage.KecksburgReplica -> R.drawable.photo_kecksburg_replica
     MediaImage.SamfordMinutes -> R.drawable.scan_samford_minutes
+    MediaImage.NurembergBroadsheet -> R.drawable.hero_nuremberg
+    MediaImage.LosAngelesTimesPage -> R.drawable.hero_los_angeles
+    MediaImage.NightFighterBeaufighter -> R.drawable.hero_beaufighter
+    MediaImage.MountRainier -> R.drawable.hero_rainier
+    MediaImage.ShagHarbour -> R.drawable.hero_shag_harbour
+    MediaImage.BerwynRidge -> R.drawable.hero_berwyn
+    MediaImage.UssNimitz -> R.drawable.hero_nimitz
+    MediaImage.UssTheodoreRoosevelt -> R.drawable.hero_roosevelt
   }
 
 /**
@@ -210,6 +219,14 @@ private fun MediaImage.aspectRatio(): Float =
     MediaImage.MogulReflectorTrain -> 960f / 1017f
     MediaImage.KecksburgReplica -> 1000f / 1155f
     MediaImage.SamfordMinutes -> 1100f / 1423f
+    MediaImage.NurembergBroadsheet -> 800f / 900f
+    MediaImage.LosAngelesTimesPage -> 617f / 565f
+    MediaImage.NightFighterBeaufighter -> 1280f / 561f
+    MediaImage.MountRainier -> 1280f / 853f
+    MediaImage.ShagHarbour -> 1280f / 719f
+    MediaImage.BerwynRidge -> 1280f / 719f
+    MediaImage.UssNimitz -> 1280f / 850f
+    MediaImage.UssTheodoreRoosevelt -> 1280f / 853f
   }
 
 @Composable
@@ -255,7 +272,7 @@ private fun ArchivalPhotoExhibit(media: ReportMedia) {
 
 /** Full-screen viewer with pinch-to-zoom and pan, for reading scans on a phone. */
 @Composable
-private fun ZoomableImageDialog(@DrawableRes resId: Int, description: String, onDismiss: () -> Unit) {
+internal fun ZoomableImageDialog(@DrawableRes resId: Int, description: String, onDismiss: () -> Unit) {
   Dialog(
     onDismissRequest = onDismiss,
     // Full-screen viewer: draw behind the system bars and keep the controls clear of them.
@@ -1109,12 +1126,13 @@ private fun CacheDrawScope.nimitzDropDiagram(): FigureDraw {
  * Uses Coil off the main thread at runtime, and [painterResource] in Compose previews where async loaders do not run.
  */
 @Composable
-private fun BundledImage(
+internal fun BundledImage(
   @DrawableRes resId: Int,
   contentDescription: String,
   contentScale: ContentScale,
   modifier: Modifier = Modifier,
   alignment: Alignment = Alignment.Center,
+  colorFilter: ColorFilter? = null,
 ) {
   if (LocalInspectionMode.current) {
     Image(
@@ -1122,6 +1140,7 @@ private fun BundledImage(
       contentDescription = contentDescription,
       contentScale = contentScale,
       alignment = alignment,
+      colorFilter = colorFilter,
       modifier = modifier,
     )
   } else {
@@ -1130,6 +1149,7 @@ private fun BundledImage(
       contentDescription = contentDescription,
       contentScale = contentScale,
       alignment = alignment,
+      colorFilter = colorFilter,
       modifier = modifier,
     )
   }

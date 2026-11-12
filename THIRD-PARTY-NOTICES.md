@@ -45,6 +45,18 @@ were used where the originals were rate-limited):
 | `fig_mogul_balloon_train.jpg` | File:Mogul_balloon_train_USAF_1995.png (USAF, *The Roswell Report*, 1995) | Public domain, US Government work |
 | `photo_kecksburg_replica.jpg` | File:Kecksburg_UFO.JPG (photo by Ryright, 2008) | CC BY-SA 3.0 — https://creativecommons.org/licenses/by-sa/3.0/ (credit shown in the app) |
 | `scan_samford_minutes.jpg` | Page 1 of File:General_Samford_Press_Conference,_July_29,_1952.pdf | Public domain, US Government work |
+| `hero_nuremberg.jpg` | File:Himmelserscheinung_über_Nürnberg_vom_14._April_1561.jpg (broadsheet by Hanns Glaser, 1561; Zentralbibliothek Zürich) | Public domain (age) |
+| `hero_los_angeles.jpg` | File:Battle_of_Los_Angeles_LATimes.jpg (Los Angeles Times, 26 Feb 1942) | Public domain, copyright not renewed |
+| `hero_beaufighter.jpg` | File:415th_Night_Fighter_Squadron_-_Bristol_Beaufighter.jpg (USAAF, 1943) | Public domain, US Government work |
+| `hero_rainier.jpg` | File:Mount_Rainier_from_west.jpg (photo by Stan Shebs, 2005) | CC BY-SA 3.0 — https://creativecommons.org/licenses/by-sa/3.0/ (credit shown in the app) |
+| `hero_shag_harbour.jpg` | File:Shag_Harbour.jpg (photo by J5255, 2017) | CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ (credit shown in the app) |
+| `hero_berwyn.jpg` | File:Cadair_Berwyn_from_summit_at_830_metres_-_geograph.org.uk_-_6678353.jpg (photo by Colin Park) | CC BY-SA 2.0 — https://creativecommons.org/licenses/by-sa/2.0/ (credit shown in the app) |
+| `hero_nimitz.jpg` | File:USS_Nimitz_(CVN-68).jpg (US Navy photo 090729-N-3038W-459) | Public domain, US Navy work |
+| `hero_roosevelt.jpg` | File:140918-N-PG340-937_USS_Theodore_Roosevelt_(CVN-71)_underway_Atlantic_Ocean_Sept_18_2014.jpg (US Navy photo by MC3 Stephane Belcher) | Public domain, US Navy work |
+
+The `hero_*` files head a case file. Each is either a record made at the time or a picture of the setting, never a
+later reconstruction of what was reported. Their CC BY-SA credits are shown under the image. They were resized; nothing
+else was changed.
 
 The Roswell items rest on the published-and-not-renewed argument. UT Arlington offers its own scans under CC BY-NC,
 so do not swap in UTA's copies.

@@ -2,7 +2,6 @@ package com.openfile.uap.ui.files
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +50,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.openfile.uap.data.Archive
 import com.openfile.uap.data.ArchiveRepository
 import com.openfile.uap.data.CaseRecord
+import com.openfile.uap.data.MapOutlineRepository
+import com.openfile.uap.data.MapSheets
+import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
@@ -62,10 +64,15 @@ import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenPadding
+import com.openfile.uap.ui.SolidRule
 import com.openfile.uap.ui.Stamp
 import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.casefile.CaseThumbnail
 import com.openfile.uap.ui.countOf
 import com.openfile.uap.ui.dashedBorder
+import com.openfile.uap.ui.pressable
+import com.openfile.uap.ui.rememberTick
+import com.openfile.uap.ui.selectionColor
 
 @Composable
 fun FilesRoute(
@@ -73,7 +80,8 @@ fun FilesRoute(
   onOpenCase: (String) -> Unit,
   onOpenThreads: () -> Unit,
   onOpenMethod: () -> Unit,
-  viewModel: FilesViewModel = viewModel { FilesViewModel(archive, createSavedStateHandle()) },
+  outlines: MapOutlineRepository,
+  viewModel: FilesViewModel = viewModel { FilesViewModel(archive, outlines, createSavedStateHandle()) },
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
   FilesScreen(
@@ -124,14 +132,19 @@ fun FilesScreen(
       item(key = "empty", contentType = "empty") {
         Text(
           "No files match. Try a place, a year, a name or a witness, or clear the decade filter.",
-          modifier = Modifier.padding(horizontal = ScreenPadding),
+          modifier = Modifier.animateItem().padding(horizontal = ScreenPadding),
           style = MaterialTheme.typography.bodyMedium,
           color = InkBody,
         )
       }
     }
     items(results, key = { it.id }, contentType = { "folder" }) { record ->
-      FolderCard(record = record, onClick = { onOpenCase(record.id) }, modifier = Modifier.padding(horizontal = ScreenPadding))
+      FolderCard(
+        record = record,
+        outline = MapSheets.sheetFor(record.point)?.let { uiState.outlines[it.id] }.orEmpty(),
+        onClick = { onOpenCase(record.id) },
+        modifier = Modifier.animateItem().padding(horizontal = ScreenPadding),
+      )
     }
   }
 }
@@ -186,10 +199,10 @@ private fun StartTile(label: String, title: String, detail: String, inverted: Bo
   val surface = if (inverted) Modifier.background(Ink) else Modifier.background(Paper).dashedBorder(Ink)
   Column(
     modifier
+      .pressable(onClickLabel = "Open", onClick = onClick)
       .fillMaxHeight()
       .defaultMinSize(minHeight = 92.dp)
       .then(surface)
-      .clickable(onClickLabel = "Open", role = Role.Button, onClick = onClick)
       .padding(12.dp),
     verticalArrangement = Arrangement.spacedBy(6.dp),
   ) {
@@ -256,22 +269,28 @@ private fun DecadeChips(decades: List<Int>, selected: Int?, onSelect: (Int?) -> 
 
 @Composable
 private fun Chip(label: String, selected: Boolean, onClick: () -> Unit) {
+  val tick = rememberTick()
   Box(
     Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-      .background(if (selected) Ink else Paper)
+      .background(selectionColor(selected, Ink, Paper))
       .border(1.dp, Ink)
-      .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+      .selectable(selected = selected, role = Role.RadioButton, onClick = {
+        if (!selected) tick()
+        onClick()
+      })
       .padding(horizontal = 14.dp),
     contentAlignment = Alignment.Center,
   ) {
-    Text(label, style = MaterialTheme.typography.labelLarge, color = if (selected) Paper else Ink)
+    Text(label, style = MaterialTheme.typography.labelLarge, color = selectionColor(selected, Paper, Ink))
   }
 }
 
-/** A case shown as a manila folder: file number on the tab, summary on the sheet. */
+private val ThumbnailHeight = 112.dp
+
+/** A case shown as a manila folder: file number on the tab, its picture or locator map, then the summary. */
 @Composable
-private fun FolderCard(record: CaseRecord, onClick: () -> Unit, modifier: Modifier = Modifier) {
-  Column(modifier.fillMaxWidth().clickable(onClickLabel = "Open file", role = Role.Button, onClick = onClick)) {
+private fun FolderCard(record: CaseRecord, outline: SheetOutline, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  Column(modifier.fillMaxWidth().pressable(onClickLabel = "Open file", onClick = onClick)) {
     Text(
       record.id,
       modifier = Modifier.background(Paper).border(1.dp, Ink).padding(horizontal = 12.dp, vertical = 4.dp),
@@ -279,6 +298,8 @@ private fun FolderCard(record: CaseRecord, onClick: () -> Unit, modifier: Modifi
       color = Ink,
     )
     PaperSheet {
+      CaseThumbnail(record, outline, Modifier.height(ThumbnailHeight))
+      SolidRule(color = Ink)
       Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
           TypeTitle(record.title, size = 19.sp, modifier = Modifier.weight(1f))

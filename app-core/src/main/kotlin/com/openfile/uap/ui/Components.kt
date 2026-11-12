@@ -1,5 +1,10 @@
 package com.openfile.uap.ui
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +35,9 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -40,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -109,14 +118,18 @@ fun AppFrame(tabs: List<TopLevelSection>, current: NavKey, onTab: (NavKey) -> Un
 /** One cell of a tab strip: inverted ink when selected. Shared by the bottom tabs and the in-file tabs. */
 @Composable
 fun TabCell(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val tick = rememberTick()
   Box(
     modifier
       .fillMaxHeight()
-      .background(if (selected) Ink else Color.Transparent)
-      .selectable(selected = selected, role = Role.Tab, onClick = onClick),
+      .background(selectionColor(selected, Ink, Ink.copy(alpha = 0f)))
+      .selectable(selected = selected, role = Role.Tab, onClick = {
+        if (!selected) tick()
+        onClick()
+      }),
     contentAlignment = Alignment.Center,
   ) {
-    Text(label, style = MaterialTheme.typography.labelMedium, color = if (selected) Paper else Ink, textAlign = TextAlign.Center)
+    Text(label, style = MaterialTheme.typography.labelMedium, color = selectionColor(selected, Paper, Ink), textAlign = TextAlign.Center)
   }
 }
 
@@ -139,12 +152,27 @@ fun TypeTitle(text: String, size: TextUnit, modifier: Modifier = Modifier, color
   )
 }
 
-/** A rubber stamp. Decorative framing only: every status uses the same ink, so color never implies a verdict. */
+/**
+ * A rubber stamp. Decorative framing only: every status uses the same ink, so color never implies a verdict.
+ * With [animateIn] it is pressed onto the sheet once when it first appears.
+ */
 @Composable
-fun Stamp(text: String, modifier: Modifier = Modifier) {
+fun Stamp(text: String, modifier: Modifier = Modifier, animateIn: Boolean = false) {
+  val press = remember { Animatable(if (animateIn) 0f else 1f) }
+  LaunchedEffect(Unit) {
+    if (press.value < 1f) press.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow))
+  }
   Text(
     text.uppercase(),
-    modifier = modifier.rotate(-2.5f).border(2.dp, StampRed).padding(horizontal = 10.dp, vertical = 5.dp),
+    modifier =
+      modifier
+        .graphicsLayer {
+          val scale = 1f + (1f - press.value) * STAMP_LIFT
+          scaleX = scale
+          scaleY = scale
+          alpha = press.value.coerceIn(0f, 1f)
+        }.rotate(-2.5f)
+        .border(2.dp, StampRed).padding(horizontal = 10.dp, vertical = 5.dp),
     fontFamily = TypewriterFamily,
     fontSize = 12.sp,
     letterSpacing = 1.4.sp,
@@ -153,6 +181,8 @@ fun Stamp(text: String, modifier: Modifier = Modifier) {
 }
 
 /** A sheet of paper with a solid ink outline. */
+private const val STAMP_LIFT = 0.6f
+
 @Composable
 fun PaperSheet(modifier: Modifier = Modifier, dashed: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
   val outline = if (dashed) Modifier.dashedBorder(Ink) else Modifier.border(1.dp, Ink)
@@ -247,24 +277,28 @@ fun SourceRow(source: Citation, modifier: Modifier = Modifier) {
   }
 }
 
-/** A small drawn chevron: pointing right for "go to", down for "open" and [up] for "close" on something open. */
+/**
+ * A small drawn chevron: pointing right for "go to", down for "open" and [up] for "close" on something open. It turns,
+ * rather than jumps, when it changes direction.
+ */
 @Composable
 fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, up: Boolean = false, color: Color = Ink) {
+  val angle by animateFloatAsState(
+    when {
+      up -> -90f
+      down -> 90f
+      else -> 0f
+    },
+    tween(MOTION_MEDIUM),
+    label = "chevron",
+  )
   Spacer(
-    modifier.padding(top = 4.dp).size(14.dp).drawBehind {
+    modifier.padding(top = 4.dp).size(14.dp).rotate(angle).drawBehind {
       val w = size.width
       val stroke = 2.dp.toPx()
-      // The down chevron is the right one with x and y swapped; the up one is the down one flipped top to bottom.
-      val turn: (Offset) -> Offset = {
-        when {
-          up -> Offset(it.y, w - it.x)
-          down -> Offset(it.y, it.x)
-          else -> it
-        }
-      }
-      val tip = turn(Offset(w * 0.7f, w * 0.5f))
-      val from = turn(Offset(w * 0.35f, w * 0.15f))
-      val to = turn(Offset(w * 0.35f, w * 0.85f))
+      val tip = Offset(w * 0.7f, w * 0.5f)
+      val from = Offset(w * 0.35f, w * 0.15f)
+      val to = Offset(w * 0.35f, w * 0.85f)
       drawLine(color, from, tip, strokeWidth = stroke, cap = StrokeCap.Round)
       drawLine(color, tip, to, strokeWidth = stroke, cap = StrokeCap.Round)
     },

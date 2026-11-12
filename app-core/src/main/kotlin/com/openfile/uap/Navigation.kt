@@ -49,7 +49,15 @@ fun MainNavigation(container: AppContainer) {
       predictivePopTransitionSpec = { backTransition() },
       entryProvider =
         entryProvider {
-          entry<Files> { FilesRoute(archive = archive, onOpenCase = openCase, onOpenThreads = openThreads, onOpenMethod = openMethod) }
+          entry<Files> {
+            FilesRoute(
+              archive = archive,
+              outlines = container.mapOutlineRepository,
+              onOpenCase = openCase,
+              onOpenThreads = openThreads,
+              onOpenMethod = openMethod,
+            )
+          }
           entry<EventMap> { MapRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
           entry<Timeline> { TimelineRoute(archive = archive, onOpenCase = openCase) }
           entry<Method> { MethodRoute(archive = archive) }
@@ -59,6 +67,7 @@ fun MainNavigation(container: AppContainer) {
             val backLabel = if (Threads in backStack) "Threads" else sectionLabel(backStack.firstOrNull() ?: Files)
             CaseFileRoute(
               archive = archive,
+              outlines = container.mapOutlineRepository,
               caseId = key.id,
               backLabel = backLabel,
               onBack = { backStack.removeLastOrNull() },

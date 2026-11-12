@@ -29,7 +29,7 @@ class ViewModelTest {
 
   @Test
   fun filesStartWithEveryCaseAndNarrowAsTheQueryAndDecadeChange() {
-    val viewModel = FilesViewModel(archive, SavedStateHandle())
+    val viewModel = FilesViewModel(archive, RecordingOutlines(), SavedStateHandle())
     assertEquals(archive.cases, viewModel.uiState.value.results)
 
     viewModel.onQueryChange("Roswell")
@@ -45,12 +45,12 @@ class ViewModelTest {
   @Test
   fun filesRestoreTheQueryAndDecadeFromSavedState() {
     val saved = SavedStateHandle()
-    FilesViewModel(archive, saved).apply {
+    FilesViewModel(archive, RecordingOutlines(), saved).apply {
       onQueryChange("Nimitz")
       onDecadeSelect(2000)
     }
 
-    val restored = FilesViewModel(archive, saved)
+    val restored = FilesViewModel(archive, RecordingOutlines(), saved)
     assertEquals("Nimitz", restored.query)
     assertEquals(2000, restored.uiState.value.selectedDecade)
     assertEquals(archive.search("Nimitz", 2000), restored.uiState.value.results)
@@ -151,8 +151,45 @@ class ViewModelTest {
 
   @Test
   fun caseFileReportsAnIdThatIsNotInTheArchive() {
-    assertEquals(CaseFileUiState.NotFound("OF-0000-00"), CaseFileViewModel(archive, "OF-0000-00").uiState)
+    val outlines = RecordingOutlines()
+    assertEquals(CaseFileUiState.NotFound("OF-0000-00"), CaseFileViewModel(archive, outlines, "OF-0000-00").uiState)
     val known = archive.cases.first()
-    assertEquals(CaseFileUiState.Found(known), CaseFileViewModel(archive, known.id).uiState)
+    assertEquals(CaseFileUiState.Found(known), CaseFileViewModel(archive, outlines, known.id).uiState)
+  }
+
+  @Test
+  fun caseFileReadsTheLocatorMapOnlyForAFileWithoutAPicture() {
+    val unpictured = archive.cases.first { it.detail?.hero == null }
+    val outlines = RecordingOutlines()
+    val viewModel = CaseFileViewModel(archive, outlines, unpictured.id)
+    assertEquals(listOf(MapSheets.sheetFor(unpictured.point)), outlines.requested)
+    assertEquals(outlines.ring, viewModel.heroOutline.value)
+
+    val pictured = archive.cases.first { it.detail?.hero != null }
+    val untouched = RecordingOutlines()
+    assertTrue(CaseFileViewModel(archive, untouched, pictured.id).heroOutline.value.isEmpty())
+    assertTrue(untouched.requested.isEmpty())
+  }
+
+  @Test
+  fun filesReadOneOutlinePerSheetForFilesWithoutAPicture() {
+    val outlines = RecordingOutlines()
+    val viewModel = FilesViewModel(archive, outlines, SavedStateHandle())
+    val needed = archive.cases.filter { it.detail?.hero == null }.mapNotNull { MapSheets.sheetFor(it.point) }.toSet()
+    assertEquals(needed, outlines.requested.toSet())
+    assertEquals(outlines.requested.size, outlines.requested.distinct().size)
+
+    viewModel.onQueryChange("Westall")
+    assertEquals(needed.map { it.id }.toSet(), viewModel.uiState.value.outlines.keys)
+  }
+
+  private class RecordingOutlines : MapOutlineRepository {
+    val ring: SheetOutline = listOf(listOf(0f to 0f, 1f to 0f, 1f to 1f))
+    val requested = mutableListOf<MapSheet>()
+
+    override suspend fun outline(sheet: MapSheet): SheetOutline {
+      requested += sheet
+      return ring
+    }
   }
 }

@@ -2,7 +2,6 @@ package com.openfile.uap.ui.timeline
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,6 +59,7 @@ import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.ScreenHeader
 import com.openfile.uap.ui.ScreenPadding
 import com.openfile.uap.ui.TypeTitle
+import com.openfile.uap.ui.pressable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -162,10 +162,10 @@ private fun DecadeJump(starts: List<DecadeStart>, onJump: (DecadeStart) -> Unit)
     starts.forEach { start ->
       Box(
         Modifier
+          .pressable(onClickLabel = "Jump to the ${start.decade}s", onClick = { onJump(start) })
           .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
           .background(Paper)
           .border(1.dp, Ink)
-          .clickable(onClickLabel = "Jump to the ${start.decade}s", role = Role.Button) { onJump(start) }
           .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
       ) {
@@ -218,10 +218,10 @@ private fun TimelineRow(entry: TimelineEntry, showYear: Boolean, onOpenCase: (St
         Row(
           Modifier
             .padding(top = 4.dp)
+            .pressable(onClickLabel = "Open file", onClick = { onOpenCase(caseId) })
             .defaultMinSize(minHeight = 48.dp)
             .background(Paper)
             .border(1.dp, Ink)
-            .clickable(onClickLabel = "Open file", role = Role.Button) { onOpenCase(caseId) }
             .padding(horizontal = 12.dp),
           horizontalArrangement = Arrangement.spacedBy(10.dp),
           verticalAlignment = Alignment.CenterVertically,

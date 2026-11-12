@@ -14,6 +14,23 @@ class ArchiveTest {
     }
   }
 
+  /** CC BY-SA asks for credit, so a picture heading a file always names its maker, source and licence. */
+  @Test
+  fun everyHeroIsCaptionedAndCredited() {
+    Archive.cases.mapNotNull { c -> c.detail?.hero?.let { c.id to it } }.forEach { (id, hero) ->
+      assertTrue("$id hero caption", hero.caption.isNotBlank())
+      assertTrue("$id hero credit names a licence", "Public domain" in hero.credit || "CC BY" in hero.credit)
+      assertTrue("$id hero focus", hero.focus in 0f..1f)
+    }
+  }
+
+  @Test
+  fun everyBundledImageIsShown() {
+    val shown =
+      Archive.cases.flatMap { c -> c.detail?.media.orEmpty().mapNotNull { it.image } + listOfNotNull(c.detail?.hero?.image) }
+    assertEquals(MediaImage.entries.toSet(), shown.toSet())
+  }
+
   /** The map shows one sheet at a time, so a case outside every sheet would not appear on it at all. */
   @Test
   fun everyCaseLandsOnAMapSheet() {
