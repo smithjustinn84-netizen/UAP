@@ -154,6 +154,16 @@ class ArchiveTest {
   }
 
   @Test
+  fun timelineIncludesHistoricalPre1947Sightings() {
+    val pre1947 = Archive.timeline.filter { it.year < 1947 }
+    val titles = pre1947.map { it.title }
+    assertTrue(titles.contains("Nuremberg celestial phenomenon"))
+    assertTrue(titles.contains("Battle of Los Angeles"))
+    assertTrue(titles.contains("Foo fighters"))
+    assertTrue(pre1947.all { it.kind == TimelineKind.Sighting })
+  }
+
+  @Test
   fun everyThreadRunsThroughSeveralFilesThatExist() {
     assertTrue(Archive.threads.isNotEmpty())
     assertEquals(Archive.threads.map { it.id }.distinct(), Archive.threads.map { it.id })

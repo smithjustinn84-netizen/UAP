@@ -416,6 +416,24 @@ object Archive {
   val timeline: List<TimelineEntry> =
     listOf(
       TimelineEntry(
+        1561,
+        TimelineKind.Sighting,
+        "Nuremberg celestial phenomenon",
+        "14 April · Nuremberg, Holy Roman Empire. A broadsheet by Hans Glaser describes globes, crosses and cylindrical shapes reported in the morning sky",
+      ),
+      TimelineEntry(
+        1942,
+        TimelineKind.Sighting,
+        "Battle of Los Angeles",
+        "24–25 February · Los Angeles, California, USA. Anti-aircraft artillery fires over 1,400 shells following radar tracks and visual reports of unidentified aerial objects during a blackout",
+      ),
+      TimelineEntry(
+        1944,
+        TimelineKind.Sighting,
+        "Foo fighters",
+        "November 1944 · European and Pacific theaters. Allied aircrews report glowing nocturnal spheres pacing their aircraft, investigated by military intelligence without a confirmed explanation",
+      ),
+      TimelineEntry(
         1947,
         TimelineKind.Sighting,
         "Kenneth Arnold sighting",

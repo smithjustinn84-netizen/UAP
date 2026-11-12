@@ -27,4 +27,3 @@ internal fun PaperPreview(padding: Dp = 16.dp, content: @Composable BoxScope.() 
     Box(Modifier.background(Paper).padding(padding), content = content)
   }
 }
-
