@@ -21,7 +21,11 @@ data class PlottedCase(val number: Int, val record: CaseRecord)
 /** One sheet and its pins. [outline] is empty until the land has been read, and the sheet draws without it until then. */
 data class MapSheetUiState(val sheet: MapSheet, val pins: List<PlottedCase>, val outline: SheetOutline = emptyList())
 
-data class MapUiState(val sheets: List<MapSheetUiState>, val plotted: List<PlottedCase>, val selectedId: String?)
+/** [sheetId] is the one sheet on show; [selectedId] the selected pin, which may be on another sheet. */
+data class MapUiState(val sheets: List<MapSheetUiState>, val sheetId: String, val selectedId: String?) {
+  val sheet: MapSheetUiState
+    get() = sheets.first { it.sheet.id == sheetId }
+}
 
 class MapViewModel(
   archive: ArchiveRepository,
@@ -34,6 +38,12 @@ class MapViewModel(
   init {
     // One load per sheet, so each sheet gets its land as soon as it is read instead of all waiting on the slowest.
     _uiState.value.sheets.forEach { loadOutline(it.sheet) }
+  }
+
+  fun onSheetSelect(sheetId: String) {
+    if (_uiState.value.sheets.none { it.sheet.id == sheetId }) return
+    savedStateHandle[SHEET_KEY] = sheetId
+    _uiState.update { it.copy(sheetId = sheetId) }
   }
 
   /** Tapping the selected pin again clears the selection. */
@@ -54,10 +64,17 @@ class MapViewModel(
   private fun initialState(archive: ArchiveRepository): MapUiState {
     val plotted = archive.cases.mapIndexed { i, c -> PlottedCase(i + 1, c) }
     val sheets = MapSheets.all.map { sheet -> MapSheetUiState(sheet, plotted.filter { MapSheets.sheetFor(it.record.point) == sheet }) }
-    return MapUiState(sheets = sheets, plotted = plotted, selectedId = savedStateHandle[SELECTED_KEY])
+    val selectedId = savedStateHandle.get<String>(SELECTED_KEY)
+    // A saved sheet id that no longer exists falls back to the sheet holding the selected pin, then to the first.
+    val sheetId =
+      savedStateHandle.get<String>(SHEET_KEY)?.takeIf { id -> sheets.any { it.sheet.id == id } }
+        ?: sheets.firstOrNull { sheet -> sheet.pins.any { it.record.id == selectedId } }?.sheet?.id
+        ?: sheets.first().sheet.id
+    return MapUiState(sheets = sheets, sheetId = sheetId, selectedId = selectedId)
   }
 
   private companion object {
     const val SELECTED_KEY = "selectedId"
+    const val SHEET_KEY = "sheetId"
   }
 }

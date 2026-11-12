@@ -14,6 +14,12 @@ class ArchiveTest {
     }
   }
 
+  /** The map shows one sheet at a time, so a case outside every sheet would not appear on it at all. */
+  @Test
+  fun everyCaseLandsOnAMapSheet() {
+    Archive.cases.forEach { assertNotNull(it.id, MapSheets.sheetFor(it.point)) }
+  }
+
   @Test
   fun emptyQueryAndNoDecadeReturnsEveryFile() {
     assertEquals(Archive.cases, Archive.search("", null))

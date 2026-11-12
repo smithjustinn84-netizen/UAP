@@ -6,19 +6,27 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -30,11 +38,13 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,15 +57,15 @@ import com.openfile.uap.data.MapSheet
 import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.theme.Dash
 import com.openfile.uap.theme.Ink
-import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.MonoFamily
 import com.openfile.uap.theme.Paper
 import com.openfile.uap.theme.Rule
 import com.openfile.uap.ui.ActionRow
+import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
-import com.openfile.uap.ui.MonoLabel
+import com.openfile.uap.ui.LeadText
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenHeader
 import com.openfile.uap.ui.ScreenPadding
@@ -67,6 +77,7 @@ import com.openfile.uap.ui.countOf
 
 private val Land = Color(0xFFE4D7B4)
 private val PinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 11.sp, color = Paper)
+private val SelectedPinLabelStyle = TextStyle(fontFamily = MonoFamily, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Ink)
 
 @Composable
 fun MapRoute(
@@ -77,7 +88,13 @@ fun MapRoute(
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
   // The selection is passed as a provider, read while drawing, so selecting a pin redraws the pins and rebuilds nothing.
-  MapScreen(uiState = uiState, selectedId = { uiState.selectedId }, onPinSelect = viewModel::onPinSelect, onOpenCase = onOpenCase)
+  MapScreen(
+    uiState = uiState,
+    selectedId = { uiState.selectedId },
+    onSheetSelect = viewModel::onSheetSelect,
+    onPinSelect = viewModel::onPinSelect,
+    onOpenCase = onOpenCase,
+  )
 }
 
 /**
@@ -85,7 +102,14 @@ fun MapRoute(
  * sheet skips recomposition and keeps its cached drawing.
  */
 @Composable
-fun MapScreen(uiState: MapUiState, selectedId: () -> String?, onPinSelect: (String) -> Unit, onOpenCase: (String) -> Unit) {
+fun MapScreen(
+  uiState: MapUiState,
+  selectedId: () -> String?,
+  onSheetSelect: (String) -> Unit,
+  onPinSelect: (String) -> Unit,
+  onOpenCase: (String) -> Unit,
+) {
+  val shown = uiState.sheet
   Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
     StatusBarSpacer()
     ScreenHeader(
@@ -95,39 +119,87 @@ fun MapScreen(uiState: MapUiState, selectedId: () -> String?, onPinSelect: (Stri
     )
 
     Column(
-      Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 8.dp, bottom = 28.dp),
-      verticalArrangement = Arrangement.spacedBy(24.dp),
+      Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 4.dp, bottom = 28.dp),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      uiState.sheets.forEach { sheet ->
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          MonoLabel("Sheet · ${sheet.sheet.title}", color = Ink)
-          SheetMap(sheet = sheet.sheet, pins = sheet.pins, outline = sheet.outline, selectedId = selectedId, onSelect = onPinSelect)
-          sheet.pins.firstOrNull { it.record.id == uiState.selectedId }?.let { SelectedCard(it, onOpen = { onOpenCase(it.record.id) }) }
+      SheetTabs(sheets = uiState.sheets, currentId = uiState.sheetId, onSelect = onSheetSelect)
+      // Keyed by sheet so each sheet keeps its own cached drawing when the reader switches back to it.
+      key(shown.sheet.id) {
+        Box {
+          SheetMap(sheet = shown.sheet, pins = shown.pins, outline = shown.outline, selectedId = selectedId, onSelect = onPinSelect)
+          Text(
+            "Pins are approximate",
+            modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 6.dp),
+            style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+            color = InkSoft,
+          )
         }
       }
+      shown.pins.firstOrNull { it.record.id == uiState.selectedId }?.let { SelectedCard(it, onOpen = { onOpenCase(it.record.id) }) }
 
-      Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        TypeTitle("Plotted cases", size = 20.sp)
+      Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        TypeTitle("On this sheet", size = 20.sp)
         PaperSheet {
-          uiState.plotted.forEachIndexed { index, p ->
+          shown.pins.forEachIndexed { index, p ->
             if (index > 0) SolidRule()
-            TapRow(onClick = { onOpenCase(p.record.id) }, onClickLabel = "Open file") {
-              Row(
-                Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-              ) {
-                PinBadge(p.number)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                  TypeTitle(p.record.title, size = 16.sp)
-                  Text("${p.record.dateShort} · ${p.record.placeShort}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
-                }
-                Chevron()
-              }
-            }
+            PlottedRow(p, onOpen = { onOpenCase(p.record.id) })
           }
         }
       }
+    }
+  }
+}
+
+/** The four sheets as a two-by-two tab grid, each with the number of cases plotted on it. */
+@Composable
+private fun SheetTabs(sheets: List<MapSheetUiState>, currentId: String, onSelect: (String) -> Unit) {
+  Column(Modifier.fillMaxWidth().background(Paper).border(1.dp, Ink).selectableGroup()) {
+    sheets.chunked(2).forEachIndexed { rowIndex, row ->
+      if (rowIndex > 0) SolidRule(color = Ink)
+      Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+        row.forEachIndexed { index, s ->
+          if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
+          val selected = s.sheet.id == currentId
+          Row(
+            Modifier
+              .weight(1f)
+              .defaultMinSize(minHeight = 48.dp)
+              .background(if (selected) Ink else Paper)
+              .selectable(selected = selected, role = Role.Tab) { onSelect(s.sheet.id) }
+              .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Text(
+              s.sheet.title,
+              modifier = Modifier.weight(1f),
+              style = MaterialTheme.typography.labelMedium,
+              color = if (selected) Paper else Ink,
+            )
+            Text(s.pins.size.toString(), style = MaterialTheme.typography.labelMedium, color = if (selected) Paper else InkSoft)
+          }
+        }
+        // An odd sheet out keeps its half width.
+        if (row.size == 1) Spacer(Modifier.weight(1f))
+      }
+    }
+  }
+}
+
+@Composable
+private fun PlottedRow(p: PlottedCase, onOpen: () -> Unit) {
+  TapRow(onClick = onOpen, onClickLabel = "Open file", modifier = Modifier.defaultMinSize(minHeight = 60.dp)) {
+    Row(
+      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
+      horizontalArrangement = Arrangement.spacedBy(12.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      PinBadge(p.number)
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        TypeTitle(p.record.title, size = 16.sp)
+        Text("${p.record.dateShort} · ${p.record.placeShort}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
+      }
+      Chevron()
     }
   }
 }
@@ -177,6 +249,7 @@ private fun SheetMap(
         val coast = Stroke(width = 0.75.dp.toPx())
         val pinCentres = pins.map { pinOffset(sheet, it, size.width, size.height) }
         val pinLabels = pins.map { measurer.measure(it.number.toString(), PinLabelStyle) }
+        val selectedLabels = pins.map { measurer.measure(it.number.toString(), SelectedPinLabelStyle) }
         onDrawBehind {
           drawGraticule(sheet)
           land.forEach { path ->
@@ -187,20 +260,24 @@ private fun SheetMap(
           // Selected pin last so its ring sits on top. All pins share one ink: the map never codes a verdict.
           val selected = pins.indexOfFirst { it.record.id == selectedId() }
           pins.indices.forEach { i -> if (i != selected) drawPin(pinCentres[i], pinLabels[i], selected = false) }
-          if (selected >= 0) drawPin(pinCentres[selected], pinLabels[selected], selected = true)
+          if (selected >= 0) drawPin(pinCentres[selected], selectedLabels[selected], selected = true)
         }
       },
   )
 }
 
+/** An ink square with a paper number; the selected pin turns to paper with a heavy ink frame, larger, so it reads without color. */
 private fun DrawScope.drawPin(at: Offset, label: TextLayoutResult, selected: Boolean) {
-  val half = 11.dp.toPx()
+  val half = (if (selected) 15 else 11).dp.toPx()
+  val halo = 1.5.dp.toPx()
+  drawRect(Paper, topLeft = at - Offset(half + halo, half + halo), size = Size((half + halo) * 2, (half + halo) * 2))
   if (selected) {
-    val ring = 17.dp.toPx()
-    drawRect(Ink, topLeft = at - Offset(ring, ring), size = Size(ring * 2, ring * 2), style = Stroke(width = 2.dp.toPx()))
+    val frame = 3.dp.toPx()
+    drawRect(Ink, topLeft = at - Offset(half, half), size = Size(half * 2, half * 2))
+    drawRect(Paper, topLeft = at - Offset(half - frame, half - frame), size = Size((half - frame) * 2, (half - frame) * 2))
+  } else {
+    drawRect(Ink, topLeft = at - Offset(half, half), size = Size(half * 2, half * 2))
   }
-  drawRect(Paper, topLeft = at - Offset(half + 1.5f, half + 1.5f), size = Size(half * 2 + 3f, half * 2 + 3f))
-  drawRect(Ink, topLeft = at - Offset(half, half), size = Size(half * 2, half * 2))
   drawText(label, topLeft = at - Offset(label.size.width / 2f, label.size.height / 2f))
 }
 
@@ -238,16 +315,12 @@ private fun PinBadge(number: Int) {
 @Composable
 private fun SelectedCard(p: PlottedCase, onOpen: () -> Unit) {
   PaperSheet {
+    CardHeader("Pin ${p.number} · ${p.record.id}", "Selected")
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-        PinBadge(p.number)
-        MonoLabel(p.record.id, color = Ink)
-      }
       TypeTitle(p.record.title, size = 19.sp)
       Text("${p.record.dateShort} · ${p.record.placeShort}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
-      Text(p.record.point.note, style = MaterialTheme.typography.bodySmall, color = InkBody)
       DashedRule()
-      MonoLabel(p.record.status, color = Ink)
+      LeadText("What the pin stands for", p.record.point.note)
     }
     ActionRow("Open file", onClick = onOpen)
   }

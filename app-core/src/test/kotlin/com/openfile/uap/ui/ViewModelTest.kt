@@ -6,6 +6,7 @@ import com.openfile.uap.data.BundledArchiveRepository
 import com.openfile.uap.data.FileThread
 import com.openfile.uap.data.MapOutlineRepository
 import com.openfile.uap.data.MapSheet
+import com.openfile.uap.data.MapSheets
 import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.data.ThreadAppearance
 import com.openfile.uap.data.TimelineKind
@@ -96,6 +97,35 @@ class ViewModelTest {
     assertEquals(id, viewModel.uiState.value.selectedId)
     viewModel.onPinSelect(id)
     assertNull(viewModel.uiState.value.selectedId)
+  }
+
+  @Test
+  fun mapShowsOneSheetAndRestoresItFromSavedState() {
+    val outlines =
+      object : MapOutlineRepository {
+        override suspend fun outline(sheet: MapSheet): SheetOutline = emptyList()
+      }
+    val saved = SavedStateHandle()
+    val viewModel = MapViewModel(archive, outlines, saved)
+    assertEquals(MapSheets.all.first().id, viewModel.uiState.value.sheetId)
+
+    viewModel.onSheetSelect(MapSheets.britishIsles.id)
+    assertEquals(MapSheets.britishIsles, viewModel.uiState.value.sheet.sheet)
+    viewModel.onSheetSelect("no_such_sheet")
+    assertEquals(MapSheets.britishIsles.id, viewModel.uiState.value.sheetId)
+
+    assertEquals(MapSheets.britishIsles.id, MapViewModel(archive, outlines, saved).uiState.value.sheetId)
+  }
+
+  @Test
+  fun mapOpensOnTheSheetHoldingARestoredPin() {
+    val outlines =
+      object : MapOutlineRepository {
+        override suspend fun outline(sheet: MapSheet): SheetOutline = emptyList()
+      }
+    val rendlesham = "OF-1980-01"
+    val viewModel = MapViewModel(archive, outlines, SavedStateHandle(mapOf("selectedId" to rendlesham)))
+    assertEquals(MapSheets.britishIsles.id, viewModel.uiState.value.sheetId)
   }
 
   @Test
