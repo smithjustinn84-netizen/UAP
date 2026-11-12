@@ -203,12 +203,14 @@ fun RecordField(label: String, value: String, showRule: Boolean = true) {
   if (showRule) SolidRule()
 }
 
+/** Filled square bullets; [hollow] ones set points against an argument apart from the points for it without color. */
 @Composable
-fun BulletList(items: List<String>, modifier: Modifier = Modifier) {
+fun BulletList(items: List<String>, modifier: Modifier = Modifier, hollow: Boolean = false) {
   Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
     items.forEach { item ->
       Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Box(Modifier.padding(top = 8.dp).size(5.dp).background(Ink))
+        val mark = if (hollow) Modifier.border(1.dp, Ink) else Modifier.background(Ink)
+        Box(Modifier.padding(top = 8.dp).size(5.dp).then(mark))
         Text(item, style = MaterialTheme.typography.bodyMedium, color = InkBody)
       }
     }
@@ -242,17 +244,24 @@ fun SourceRow(source: Citation, modifier: Modifier = Modifier) {
   }
 }
 
-/** A small drawn chevron: pointing right for "go to", down for "open or close". */
+/** A small drawn chevron: pointing right for "go to", down for "open" and [up] for "close" on something open. */
 @Composable
-fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, color: Color = Ink) {
+fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, up: Boolean = false, color: Color = Ink) {
   Spacer(
     modifier.padding(top = 4.dp).size(14.dp).drawBehind {
       val w = size.width
       val stroke = 2.dp.toPx()
-      // The down chevron is the right one with x and y swapped.
-      val tip = Offset(w * 0.7f, w * 0.5f).let { if (down) Offset(it.y, it.x) else it }
-      val from = Offset(w * 0.35f, w * 0.15f).let { if (down) Offset(it.y, it.x) else it }
-      val to = Offset(w * 0.35f, w * 0.85f).let { if (down) Offset(it.y, it.x) else it }
+      // The down chevron is the right one with x and y swapped; the up one is the down one flipped top to bottom.
+      val turn: (Offset) -> Offset = {
+        when {
+          up -> Offset(it.y, w - it.x)
+          down -> Offset(it.y, it.x)
+          else -> it
+        }
+      }
+      val tip = turn(Offset(w * 0.7f, w * 0.5f))
+      val from = turn(Offset(w * 0.35f, w * 0.15f))
+      val to = turn(Offset(w * 0.35f, w * 0.85f))
       drawLine(color, from, tip, strokeWidth = stroke, cap = StrokeCap.Round)
       drawLine(color, tip, to, strokeWidth = stroke, cap = StrokeCap.Round)
     },

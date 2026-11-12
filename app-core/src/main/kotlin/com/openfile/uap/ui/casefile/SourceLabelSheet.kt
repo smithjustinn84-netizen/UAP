@@ -1,9 +1,11 @@
 package com.openfile.uap.ui.casefile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,11 +38,12 @@ import kotlinx.coroutines.launch
 
 /**
  * What a source label means, shown where the label was tapped so the reader does not have to leave the file for the
- * Method screen. [inThisFile] lists the evidence in the open file that carries the label.
+ * Method screen. [inThisFile] lists the evidence in the open file that carries the label; [onSeeAllLabels] opens the
+ * Method screen for the reader who wants the rest.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SourceLabelSheet(label: SourceLabel, inThisFile: List<String>, onDismiss: () -> Unit) {
+fun SourceLabelSheet(label: SourceLabel, inThisFile: List<String>, onSeeAllLabels: () -> Unit, onDismiss: () -> Unit) {
   val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   val scope = rememberCoroutineScope()
   ModalBottomSheet(
@@ -72,19 +75,36 @@ fun SourceLabelSheet(label: SourceLabel, inThisFile: List<String>, onDismiss: ()
       if (inThisFile.isNotEmpty()) {
         Text("In this file: ${inThisFile.joinToString(" · ")}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
       }
-      TapRow(
-        // Let the sheet slide away before it leaves the composition.
-        onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() } },
-        modifier = Modifier.padding(top = 4.dp).defaultMinSize(minHeight = 52.dp).background(Ink),
-      ) {
-        Text(
-          "Close",
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
-          textAlign = TextAlign.Center,
-          style = MaterialTheme.typography.labelLarge,
-          color = Paper,
+      // Both buttons let the sheet slide away before it leaves the composition.
+      val hideThen: (() -> Unit) -> Unit = { then -> scope.launch { sheetState.hide() }.invokeOnCompletion { then() } }
+      Row(Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        SheetButton(
+          text = "All ${SourceLabel.entries.size} labels",
+          solid = false,
+          onClick = {
+            hideThen {
+              onDismiss()
+              onSeeAllLabels()
+            }
+          },
+          modifier = Modifier.weight(1f),
         )
+        SheetButton(text = "Close", solid = true, onClick = { hideThen(onDismiss) }, modifier = Modifier.weight(1f))
       }
     }
+  }
+}
+
+@Composable
+private fun SheetButton(text: String, solid: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val surface = if (solid) Modifier.background(Ink) else Modifier.border(1.dp, Ink)
+  TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface)) {
+    Text(
+      text,
+      modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+      textAlign = TextAlign.Center,
+      style = MaterialTheme.typography.labelLarge,
+      color = if (solid) Paper else Ink,
+    )
   }
 }

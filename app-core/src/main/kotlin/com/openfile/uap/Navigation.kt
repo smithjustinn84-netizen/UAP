@@ -22,6 +22,8 @@ fun MainNavigation(container: AppContainer) {
   val switchTab: (NavKey) -> Unit = { backStack.switchTo(it) }
   val openCase: (String) -> Unit = { backStack.add(CaseFile(it)) }
   val openThreads: () -> Unit = { backStack.add(Threads) }
+  // Opened on top of the current screen, not as a tab switch, so Back returns to the file or list it came from.
+  val openMethod: () -> Unit = { if (backStack.lastOrNull() != Method) backStack.add(Method) }
   val archive = container.archiveRepository
 
   // The frame sits outside NavDisplay so the desk and tab strip are composed once, not once per destination.
@@ -43,7 +45,13 @@ fun MainNavigation(container: AppContainer) {
           entry<CaseFile> { key ->
             // Back names where the file was opened from.
             val backLabel = if (Threads in backStack) "Threads" else sectionLabel(backStack.firstOrNull() ?: Files)
-            CaseFileRoute(archive = archive, caseId = key.id, backLabel = backLabel, onBack = { backStack.removeLastOrNull() })
+            CaseFileRoute(
+              archive = archive,
+              caseId = key.id,
+              backLabel = backLabel,
+              onBack = { backStack.removeLastOrNull() },
+              onOpenMethod = openMethod,
+            )
           }
         },
     )

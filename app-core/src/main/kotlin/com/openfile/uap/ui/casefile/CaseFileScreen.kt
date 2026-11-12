@@ -2,28 +2,42 @@ package com.openfile.uap.ui.casefile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +79,8 @@ import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TitledBlock
 import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.countOf
+import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 private const val SEE_EXPLANATIONS = "See how each explanation reads this evidence"
 
@@ -82,94 +98,167 @@ fun CaseFileRoute(
   caseId: String,
   backLabel: String,
   onBack: () -> Unit,
+  onOpenMethod: () -> Unit,
   viewModel: CaseFileViewModel = viewModel { CaseFileViewModel(archive, caseId) },
 ) {
-  CaseFileScreen(uiState = viewModel.uiState, backLabel = backLabel, onBack = onBack)
+  CaseFileScreen(uiState = viewModel.uiState, backLabel = backLabel, onBack = onBack, onOpenMethod = onOpenMethod)
+}
+
+/** Where things sit in the scrolling sheet, so the tabs can pin and a cited evidence item can be scrolled to. */
+private class SheetAnchors {
+  var content: LayoutCoordinates? = null
+
+  /** Top of the inline section tabs within the content, or -1 before they are placed. */
+  var tabsTop by mutableIntStateOf(-1)
 }
 
 @Composable
-fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Unit) {
-  val caseId = uiState.caseId
+fun CaseFileScreen(uiState: CaseFileUiState, backLabel: String, onBack: () -> Unit, onOpenMethod: () -> Unit) {
   val record = (uiState as? CaseFileUiState.Found)?.record
   var section by rememberSaveable { mutableStateOf(Section.Summary) }
-  var shownLabel by rememberSaveable { mutableStateOf<SourceLabel?>(null) }
+  // The evidence item to scroll to once the Evidence section is laid out; cleared when it has been reached.
+  var targetEvidence by remember { mutableStateOf<String?>(null) }
+  val scroll = rememberScrollState()
+  val scope = rememberCoroutineScope()
+  val anchors = remember { SheetAnchors() }
+  val density = LocalDensity.current
+  val statusBar = WindowInsets.statusBars.getTop(density)
+  val pinned by remember(statusBar) { derivedStateOf { anchors.tabsTop >= 0 && scroll.value + statusBar > anchors.tabsTop } }
 
-  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-    StatusBarSpacer()
-    Row(
-      Modifier.fillMaxWidth().padding(start = 8.dp, end = ScreenPadding, top = 8.dp),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      BackLink(backLabel, onBack)
-      Text(caseId, style = MaterialTheme.typography.labelMedium, color = InkSoft)
+  val open: (Section) -> Unit = { next ->
+    section = next
+    // Start the new section at its top, just under the pinned tabs, unless the reader is still above them.
+    if (scroll.value + statusBar > anchors.tabsTop) scope.launch { scroll.scrollTo(anchors.tabsTop - statusBar) }
+  }
+  val openEvidence: (String) -> Unit = { id ->
+    section = Section.Evidence
+    targetEvidence = id
+  }
+  val onTargetPlaced: (LayoutCoordinates) -> Unit = { card ->
+    targetEvidence = null
+    anchors.content?.let { content ->
+      val cardTop = content.localPositionOf(card, Offset.Zero).y
+      val clearance = statusBar + with(density) { (TabsHeight + 12.dp).roundToPx() }
+      scope.launch { scroll.animateScrollTo((cardTop - clearance).roundToInt()) }
     }
+  }
 
-    if (record == null) {
-      Text(
-        "This file could not be found.",
-        modifier = Modifier.padding(ScreenPadding),
-        style = MaterialTheme.typography.bodyLarge,
-        color = InkBody,
-      )
-      return@Column
-    }
-
-    Column(
-      Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 20.dp),
-      verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-      TypeTitle(record.title, size = if (section == Section.Summary) 30.sp else 22.sp)
-      if (section == Section.Summary && record.detail != null) Stamp(record.detail.stamp)
-    }
-
-    val detail = record.detail
-    if (detail == null) {
-      UnwrittenFile(record)
-    } else {
-      SectionTabs(current = section, onSelect = { section = it })
-      Column(
-        Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp, bottom = 28.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-      ) {
-        when (section) {
-          Section.Summary -> SummarySection(record, detail, onOpen = { section = it })
-
-          Section.Evidence ->
-            EvidenceSection(
-              detail = detail,
-              onLabelClick = { shownLabel = it },
-              onSeeMedia = { section = Section.Media },
-              onSeeExplanations = { section = Section.Explanations },
-            )
-
-          Section.Media ->
-            MediaSection(
-              detail = detail,
-              onLabelClick = { shownLabel = it },
-              onSeeEvidence = { section = Section.Evidence },
-              onSeeExplanations = { section = Section.Explanations },
-            )
-
-          Section.Explanations -> ExplanationsSection(detail, onSeeEvidence = { section = Section.Evidence })
-
-          Section.Lore -> LoreSection(detail)
-        }
-      }
-      shownLabel?.let { label ->
-        SourceLabelSheet(
-          label = label,
-          inThisFile = detail.evidence.filter { it.sourceLabel == label }.map { "${it.id} ${it.title}" },
-          onDismiss = { shownLabel = null },
+  Box(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().verticalScroll(scroll).onPlaced { anchors.content = it }) {
+      StatusBarSpacer()
+      FileTopBar(caseId = uiState.caseId, backLabel = backLabel, onBack = onBack)
+      if (record == null) {
+        Text(
+          "This file could not be found.",
+          modifier = Modifier.padding(ScreenPadding),
+          style = MaterialTheme.typography.bodyLarge,
+          color = InkBody,
         )
+        return@Column
+      }
+      Column(
+        Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+      ) {
+        TypeTitle(record.title, size = if (section == Section.Summary) 30.sp else 22.sp)
+        if (section == Section.Summary && record.detail != null) Stamp(record.detail.stamp)
+      }
+      val detail = record.detail
+      if (detail == null) {
+        UnwrittenFile(record)
+        return@Column
+      }
+      SectionTabs(
+        current = section,
+        onSelect = open,
+        modifier = Modifier.onPlaced { anchors.tabsTop = it.positionInParent().y.roundToInt() },
+      )
+      FileSection(
+        section = section,
+        record = record,
+        detail = detail,
+        targetEvidence = targetEvidence,
+        actions = FileActions(open = open, openEvidence = openEvidence, onTargetPlaced = onTargetPlaced, onOpenMethod = onOpenMethod),
+      )
+    }
+    // Pinned copy of the tabs, shown once the inline ones have scrolled under the status bar.
+    if (pinned && record?.detail != null) {
+      Column(Modifier.fillMaxWidth().background(Manila).padding(bottom = 8.dp)) {
+        StatusBarSpacer()
+        SectionTabs(current = section, onSelect = open)
       }
     }
   }
 }
 
+private val TabsHeight = 48.dp
+
+/** What a section can do to the sheet around it. */
+private class FileActions(
+  val open: (Section) -> Unit,
+  val openEvidence: (String) -> Unit,
+  val onTargetPlaced: (LayoutCoordinates) -> Unit,
+  val onOpenMethod: () -> Unit,
+)
+
 @Composable
-private fun SectionTabs(current: Section, onSelect: (Section) -> Unit) {
-  Row(Modifier.padding(horizontal = ScreenPadding).fillMaxWidth().height(48.dp).background(Paper).border(1.dp, Ink)) {
+private fun FileTopBar(caseId: String, backLabel: String, onBack: () -> Unit) {
+  Row(
+    Modifier.fillMaxWidth().padding(start = 8.dp, end = ScreenPadding, top = 8.dp),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    BackLink(backLabel, onBack)
+    Text(caseId, style = MaterialTheme.typography.labelMedium, color = InkSoft)
+  }
+}
+
+@Composable
+private fun FileSection(section: Section, record: CaseRecord, detail: CaseDetail, targetEvidence: String?, actions: FileActions) {
+  var shownLabel by rememberSaveable { mutableStateOf<SourceLabel?>(null) }
+  Column(
+    Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp, bottom = 28.dp),
+    verticalArrangement = Arrangement.spacedBy(24.dp),
+  ) {
+    when (section) {
+      Section.Summary -> SummarySection(record, detail, onOpen = actions.open)
+
+      Section.Evidence ->
+        EvidenceSection(
+          detail = detail,
+          targetEvidence = targetEvidence,
+          onTargetPlaced = actions.onTargetPlaced,
+          onLabelClick = { shownLabel = it },
+          onSeeMedia = { actions.open(Section.Media) },
+          onSeeExplanations = { actions.open(Section.Explanations) },
+        )
+
+      Section.Media ->
+        MediaSection(
+          detail = detail,
+          onLabelClick = { shownLabel = it },
+          onSeeEvidence = { actions.open(Section.Evidence) },
+          onSeeExplanations = { actions.open(Section.Explanations) },
+        )
+
+      Section.Explanations -> ExplanationsSection(detail, onOpenEvidence = actions.openEvidence)
+
+      Section.Lore -> LoreSection(detail)
+    }
+  }
+  shownLabel?.let { label ->
+    SourceLabelSheet(
+      label = label,
+      inThisFile = detail.evidence.filter { it.sourceLabel == label }.map { "${it.id} ${it.title}" },
+      onSeeAllLabels = actions.onOpenMethod,
+      onDismiss = { shownLabel = null },
+    )
+  }
+}
+
+@Composable
+private fun SectionTabs(current: Section, onSelect: (Section) -> Unit, modifier: Modifier = Modifier) {
+  Row(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().height(TabsHeight).background(Paper).border(1.dp, Ink)) {
     Section.entries.forEachIndexed { index, s ->
       if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
       // Width follows the length of the label, so five tabs fit a narrow phone without wrapping the longest.
@@ -232,32 +321,46 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
     }
   }
 
-  TitledBlock("In this file") {
-    PaperSheet {
-      FileLink("Evidence", "${countOf(detail.evidence.size, "item")}, labelled by source") { onOpen(Section.Evidence) }
-      if (detail.media.isNotEmpty()) {
-        SolidRule()
-        val kindsSummary = detail.media.map { it.kind.label.lowercase() }.distinct().joinToString(", ")
-        FileLink("Media", "${countOf(detail.media.size, "exhibit")} · $kindsSummary") { onOpen(Section.Media) }
-      }
-      SolidRule()
-      FileLink("Explanations", "${countOf(detail.explanations.size, "angle")}, listed A–Z") { onOpen(Section.Explanations) }
-      if (detail.story.isNotEmpty()) {
-        SolidRule()
-        FileLink("Lore", "How the story has been told, ${detail.story.first().year}–${detail.story.last().year}") { onOpen(Section.Lore) }
-      }
-    }
-  }
-
   TitledBlock("Not in dispute") { PaperSheet { BulletList(detail.notInDispute, Modifier.padding(14.dp)) } }
 
   TitledBlock("In dispute") { PaperSheet(dashed = true) { BulletList(detail.inDispute, Modifier.padding(14.dp)) } }
+
+  TitledBlock("Read on") { ReadOn(detail, onOpen) }
 
   Text(
     "This file records claims and their sources. It does not rule on them.",
     style = MaterialTheme.typography.labelMedium,
     color = InkSoft,
   )
+}
+
+/** The way on from the summary: evidence first, as the next thing to read, then the other sections. */
+@Composable
+private fun ReadOn(detail: CaseDetail, onOpen: (Section) -> Unit) {
+  TapRow(onClick = { onOpen(Section.Evidence) }, modifier = Modifier.defaultMinSize(minHeight = 64.dp).background(Ink)) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        MonoLabel("Next · ${Section.Evidence.ordinal + 1} of ${Section.entries.size}", color = Manila)
+        Text(
+          "Evidence: ${countOf(detail.evidence.size, "item")}, labelled by source",
+          style = MaterialTheme.typography.labelLarge,
+          color = Paper,
+        )
+      }
+      Chevron(color = Paper)
+    }
+  }
+  PaperSheet {
+    if (detail.media.isNotEmpty()) {
+      FileLink("Media", "${countOf(detail.media.size, "exhibit")}, each tied to its evidence item") { onOpen(Section.Media) }
+      SolidRule()
+    }
+    FileLink("Explanations", "${countOf(detail.explanations.size, "angle")}, listed A–Z") { onOpen(Section.Explanations) }
+    if (detail.story.isNotEmpty()) {
+      SolidRule()
+      FileLink("Lore", "How the story has been told since") { onOpen(Section.Lore) }
+    }
+  }
 }
 
 @Composable
@@ -276,14 +379,15 @@ private fun FileLink(title: String, subtitle: String, onClick: () -> Unit) {
 @Composable
 private fun EvidenceSection(
   detail: CaseDetail,
+  targetEvidence: String?,
+  onTargetPlaced: (LayoutCoordinates) -> Unit,
   onLabelClick: (SourceLabel) -> Unit,
   onSeeMedia: () -> Unit,
   onSeeExplanations: () -> Unit,
 ) {
   Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(
-      "Each item is labelled by the kind of source it is. A label describes where something comes from, not whether it is true. " +
-        "Tap a label to see what it means.",
+      "${countOf(detail.evidence.size, "item")}. Each carries a source label: tap one to see what it means.",
       style = MaterialTheme.typography.bodyMedium,
       color = Ink,
     )
@@ -292,6 +396,7 @@ private fun EvidenceSection(
         item = item,
         attachedMedia = detail.mediaForEvidence(item.id),
         onLabelClick = onLabelClick,
+        modifier = if (item.id == targetEvidence) Modifier.onPlaced(onTargetPlaced) else Modifier,
       )
     }
     if (detail.gaps.isNotEmpty()) MissingFromFile(detail.gaps)
@@ -303,9 +408,14 @@ private fun EvidenceSection(
 }
 
 @Composable
-private fun EvidenceCard(item: Evidence, attachedMedia: List<ReportMedia>, onLabelClick: (SourceLabel) -> Unit) {
+private fun EvidenceCard(
+  item: Evidence,
+  attachedMedia: List<ReportMedia>,
+  onLabelClick: (SourceLabel) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   var showMedia by rememberSaveable(item.id) { mutableStateOf(false) }
-  PaperSheet {
+  PaperSheet(modifier) {
     CardHeader("${item.id} · ${item.kind}", item.sourceLabel.label, onEndClick = { onLabelClick(item.sourceLabel) })
     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       TypeTitle(item.title, size = 19.sp)
@@ -440,12 +550,17 @@ private fun MediaSection(
 }
 
 @Composable
-private fun ExplanationsSection(detail: CaseDetail, onSeeEvidence: () -> Unit) {
+private fun ExplanationsSection(detail: CaseDetail, onOpenEvidence: (String) -> Unit) {
   // One angle open at a time, the first to begin with.
   var open by rememberSaveable { mutableStateOf<Int?>(0) }
+  val evidenceTitles = detail.evidence.associate { it.id to it.title }
   Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+      MonoLabel(countOf(detail.explanations.size, "angle"), color = Ink)
+      MonoLabel("Listed A–Z · not by merit", color = Ink)
+    }
     Text(
-      "${detail.explanations.size} angles, listed A–Z and not by merit. Each shows who holds it, what supports it and what complicates it.",
+      "Each shows who holds it, what supports it, what complicates it and the evidence it draws on.",
       modifier = Modifier.padding(bottom = 4.dp),
       style = MaterialTheme.typography.bodyMedium,
       color = Ink,
@@ -453,9 +568,10 @@ private fun ExplanationsSection(detail: CaseDetail, onSeeEvidence: () -> Unit) {
     detail.explanations.forEachIndexed { index, explanation ->
       ExplanationCard(
         explanation = explanation,
+        evidenceTitles = evidenceTitles,
         expanded = open == index,
         onToggle = { open = if (open == index) null else index },
-        onSeeEvidence = onSeeEvidence,
+        onOpenEvidence = onOpenEvidence,
       )
     }
     PaperSheet(dashed = true, modifier = Modifier.padding(top = 12.dp)) {
@@ -468,7 +584,13 @@ private fun ExplanationsSection(detail: CaseDetail, onSeeEvidence: () -> Unit) {
 }
 
 @Composable
-private fun ExplanationCard(explanation: Explanation, expanded: Boolean, onToggle: () -> Unit, onSeeEvidence: () -> Unit) {
+private fun ExplanationCard(
+  explanation: Explanation,
+  evidenceTitles: Map<String, String>,
+  expanded: Boolean,
+  onToggle: () -> Unit,
+  onOpenEvidence: (String) -> Unit,
+) {
   PaperSheet {
     TapRow(
       onClick = onToggle,
@@ -484,30 +606,45 @@ private fun ExplanationCard(explanation: Explanation, expanded: Boolean, onToggl
           TypeTitle(explanation.title, size = 18.sp)
           Text("Held by ${explanation.heldBy}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
         }
-        Chevron(down = true)
+        Chevron(down = !expanded, up = expanded)
       }
     }
     if (expanded) {
       SolidRule(color = Ink)
-      Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 14.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+      Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           MonoLabel("Points in support", color = Ink)
           BulletList(explanation.supports)
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           MonoLabel("Points that complicate it", color = Ink)
-          BulletList(explanation.complicates)
+          BulletList(explanation.complicates, hollow = true)
         }
         DashedRule()
-      }
-      TapRow(onClick = onSeeEvidence, onClickLabel = "See the evidence") {
-        Text(
-          "Draws on ${explanation.drawsOn.joinToString(", ")}",
-          modifier = Modifier.padding(horizontal = 14.dp),
-          style = MaterialTheme.typography.labelMedium,
-          color = Ink,
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          MonoLabel("Draws on · tap to open the item")
+          FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            explanation.drawsOn.forEach { id -> EvidenceChip(id, evidenceTitles[id], onClick = { onOpenEvidence(id) }) }
+          }
+        }
       }
     }
+  }
+}
+
+/** A cited evidence item; opens the Evidence section at that item. */
+@Composable
+private fun EvidenceChip(id: String, title: String?, onClick: () -> Unit) {
+  Row(
+    Modifier
+      .defaultMinSize(minHeight = 48.dp)
+      .border(1.dp, Ink)
+      .clickable(onClickLabel = "Open evidence item", role = Role.Button, onClick = onClick)
+      .padding(horizontal = 12.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Text(id, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium), color = Ink)
+    if (title != null) Text(title, style = MaterialTheme.typography.labelMedium, color = InkSoft)
   }
 }
