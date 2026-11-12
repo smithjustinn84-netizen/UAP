@@ -15,7 +15,11 @@ data class TimelineUiState(
   val entries: List<TimelineEntry>,
   /** How many entries of each kind there are in the whole timeline, whatever the filter. */
   val kindCounts: Map<TimelineKind, Int>,
+  /** Each decade that has an entry under the current filter, with the index of its first entry in [entries]. */
+  val decadeStarts: List<DecadeStart>,
 )
+
+data class DecadeStart(val decade: Int, val firstIndex: Int)
 
 class TimelineViewModel(private val archive: ArchiveRepository, private val savedStateHandle: SavedStateHandle) : ViewModel() {
   private val kindCounts = archive.timeline.groupingBy { it.kind }.eachCount()
@@ -32,10 +36,21 @@ class TimelineViewModel(private val archive: ArchiveRepository, private val save
   private fun restoredFilter(): TimelineKind? =
     savedStateHandle.get<String>(ONLY_KEY)?.let { name -> TimelineKind.entries.firstOrNull { it.name == name } }
 
-  private fun stateFor(only: TimelineKind?) =
-    TimelineUiState(only = only, entries = archive.timeline.filter { only == null || it.kind == only }, kindCounts = kindCounts)
+  private fun stateFor(only: TimelineKind?): TimelineUiState {
+    val entries = archive.timeline.filter { only == null || it.kind == only }
+    return TimelineUiState(only = only, entries = entries, kindCounts = kindCounts, decadeStarts = decadeStarts(entries))
+  }
 
   private companion object {
     const val ONLY_KEY = "only"
   }
 }
+
+/** The timeline is in date order, so the first entry of each decade is where that decade starts. */
+internal fun decadeStarts(entries: List<TimelineEntry>): List<DecadeStart> =
+  entries
+    .withIndex()
+    .distinctBy { it.value.year / DECADE * DECADE }
+    .map { DecadeStart(decade = it.value.year / DECADE * DECADE, firstIndex = it.index) }
+
+private const val DECADE = 10

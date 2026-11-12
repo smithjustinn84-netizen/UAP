@@ -69,6 +69,19 @@ class ViewModelTest {
   }
 
   @Test
+  fun timelineDecadeJumpsPointAtTheFirstEntryOfEachDecadeUnderTheFilter() {
+    val viewModel = TimelineViewModel(archive, SavedStateHandle())
+    viewModel.onFilterChange(TimelineKind.Culture)
+    val state = viewModel.uiState.value
+
+    assertEquals(state.entries.map { it.year / 10 * 10 }.distinct(), state.decadeStarts.map { it.decade })
+    state.decadeStarts.forEach { start ->
+      val first = state.entries.indexOfFirst { it.year / 10 * 10 == start.decade }
+      assertEquals(first, start.firstIndex)
+    }
+  }
+
+  @Test
   fun mapLoadsEachOutlineAndTogglesTheSelectedPin() {
     val ring = listOf(listOf(0f to 0f, 1f to 0f, 1f to 1f))
     val outlines =

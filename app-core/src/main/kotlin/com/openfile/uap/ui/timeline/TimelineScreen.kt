@@ -3,35 +3,44 @@ package com.openfile.uap.ui.timeline
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,11 +53,12 @@ import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.ScreenHeader
 import com.openfile.uap.ui.ScreenPadding
-import com.openfile.uap.ui.SolidRule
 import com.openfile.uap.ui.TypeTitle
+import kotlinx.coroutines.launch
 
 @Composable
 fun TimelineRoute(
@@ -60,12 +70,17 @@ fun TimelineRoute(
   TimelineScreen(uiState = uiState, onFilterChange = viewModel::onFilterChange, onOpenCase = onOpenCase)
 }
 
+/** Items in the list before the first entry: the header, the kind key and the decade row. */
+private const val LEADING_ITEMS = 3
+
 @Composable
 fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> Unit, onOpenCase: (String) -> Unit) {
   val entries = uiState.entries
   val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+  val listState = rememberLazyListState()
+  val scope = rememberCoroutineScope()
 
-  LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp)) {
+  LazyColumn(Modifier.fillMaxSize(), state = listState, contentPadding = PaddingValues(top = statusBarTop, bottom = 28.dp)) {
     item(key = "header", contentType = "header") {
       ScreenHeader(
         label = "Open File",
@@ -78,7 +93,12 @@ fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> 
         only = uiState.only,
         kindCounts = uiState.kindCounts,
         onChange = onFilterChange,
-        modifier = Modifier.padding(bottom = 20.dp),
+      )
+    }
+    item(key = "decades", contentType = "decades") {
+      DecadeJump(
+        starts = uiState.decadeStarts,
+        onJump = { start -> scope.launch { listState.animateScrollToItem(LEADING_ITEMS + start.firstIndex) } },
       )
     }
     itemsIndexed(entries, key = { _, entry -> "${entry.year}|${entry.title}" }, contentType = { _, _ -> "entry" }) { index, entry ->
@@ -90,38 +110,65 @@ fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> 
 
 /** The key doubles as the filter: tap a kind to show only that kind, tap it again to show everything. */
 @Composable
-private fun KindFilter(
-  only: TimelineKind?,
-  kindCounts: Map<TimelineKind, Int>,
-  onChange: (TimelineKind?) -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Column(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().background(Paper).border(1.dp, Ink)) {
-    TimelineKind.entries.forEachIndexed { index, kind ->
-      if (index > 0) SolidRule()
-      val selected = only == kind
-      Row(
+private fun KindFilter(only: TimelineKind?, kindCounts: Map<TimelineKind, Int>, onChange: (TimelineKind?) -> Unit) {
+  Column(Modifier.padding(horizontal = ScreenPadding)) {
+    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).background(Paper).border(1.dp, Ink)) {
+      TimelineKind.entries.forEachIndexed { index, kind ->
+        if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
+        val selected = only == kind
+        Column(
+          Modifier
+            .weight(1f)
+            .fillMaxHeight()
+            .defaultMinSize(minHeight = 64.dp)
+            .background(if (selected) Ink else Paper)
+            .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind else null) }
+            .semantics { stateDescription = if (selected) "Showing only these" else "Showing all kinds" }
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+          verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+        ) {
+          Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            KindMarker(kind, inverted = selected)
+            Text(
+              (kindCounts[kind] ?: 0).toString(),
+              style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Medium),
+              color = if (selected) Paper else Ink,
+            )
+          }
+          Text(kind.label, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = if (selected) Paper else Ink)
+        }
+      }
+    }
+    Text(
+      if (only == null) "Tap a kind to show only that kind." else "Tap it again to show every kind.",
+      modifier = Modifier.padding(top = 8.dp),
+      style = MaterialTheme.typography.labelMedium,
+      color = InkSoft,
+    )
+  }
+}
+
+@Composable
+private fun DecadeJump(starts: List<DecadeStart>, onJump: (DecadeStart) -> Unit) {
+  Row(
+    Modifier
+      .fillMaxWidth()
+      .horizontalScroll(rememberScrollState())
+      .padding(start = ScreenPadding, end = ScreenPadding, top = 14.dp, bottom = 20.dp)
+      .semantics { contentDescription = "Jump to decade" },
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    starts.forEach { start ->
+      Box(
         Modifier
-          .fillMaxWidth()
-          .defaultMinSize(minHeight = 48.dp)
-          .background(if (selected) Ink else Paper)
-          .toggleable(value = selected, role = Role.Checkbox) { onChange(if (it) kind else null) }
-          .padding(horizontal = 14.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
+          .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+          .background(Paper)
+          .border(1.dp, Ink)
+          .clickable(onClickLabel = "Jump to the ${start.decade}s", role = Role.Button) { onJump(start) }
+          .padding(horizontal = 12.dp),
+        contentAlignment = Alignment.Center,
       ) {
-        KindMarker(kind, inverted = selected)
-        Text(
-          kind.label,
-          modifier = Modifier.weight(1f),
-          style = MaterialTheme.typography.labelMedium,
-          color = if (selected) Paper else Ink,
-        )
-        Text(
-          if (selected) "Only these · tap for all" else (kindCounts[kind] ?: 0).toString(),
-          style = MaterialTheme.typography.labelMedium,
-          color = if (selected) Paper else InkSoft,
-        )
+        Text("${start.decade}s", style = MaterialTheme.typography.labelLarge, color = Ink)
       }
     }
   }
@@ -147,11 +194,9 @@ private val SpineWidth = 2.dp
 @Composable
 private fun TimelineRow(entry: TimelineEntry, showYear: Boolean, onOpenCase: (String) -> Unit, modifier: Modifier = Modifier) {
   val caseId = entry.caseId
-  val rowModifier =
-    if (caseId != null) modifier.clickable(onClickLabel = "Open file", role = Role.Button) { onOpenCase(caseId) } else modifier
   // The spine is drawn, not laid out: a rule as a child would need an intrinsic measure pass to match the text height.
   val spine = Modifier.drawBehind { drawRect(Ink, topLeft = Offset(YearColumn.toPx(), 0f), size = Size(SpineWidth.toPx(), size.height)) }
-  Row(rowModifier.fillMaxWidth().then(spine)) {
+  Row(modifier.fillMaxWidth().then(spine)) {
     Text(
       if (showYear) entry.year.toString() else "",
       modifier = Modifier.width(YearColumn).padding(top = 10.dp),
@@ -169,11 +214,20 @@ private fun TimelineRow(entry: TimelineEntry, showYear: Boolean, onOpenCase: (St
       TypeTitle(entry.title, size = 17.sp)
       Text(entry.detail, style = MaterialTheme.typography.bodySmall, color = InkBody)
       if (caseId != null) {
-        Text(
-          "Open file $caseId",
-          style = MaterialTheme.typography.labelMedium.copy(textDecoration = TextDecoration.Underline),
-          color = Ink,
-        )
+        Row(
+          Modifier
+            .padding(top = 4.dp)
+            .defaultMinSize(minHeight = 48.dp)
+            .background(Paper)
+            .border(1.dp, Ink)
+            .clickable(onClickLabel = "Open file", role = Role.Button) { onOpenCase(caseId) }
+            .padding(horizontal = 12.dp),
+          horizontalArrangement = Arrangement.spacedBy(10.dp),
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Text("Open file $caseId", style = MaterialTheme.typography.labelMedium, color = Ink)
+          Chevron(modifier = Modifier.padding(bottom = 4.dp))
+        }
       }
     }
   }
