@@ -12,7 +12,7 @@ import com.openfile.uap.ui.AppFrame
 import com.openfile.uap.ui.casefile.CaseFileRoute
 import com.openfile.uap.ui.files.FilesRoute
 import com.openfile.uap.ui.map.MapRoute
-import com.openfile.uap.ui.method.MethodScreen
+import com.openfile.uap.ui.method.MethodRoute
 import com.openfile.uap.ui.threads.ThreadsRoute
 import com.openfile.uap.ui.timeline.TimelineRoute
 
@@ -37,10 +37,10 @@ fun MainNavigation(container: AppContainer) {
       entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
       entryProvider =
         entryProvider {
-          entry<Files> { FilesRoute(archive = archive, onOpenCase = openCase, onOpenThreads = openThreads) }
+          entry<Files> { FilesRoute(archive = archive, onOpenCase = openCase, onOpenThreads = openThreads, onOpenMethod = openMethod) }
           entry<EventMap> { MapRoute(archive = archive, outlines = container.mapOutlineRepository, onOpenCase = openCase) }
           entry<Timeline> { TimelineRoute(archive = archive, onOpenCase = openCase) }
-          entry<Method> { MethodScreen() }
+          entry<Method> { MethodRoute(archive = archive) }
           entry<Threads> { ThreadsRoute(archive = archive, onOpenCase = openCase, onBack = { backStack.removeLastOrNull() }) }
           entry<CaseFile> { key ->
             // Back names where the file was opened from.

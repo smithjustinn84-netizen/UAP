@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openfile.uap.theme.Ink
@@ -33,13 +34,13 @@ fun countOf(count: Int, singular: String, plural: String = singular + "s"): Stri
 
 /** The heading block at the top of a section screen: a small label, the typed title and one line of introduction. */
 @Composable
-fun ScreenHeader(label: String, title: String, intro: String, top: Dp = 28.dp) {
+fun ScreenHeader(label: String, title: String, intro: String, top: Dp = 28.dp, titleSize: TextUnit = 32.sp) {
   Column(
     Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = top, bottom = 16.dp),
     verticalArrangement = Arrangement.spacedBy(10.dp),
   ) {
     MonoLabel(label)
-    TypeTitle(title, size = 32.sp)
+    TypeTitle(title, size = titleSize)
     Text(intro, style = MaterialTheme.typography.bodyLarge, color = InkBody)
   }
 }

@@ -125,14 +125,14 @@ fun MonoLabel(text: String, modifier: Modifier = Modifier, color: Color = InkSof
 
 /** Typewriter heading. */
 @Composable
-fun TypeTitle(text: String, size: TextUnit, modifier: Modifier = Modifier) {
+fun TypeTitle(text: String, size: TextUnit, modifier: Modifier = Modifier, color: Color = Ink) {
   Text(
     text,
     modifier = modifier.semantics { heading() },
     fontFamily = TypewriterFamily,
     fontSize = size,
     lineHeight = size * 1.25f,
-    color = Ink,
+    color = color,
   )
 }
 
