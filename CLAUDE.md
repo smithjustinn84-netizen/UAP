@@ -24,8 +24,8 @@ Install steps if the `lightbuild` CLI is missing: `AGENTS.md`.
 | Lint only (ktlint + detekt) | `scripts/check lint` |
 | Auto-format Kotlin | `scripts/check format` |
 
-`lightbuild test app-core` fails ("No XML test reports found") because it also runs instrumentation tests and there
-are none. Use `app-core:hostTest`.
+Use `app-core:hostTest` to run JVM unit tests without a connected device or emulator (`lightbuild test app-core` also
+runs the instrumentation tests in `app-core/src/androidTest/`).
 
 Build targets have no `//` prefix (`app-core`); module dependencies inside `lightbuild.yaml` do (`//app-core`).
 
@@ -39,8 +39,9 @@ Build targets have no `//` prefix (`app-core`); module dependencies inside `ligh
 - No network or persistence. All content is static Kotlin data in `data/Archive.kt`:
   `Archive.cases` (oldest first), `Archive.timeline`, `Archive.search(query, decade)`, `Archive.case(id)`.
   Each case's write-up is a private `CaseDetail` val further down the same file.
-- UI reads data only through repositories: `ArchiveRepository` (synchronous; the archive is compiled in) and
-  `MapOutlineRepository` (suspend; parses `res/raw` off the main thread and caches). `AppContainer` is the manual DI
+- UI reads data only through repositories: `ArchiveRepository` (synchronous; the archive is compiled in),
+  `MapOutlineRepository` (suspend; parses `res/raw` off the main thread and caches) and `NoticesRepository`
+  (suspend; reads bundled licence texts from `res/raw` off the main thread). `AppContainer` is the manual DI
   root, owned by `OpenFileApplication` so it survives configuration changes. Don't add a DI framework.
 - Each feature is a package `ui/<feature>/` with a `<Feature>Route` (gets the ViewModel, collects state), a stateless
   `<Feature>Screen` and a `<Feature>ViewModel` exposing an immutable `UiState`. Filters and selections that should
@@ -56,7 +57,7 @@ Build targets have no `//` prefix (`app-core`); module dependencies inside `ligh
 - A file-specific briefing graphic is selected by `CaseDetail.infographic` (an `Infographic` entry), never by checking
   a case id in the UI; each entry maps to a composable in `ui/casefile/` (e.g. `NimitzInfographic.kt`).
 - Map: `data/MapSheets.kt` defines sheet bounds and projection (North America, Britain & Ireland, South-East Australia,
-  Middle East); outlines are `res/raw/map_*.txt` (one ring per line of `lon,lat` pairs). Sheet bounds must match the
+  Middle East, Central Europe); outlines are `res/raw/map_*.txt` (one ring per line of `lon,lat` pairs). Sheet bounds must match the
   clipping used to make those files.
 - Styling: manila/paper/ink palette in `theme/Color.kt`; fonts in `theme/Type.kt`. Reuse the shared composables
   in `ui/Components.kt` (`PaperSheet`, `MonoLabel`, `TypeTitle`, `Stamp`, `RecordField`, `BulletList`, rules,

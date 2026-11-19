@@ -9,8 +9,8 @@ on any of it.
 - **Files** — the case list, searchable by name, place, year or witness and filterable by decade.
 - **Threads** — patterns that recur across the files (late-arriving details, missing records, changed official
   positions), each with what to keep in mind about it. Opened from a tile at the top of the case list.
-- **Map** — every case plotted on hand-drawn sheets of North America, Britain and Ireland, South-East Australia
-  and the Middle East, shown one sheet at a time.
+- **Map** — every case plotted on hand-drawn sheets of North America, Britain and Ireland, South-East Australia,
+  the Middle East and Central Europe, shown one sheet at a time.
 - **Timeline** — sightings alongside the inquiries that followed them and the books, films and broadcasts that
   retold them, filterable by kind, with a jump to each decade.
 - **Method** — how to read a file: a sample item with its parts explained, the source labels, and how the archive
@@ -21,10 +21,17 @@ on any of it.
   media exhibits (diagrams, plates, audio/video transcripts, document excerpts), explanations listed A–Z, the
   records known to be missing, and the lore: how the story has been told since, in date order.
 
-Cases on file include Kenneth Arnold (1947), Roswell (1947), the Washington, D.C. radar sightings (1952),
+Cases on file include the Nuremberg celestial phenomenon (1561), the Battle of Los Angeles (1942),
+Foo fighters (1944), Kenneth Arnold (1947), Roswell (1947), the Washington, D.C. radar sightings (1952),
 Kecksburg (1965), Westall (1966), Shag Harbour (1967), Berwyn Mountains (1974), Tehran (1976),
 the Valentich disappearance (1978), Rendlesham Forest (1980), the Phoenix Lights (1997), USS Nimitz (2004),
 USS Theodore Roosevelt (2015) and the Tehran aerial phenomenon (2026).
+
+## Screenshots
+
+| Files | Case file | Map | Timeline |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/files.png" alt="Files screen" width="200"> | <img src="docs/screenshots/case-file.png" alt="Case file screen" width="200"> | <img src="docs/screenshots/map.png" alt="Map screen" width="200"> | <img src="docs/screenshots/timeline.png" alt="Timeline screen" width="200"> |
 
 ## Tech
 
@@ -32,7 +39,7 @@ USS Theodore Roosevelt (2015) and the Tehran aerial phenomenon (2026).
 - Navigation 3
 - AndroidX Media3 (ExoPlayer) for video playback, Coil for photographs and document scans
 - [Lightbuild](https://developer.android.com/r/lightbuild) (experimental) instead of Gradle
-- minSdk 24, compileSdk 36, targetSdk 34, Java 17
+- minSdk 24, compileSdk 36, targetSdk 35, Java 17
 
 All content is bundled in the app; there is no network access or backend.
 
@@ -55,7 +62,8 @@ app-core/                     Library module with all code and resources
   src/main/res/raw/           Map outlines (Natural Earth, simplified), bundled video clips and licence texts
   src/main/res/drawable/      Vector "photographic plates" used as media exhibits
   src/main/res/drawable-nodpi/ Bundled photographic plates and document scans
-  src/test/                   JVM unit tests for the archive and map sheets
+  src/test/                   JVM unit tests (archive, map sheets, notices, UI data, ViewModels)
+  src/androidTest/            Compose UI and navigation instrumentation tests
 ```
 
 ## Building
@@ -70,8 +78,8 @@ lightbuild test app-core:hostTest    # JVM unit tests
 android run app/build/app-debug.apk  # install and launch on a connected device or emulator
 ```
 
-Add `--plain` for log-friendly output. Note that `lightbuild test app-core` also tries to run instrumentation
-tests on a device and currently fails because there are none; use `app-core:hostTest` for unit tests.
+Add `--plain` for log-friendly output. Use `app-core:hostTest` to run JVM unit tests without a connected device or
+emulator (`lightbuild test app-core` also runs instrumentation tests in `src/androidTest/`).
 
 ## Code quality
 
