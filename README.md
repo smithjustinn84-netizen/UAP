@@ -1,5 +1,7 @@
 # Open File
 
+![Open File — An archival Android app for UAP case files](docs/hero.jpg)
+
 An Android archive of well-known UAP (UFO) reports, laid out like a set of manila case files. Each file records
 what was reported, what is on record and every explanation that has been seriously put forward — without ruling
 on any of it.
