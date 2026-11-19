@@ -70,6 +70,7 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
 import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.BackLink
 import com.openfile.uap.ui.BulletList
@@ -95,6 +96,7 @@ import com.openfile.uap.ui.TitledBlock
 import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.UnfoldIn
 import com.openfile.uap.ui.countOf
+import com.openfile.uap.ui.deskShadow
 import com.openfile.uap.ui.pressable
 import com.openfile.uap.ui.rememberTick
 import kotlin.math.roundToInt
@@ -224,9 +226,10 @@ fun CaseFileScreen(
       enter = fadeIn(tween(MOTION_SHORT)) + slideInVertically(tween(MOTION_MEDIUM)) { -it / 2 },
       exit = fadeOut(tween(MOTION_SHORT)),
     ) {
-      Column(Modifier.fillMaxWidth().background(Manila).padding(bottom = 8.dp)) {
+      Column(Modifier.fillMaxWidth().background(Manila)) {
         StatusBarSpacer()
-        SectionTabs(current = section, onSelect = open)
+        SectionTabs(current = section, onSelect = open, modifier = Modifier.padding(top = 4.dp, bottom = 8.dp))
+        SolidRule(color = Ink)
       }
     }
   }
@@ -302,7 +305,7 @@ private fun FileSection(section: Section, record: CaseRecord, detail: CaseDetail
 
 @Composable
 private fun SectionTabs(current: Section, onSelect: (Section) -> Unit, modifier: Modifier = Modifier) {
-  Row(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().height(TabsHeight).background(Paper).border(1.dp, Ink)) {
+  Row(modifier.padding(horizontal = ScreenPadding).fillMaxWidth().height(TabsHeight).deskShadow(2.dp).background(Paper).border(1.dp, Ink)) {
     Section.entries.forEachIndexed { index, s ->
       if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
       // Width follows the length of the label, so five tabs fit a narrow phone without wrapping the longest.
@@ -388,7 +391,11 @@ private fun SummarySection(record: CaseRecord, detail: CaseDetail, onOpen: (Sect
 /** The way on from the summary: evidence first, as the next thing to read, then the other sections. */
 @Composable
 private fun ReadOn(detail: CaseDetail, onOpen: (Section) -> Unit) {
-  TapRow(onClick = { onOpen(Section.Evidence) }, modifier = Modifier.defaultMinSize(minHeight = 64.dp).background(Ink)) {
+  TapRow(
+    onClick = { onOpen(Section.Evidence) },
+    modifier = Modifier.defaultMinSize(minHeight = 64.dp).deskShadow(2.dp).background(Ink),
+    pressIn = true,
+  ) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
         MonoLabel("Next · ${Section.Evidence.ordinal + 1} of ${Section.entries.size}", color = Manila)
@@ -702,6 +709,7 @@ private fun EvidenceChip(id: String, title: String?, onClick: () -> Unit) {
     Modifier
       .pressable(onClickLabel = "Open evidence item", onClick = onClick)
       .defaultMinSize(minHeight = 48.dp)
+      .background(PaperTint)
       .border(1.dp, Ink)
       .padding(horizontal = 12.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),

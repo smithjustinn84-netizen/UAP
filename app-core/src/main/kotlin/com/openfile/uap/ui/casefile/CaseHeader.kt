@@ -57,8 +57,8 @@ import com.openfile.uap.data.MapSheets
 import com.openfile.uap.data.SheetOutline
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkSoft
-import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
 import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.ScreenPadding
@@ -134,10 +134,15 @@ private fun PhotoHero(hero: CaseHero, height: Dp, drift: () -> Int) {
         colorFilter = SepiaWash,
         modifier = Modifier.fillMaxSize().graphicsLayer { translationY = drift() * PARALLAX },
       )
+      MonoLabel(
+        "Enlarge",
+        color = Ink,
+        modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp).labelPlate(),
+      )
     }
     SolidRule(color = Ink)
     Column(
-      Modifier.fillMaxWidth().background(Manila).padding(horizontal = ScreenPadding, vertical = 8.dp),
+      Modifier.fillMaxWidth().background(PaperTint).padding(horizontal = ScreenPadding, vertical = 8.dp),
       verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
       MonoLabel("PLATE · ${hero.caption}", color = Ink)

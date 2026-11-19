@@ -2,6 +2,7 @@ package com.openfile.uap.ui.files
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -30,10 +32,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -44,6 +51,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,9 +66,11 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
+import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.Chevron
-import com.openfile.uap.ui.DashedRule
 import com.openfile.uap.ui.DeskPreview
+import com.openfile.uap.ui.DoubleRule
 import com.openfile.uap.ui.MonoLabel
 import com.openfile.uap.ui.PaperSheet
 import com.openfile.uap.ui.ScreenPadding
@@ -70,6 +80,7 @@ import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.casefile.CaseThumbnail
 import com.openfile.uap.ui.countOf
 import com.openfile.uap.ui.dashedBorder
+import com.openfile.uap.ui.deskShadow
 import com.openfile.uap.ui.pressable
 import com.openfile.uap.ui.rememberTick
 import com.openfile.uap.ui.selectionColor
@@ -130,12 +141,27 @@ fun FilesScreen(
     }
     if (results.isEmpty()) {
       item(key = "empty", contentType = "empty") {
-        Text(
-          "No files match. Try a place, a year, a name or a witness, or clear the decade filter.",
-          modifier = Modifier.animateItem().padding(horizontal = ScreenPadding),
-          style = MaterialTheme.typography.bodyMedium,
-          color = InkBody,
-        )
+        PaperSheet(dashed = true, modifier = Modifier.animateItem().padding(horizontal = ScreenPadding)) {
+          Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            MonoLabel("No matching files", color = Ink)
+            Text(
+              "No files match. Try a place, a year, a name or a witness, or clear the decade filter.",
+              style = MaterialTheme.typography.bodyMedium,
+              color = InkBody,
+            )
+            if (query.isNotEmpty() || uiState.selectedDecade != null) {
+              ActionRow(
+                text = "Clear search and filters",
+                onClick = {
+                  onQueryChange("")
+                  onDecadeSelect(null)
+                },
+                solid = false,
+                modifier = Modifier.padding(top = 2.dp),
+              )
+            }
+          }
+        }
       }
     }
     items(results, key = { it.id }, contentType = { "folder" }) { record ->
@@ -165,6 +191,7 @@ private fun FilesHeader() {
       style = MaterialTheme.typography.bodyLarge,
       color = InkBody,
     )
+    DoubleRule(Modifier.padding(top = 4.dp))
   }
 }
 
@@ -196,17 +223,21 @@ private fun StartHere(threadCount: Int, onOpenMethod: () -> Unit, onOpenThreads:
 
 @Composable
 private fun StartTile(label: String, title: String, detail: String, inverted: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-  val surface = if (inverted) Modifier.background(Ink) else Modifier.background(Paper).dashedBorder(Ink)
+  val surface = if (inverted) Modifier.deskShadow(2.dp).background(Ink) else Modifier.deskShadow(2.dp).background(Paper).dashedBorder(Ink)
+  val chevronColor = if (inverted) Manila else Ink
   Column(
     modifier
       .pressable(onClickLabel = "Open", onClick = onClick)
       .fillMaxHeight()
-      .defaultMinSize(minHeight = 92.dp)
+      .defaultMinSize(minHeight = 96.dp)
       .then(surface)
       .padding(12.dp),
     verticalArrangement = Arrangement.spacedBy(6.dp),
   ) {
-    MonoLabel(label, color = if (inverted) Manila else InkSoft)
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+      MonoLabel(label, color = if (inverted) Manila else InkSoft)
+      Chevron(color = chevronColor)
+    }
     TypeTitle(title, size = 17.sp, color = if (inverted) Paper else Ink)
     Text(detail, style = MaterialTheme.typography.labelMedium, color = if (inverted) Paper else InkSoft)
   }
@@ -214,6 +245,7 @@ private fun StartTile(label: String, title: String, detail: String, inverted: Bo
 
 @Composable
 private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
+  var focused by remember { mutableStateOf(false) }
   Column(Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
     MonoLabel("Search the files")
     BasicTextField(
@@ -223,10 +255,20 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
       textStyle = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp, color = Ink),
       cursorBrush = SolidColor(Ink),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-      modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Search the files" },
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .onFocusChanged { focused = it.isFocused }
+          .semantics { contentDescription = "Search the files" },
       decorationBox = { field ->
         Row(
-          Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp).background(Paper).border(1.dp, Ink).padding(horizontal = 12.dp),
+          Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
+            .deskShadow(2.dp)
+            .background(Paper)
+            .border(if (focused) 2.dp else 1.dp, Ink)
+            .padding(start = 12.dp, end = if (query.isEmpty()) 12.dp else 0.dp),
           horizontalArrangement = Arrangement.spacedBy(10.dp),
           verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -236,6 +278,17 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
               Text("Place, year, name or witness", style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp), color = InkSoft)
             }
             field()
+          }
+          if (query.isNotEmpty()) {
+            Box(
+              Modifier
+                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                .clickable(role = Role.Button, onClickLabel = "Clear search") { onQueryChange("") }
+                .semantics { contentDescription = "Clear search" },
+              contentAlignment = Alignment.Center,
+            ) {
+              ClearIcon()
+            }
           }
         }
       },
@@ -252,6 +305,19 @@ private fun Magnifier() {
       val unit = size.width / 18f
       drawCircle(Ink, radius = 5 * unit, center = Offset(7.5f * unit, 7.5f * unit), style = Stroke(width = stroke))
       drawLine(Ink, Offset(11.5f * unit, 11.5f * unit), Offset(16 * unit, 16 * unit), strokeWidth = stroke, cap = StrokeCap.Round)
+    },
+  )
+}
+
+/** A drawn cross to clear the search field, in the same line weight as the magnifier. */
+@Composable
+private fun ClearIcon() {
+  Spacer(
+    Modifier.size(14.dp).drawBehind {
+      val stroke = 2.dp.toPx()
+      val pad = 2.dp.toPx()
+      drawLine(Ink, Offset(pad, pad), Offset(size.width - pad, size.height - pad), strokeWidth = stroke, cap = StrokeCap.Round)
+      drawLine(Ink, Offset(size.width - pad, pad), Offset(pad, size.height - pad), strokeWidth = stroke, cap = StrokeCap.Round)
     },
   )
 }
@@ -287,27 +353,27 @@ private fun Chip(label: String, selected: Boolean, onClick: () -> Unit) {
 
 private val ThumbnailHeight = 112.dp
 
-/** A case shown as a manila folder: file number on the tab, its picture or locator map, then the summary. */
+/** A case shown as a manila folder: integrated file-number tab, its picture or locator map, then the summary. */
 @Composable
 private fun FolderCard(record: CaseRecord, outline: SheetOutline, onClick: () -> Unit, modifier: Modifier = Modifier) {
   Column(modifier.fillMaxWidth().pressable(onClickLabel = "Open file", onClick = onClick)) {
-    Text(
-      record.id,
-      modifier = Modifier.background(Paper).border(1.dp, Ink).padding(horizontal = 12.dp, vertical = 4.dp),
-      style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.6.sp),
-      color = Ink,
-    )
+    FolderTab(record.id)
     PaperSheet {
       CaseThumbnail(record, outline, Modifier.height(ThumbnailHeight))
       SolidRule(color = Ink)
       Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
           TypeTitle(record.title, size = 19.sp, modifier = Modifier.weight(1f))
           Chevron()
         }
         Text("${record.dateShort} · ${record.placeShort}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
         Text("On file: ${record.onFile}", style = MaterialTheme.typography.bodySmall, color = InkBody)
-        DashedRule()
+      }
+      SolidRule()
+      Column(
+        Modifier.fillMaxWidth().background(PaperTint).padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+      ) {
         MonoLabel(record.status, color = Ink)
         record.detail?.let { detail ->
           val contents = listOfNotNull(
@@ -319,6 +385,43 @@ private fun FolderCard(record: CaseRecord, outline: SheetOutline, onClick: () ->
       }
     }
   }
+}
+
+/** An angled archival folder tab that fuses seamlessly into the top edge of the [PaperSheet] below it. */
+@Composable
+private fun FolderTab(id: String) {
+  Text(
+    id,
+    modifier =
+      Modifier
+        .offset(y = 1.dp)
+        .zIndex(1f)
+        .drawBehind {
+          val slope = 10.dp.toPx()
+          val stroke = 1.dp.toPx()
+          val half = stroke / 2f
+          val fill =
+            Path().apply {
+              moveTo(0f, size.height)
+              lineTo(0f, 0f)
+              lineTo(size.width - slope, 0f)
+              lineTo(size.width, size.height)
+              close()
+            }
+          drawPath(fill, Paper)
+          val outline =
+            Path().apply {
+              moveTo(half, size.height)
+              lineTo(half, half)
+              lineTo(size.width - slope, half)
+              lineTo(size.width - half, size.height)
+            }
+          drawPath(outline, Ink, style = Stroke(stroke))
+        }
+        .padding(start = 12.dp, end = 22.dp, top = 5.dp, bottom = 4.dp),
+    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.6.sp),
+    color = Ink,
+  )
 }
 
 @Preview(showBackground = true, widthDp = 412, heightDp = 915)

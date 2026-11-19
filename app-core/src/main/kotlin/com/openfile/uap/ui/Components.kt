@@ -44,9 +44,12 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalUriHandler
@@ -60,11 +63,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
+import com.openfile.uap.EventMap
 import com.openfile.uap.Files
+import com.openfile.uap.Method
+import com.openfile.uap.Timeline
 import com.openfile.uap.TopLevelSection
 import com.openfile.uap.TopLevelSections
 import com.openfile.uap.data.Citation
 import com.openfile.uap.theme.Dash
+import com.openfile.uap.theme.DeskShadow
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
@@ -103,16 +110,100 @@ fun AppFrame(tabs: List<TopLevelSection>, current: NavKey, onTab: (NavKey) -> Un
     Box(Modifier.fillMaxWidth().height(2.dp).background(Ink))
     // The strip's paper extends behind the navigation bar; the tabs themselves sit above it.
     Column(Modifier.fillMaxWidth().background(Paper).windowInsetsPadding(WindowInsets.navigationBars)) {
-      Row(Modifier.fillMaxWidth().height(56.dp)) {
+      Row(Modifier.fillMaxWidth().height(60.dp)) {
         tabs.forEachIndexed { index, tab ->
           if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
-          TabCell(label = tab.label.uppercase(), selected = tab.key == current, onClick = {
-            onTab(tab.key)
-          }, modifier = Modifier.weight(1f))
+          BottomNavCell(
+            section = tab,
+            selected = tab.key == current,
+            onClick = { onTab(tab.key) },
+            modifier = Modifier.weight(1f),
+          )
         }
       }
     }
   }
+}
+
+@Composable
+private fun BottomNavCell(section: TopLevelSection, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val tick = rememberTick()
+  val contentColor = selectionColor(selected, Paper, Ink)
+  Column(
+    modifier
+      .fillMaxHeight()
+      .background(selectionColor(selected, Ink, Ink.copy(alpha = 0f)))
+      .selectable(selected = selected, role = Role.Tab, onClick = {
+        if (!selected) tick()
+        onClick()
+      }),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+  ) {
+    NavIcon(key = section.key, color = contentColor)
+    Text(
+      section.label.uppercase(),
+      style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.8.sp),
+      color = contentColor,
+      textAlign = TextAlign.Center,
+    )
+  }
+}
+
+/** Crisp drawn archival icons for the bottom navigation strip, in the same stroke weight as the chevrons. */
+@Composable
+private fun NavIcon(key: NavKey, color: Color) {
+  Spacer(
+    Modifier.size(18.dp).drawBehind {
+      val strokeWidth = 1.6.dp.toPx()
+      val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Square, join = StrokeJoin.Miter)
+      val w = size.width
+      val h = size.height
+      when (key) {
+        Files -> {
+          val folder =
+            Path().apply {
+              moveTo(w * 0.1f, h * 0.22f)
+              lineTo(w * 0.44f, h * 0.22f)
+              lineTo(w * 0.54f, h * 0.36f)
+              lineTo(w * 0.9f, h * 0.36f)
+              lineTo(w * 0.9f, h * 0.82f)
+              lineTo(w * 0.1f, h * 0.82f)
+              close()
+            }
+          drawPath(folder, color, style = stroke)
+        }
+
+        EventMap -> {
+          drawRect(color, topLeft = Offset(w * 0.1f, h * 0.16f), size = Size(w * 0.8f, h * 0.68f), style = stroke)
+          drawLine(color, Offset(w * 0.38f, h * 0.16f), Offset(w * 0.38f, h * 0.84f), strokeWidth = strokeWidth * 0.7f)
+          drawLine(color, Offset(w * 0.1f, h * 0.52f), Offset(w * 0.9f, h * 0.52f), strokeWidth = strokeWidth * 0.7f)
+          drawCircle(color, radius = w * 0.11f, center = Offset(w * 0.64f, h * 0.42f))
+        }
+
+        Timeline -> {
+          drawLine(color, Offset(w * 0.28f, h * 0.12f), Offset(w * 0.28f, h * 0.88f), strokeWidth = strokeWidth)
+          listOf(0.26f, 0.52f, 0.78f).forEachIndexed { idx, frac ->
+            val cy = h * frac
+            val r = w * 0.1f
+            if (idx == 0) {
+              drawRect(color, topLeft = Offset(w * 0.28f - r, cy - r), size = Size(r * 2, r * 2))
+            } else {
+              drawRect(color, topLeft = Offset(w * 0.28f - r, cy - r), size = Size(r * 2, r * 2), style = stroke)
+            }
+            drawLine(color, Offset(w * 0.48f, cy), Offset(w * (if (idx == 1) 0.78f else 0.9f), cy), strokeWidth = strokeWidth)
+          }
+        }
+
+        Method -> {
+          drawRect(color, topLeft = Offset(w * 0.14f, h * 0.14f), size = Size(w * 0.72f, h * 0.72f), style = stroke)
+          drawLine(color, Offset(w * 0.28f, h * 0.36f), Offset(w * 0.72f, h * 0.36f), strokeWidth = strokeWidth)
+          drawLine(color, Offset(w * 0.28f, h * 0.54f), Offset(w * 0.72f, h * 0.54f), strokeWidth = strokeWidth)
+          drawLine(color, Offset(w * 0.28f, h * 0.7f), Offset(w * 0.56f, h * 0.7f), strokeWidth = strokeWidth)
+        }
+      }
+    },
+  )
 }
 
 /** One cell of a tab strip: inverted ink when selected. Shared by the bottom tabs and the in-file tabs. */
@@ -170,23 +261,47 @@ fun Stamp(text: String, modifier: Modifier = Modifier, animateIn: Boolean = fals
           val scale = 1f + (1f - press.value) * STAMP_LIFT
           scaleX = scale
           scaleY = scale
-          alpha = press.value.coerceIn(0f, 1f)
+          alpha = (press.value * 0.92f).coerceIn(0f, 1f)
         }.rotate(-2.5f)
-        .border(2.dp, StampRed).padding(horizontal = 10.dp, vertical = 5.dp),
+        .drawBehind {
+          val outer = 2.dp.toPx()
+          val inner = 0.75.dp.toPx()
+          val inset = 3.5.dp.toPx()
+          drawRect(
+            color = StampRed,
+            topLeft = Offset(outer / 2, outer / 2),
+            size = Size(size.width - outer, size.height - outer),
+            style = Stroke(outer),
+          )
+          drawRect(
+            color = StampRed.copy(alpha = 0.65f),
+            topLeft = Offset(inset, inset),
+            size = Size(size.width - inset * 2, size.height - inset * 2),
+            style = Stroke(inner),
+          )
+        }
+        .padding(horizontal = 12.dp, vertical = 6.dp),
     fontFamily = TypewriterFamily,
-    fontSize = 12.sp,
+    fontSize = 11.5.sp,
     letterSpacing = 1.4.sp,
     color = StampRed,
   )
 }
 
-/** A sheet of paper with a solid ink outline. */
+/** A crisp hard-offset shadow behind a sheet or control on the manila desk, like physical paper stacked on a folder. */
+fun Modifier.deskShadow(offset: Dp = 3.dp): Modifier =
+  drawBehind {
+    val px = offset.toPx()
+    drawRect(color = DeskShadow, topLeft = Offset(px, px), size = size)
+  }
+
+/** A sheet of paper with a solid ink outline and a subtle desk shadow. */
 private const val STAMP_LIFT = 0.6f
 
 @Composable
 fun PaperSheet(modifier: Modifier = Modifier, dashed: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
   val outline = if (dashed) Modifier.dashedBorder(Ink) else Modifier.border(1.dp, Ink)
-  Column(modifier.fillMaxWidth().background(Paper).then(outline), content = content)
+  Column(modifier.fillMaxWidth().deskShadow(if (dashed) 2.dp else 3.dp).background(Paper).then(outline), content = content)
 }
 
 fun Modifier.dashedBorder(color: Color, width: Dp = 1.dp): Modifier =
@@ -206,6 +321,15 @@ fun Modifier.dashedBorder(color: Color, width: Dp = 1.dp): Modifier =
 @Composable
 fun SolidRule(modifier: Modifier = Modifier, color: Color = Rule) {
   Box(modifier.fillMaxWidth().height(1.dp).background(color))
+}
+
+/** A heavy-over-light double rule, like the masthead of a printed dossier form. */
+@Composable
+fun DoubleRule(modifier: Modifier = Modifier, color: Color = Ink) {
+  Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    Box(Modifier.fillMaxWidth().height(2.dp).background(color))
+    Box(Modifier.fillMaxWidth().height(1.dp).background(color))
+  }
 }
 
 @Composable
@@ -308,7 +432,7 @@ fun Chevron(modifier: Modifier = Modifier, down: Boolean = false, up: Boolean = 
     label = "chevron",
   )
   Spacer(
-    modifier.padding(top = 4.dp).size(14.dp).rotate(angle).drawBehind {
+    modifier.size(14.dp).rotate(angle).drawBehind {
       val w = size.width
       val stroke = 2.dp.toPx()
       val tip = Offset(w * 0.7f, w * 0.5f)

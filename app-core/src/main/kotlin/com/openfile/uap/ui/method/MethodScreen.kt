@@ -41,6 +41,7 @@ import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
 import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DashedRule
@@ -151,7 +152,7 @@ fun MethodScreen(sample: Evidence?, onOpenAbout: () -> Unit) {
 private fun AnnotatedItem(item: Evidence) {
   PaperSheet {
     Row(
-      Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
+      Modifier.fillMaxWidth().background(PaperTint).padding(horizontal = 14.dp, vertical = 8.dp),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {

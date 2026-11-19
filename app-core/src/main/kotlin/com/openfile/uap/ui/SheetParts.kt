@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
 
 /** "1 file", "3 files". */
 fun countOf(count: Int, singular: String, plural: String = singular + "s"): String = "$count ${if (count == 1) singular else plural}"
@@ -41,6 +42,7 @@ fun ScreenHeader(label: String, title: String, intro: String, top: Dp = 28.dp, t
     MonoLabel(label)
     TypeTitle(title, size = titleSize)
     Text(intro, style = MaterialTheme.typography.bodyLarge, color = InkBody)
+    DoubleRule(Modifier.padding(top = 4.dp))
   }
 }
 
@@ -74,7 +76,7 @@ fun TitledBlock(title: String, content: @Composable () -> Unit) {
 @Composable
 fun CardHeader(start: String, end: String, onEndClick: (() -> Unit)? = null) {
   Row(
-    Modifier.fillMaxWidth().padding(start = 14.dp),
+    Modifier.fillMaxWidth().background(PaperTint).padding(start = 14.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
@@ -103,7 +105,7 @@ fun CardHeader(start: String, end: String, onEndClick: (() -> Unit)? = null) {
 /** A full-width button row with a chevron: solid ink for the main way on, paper for a secondary one. */
 @Composable
 fun ActionRow(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, solid: Boolean = true) {
-  val surface = if (solid) Modifier.background(Ink) else Modifier.background(Paper).border(1.dp, Ink)
+  val surface = if (solid) Modifier.deskShadow(2.dp).background(Ink) else Modifier.deskShadow(2.dp).background(Paper).border(1.dp, Ink)
   val ink = if (solid) Paper else Ink
   TapRow(onClick = onClick, modifier = modifier.defaultMinSize(minHeight = 52.dp).then(surface), pressIn = true) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {

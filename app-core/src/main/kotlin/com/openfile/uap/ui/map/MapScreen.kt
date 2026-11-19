@@ -57,6 +57,7 @@ import com.openfile.uap.theme.Ink
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.MonoFamily
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.PaperTint
 import com.openfile.uap.ui.ActionRow
 import com.openfile.uap.ui.CardHeader
 import com.openfile.uap.ui.Chevron
@@ -71,6 +72,7 @@ import com.openfile.uap.ui.StatusBarSpacer
 import com.openfile.uap.ui.TapRow
 import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.countOf
+import com.openfile.uap.ui.deskShadow
 import com.openfile.uap.ui.rememberTick
 import com.openfile.uap.ui.selectionColor
 
@@ -125,7 +127,13 @@ fun MapScreen(
         SheetMap(sheet = shown.sheet, pins = shown.pins, outline = shown.outline, selectedId = selectedId, onSelect = onPinSelect)
         Text(
           "Pins are approximate",
-          modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 6.dp),
+          modifier =
+            Modifier
+              .align(Alignment.BottomStart)
+              .padding(8.dp)
+              .background(Paper)
+              .border(1.dp, Ink)
+              .padding(horizontal = 6.dp, vertical = 3.dp),
           style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
           color = InkSoft,
         )
@@ -137,7 +145,7 @@ fun MapScreen(
         PaperSheet {
           shown.pins.forEachIndexed { index, p ->
             if (index > 0) SolidRule()
-            PlottedRow(p, onOpen = { onOpenCase(p.record.id) })
+            PlottedRow(p, selected = p.record.id == uiState.selectedId, onOpen = { onOpenCase(p.record.id) })
           }
         }
       }
@@ -148,7 +156,7 @@ fun MapScreen(
 /** The four sheets as a two-by-two tab grid, each with the number of cases plotted on it. */
 @Composable
 private fun SheetTabs(sheets: List<MapSheetUiState>, currentId: String, onSelect: (String) -> Unit) {
-  Column(Modifier.fillMaxWidth().background(Paper).border(1.dp, Ink).selectableGroup()) {
+  Column(Modifier.fillMaxWidth().deskShadow(2.dp).background(Paper).border(1.dp, Ink).selectableGroup()) {
     sheets.chunked(2).forEachIndexed { rowIndex, row ->
       if (rowIndex > 0) SolidRule(color = Ink)
       Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
@@ -186,14 +194,18 @@ private fun SheetTabs(sheets: List<MapSheetUiState>, currentId: String, onSelect
 }
 
 @Composable
-private fun PlottedRow(p: PlottedCase, onOpen: () -> Unit) {
-  TapRow(onClick = onOpen, onClickLabel = "Open file", modifier = Modifier.defaultMinSize(minHeight = 60.dp)) {
+private fun PlottedRow(p: PlottedCase, selected: Boolean, onOpen: () -> Unit) {
+  TapRow(
+    onClick = onOpen,
+    onClickLabel = "Open file",
+    modifier = Modifier.defaultMinSize(minHeight = 60.dp).background(if (selected) PaperTint else Paper),
+  ) {
     Row(
       Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
       horizontalArrangement = Arrangement.spacedBy(12.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      PinBadge(p.number)
+      PinBadge(p.number, selected = selected)
       Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         TypeTitle(p.record.title, size = 16.sp)
         Text("${p.record.dateShort} · ${p.record.placeShort}", style = MaterialTheme.typography.labelMedium, color = InkSoft)
@@ -220,6 +232,7 @@ private fun SheetMap(
   Spacer(
     Modifier.fillMaxWidth()
       .aspectRatio(sheet.aspectRatio)
+      .deskShadow(3.dp)
       .background(Paper)
       .border(1.dp, Ink)
       .semantics { contentDescription = description }
@@ -273,9 +286,10 @@ private fun pinOffset(sheet: MapSheet, p: PlottedCase, width: Float, height: Flo
 }
 
 @Composable
-private fun PinBadge(number: Int) {
-  Box(Modifier.size(24.dp).background(Ink), contentAlignment = Alignment.Center) {
-    Text(number.toString(), style = MaterialTheme.typography.labelMedium, color = Paper)
+private fun PinBadge(number: Int, selected: Boolean = false) {
+  val frame = if (selected) Modifier.background(Paper).border(2.dp, Ink) else Modifier.background(Ink)
+  Box(Modifier.size(24.dp).then(frame), contentAlignment = Alignment.Center) {
+    Text(number.toString(), style = MaterialTheme.typography.labelMedium, color = if (selected) Ink else Paper)
   }
 }
 

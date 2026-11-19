@@ -59,6 +59,7 @@ import com.openfile.uap.theme.InkBody
 import com.openfile.uap.theme.InkSoft
 import com.openfile.uap.theme.Manila
 import com.openfile.uap.theme.Paper
+import com.openfile.uap.theme.Rule
 import com.openfile.uap.ui.Chevron
 import com.openfile.uap.ui.DeskPreview
 import com.openfile.uap.ui.MonoLabel
@@ -69,6 +70,7 @@ import com.openfile.uap.ui.StatusBarSpacer
 import com.openfile.uap.ui.TypeTitle
 import com.openfile.uap.ui.casefile.CaseThumbnail
 import com.openfile.uap.ui.countOf
+import com.openfile.uap.ui.deskShadow
 import com.openfile.uap.ui.pressable
 import com.openfile.uap.ui.rememberTick
 import com.openfile.uap.ui.selectionColor
@@ -195,7 +197,7 @@ fun TimelineScreen(uiState: TimelineUiState, onFilterChange: (TimelineKind?) -> 
 private fun KindFilter(only: TimelineKind?, kindCounts: Map<TimelineKind, Int>, onChange: (TimelineKind?) -> Unit) {
   val tick = rememberTick()
   Column(Modifier.padding(horizontal = ScreenPadding)) {
-    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).background(Paper).border(1.dp, Ink)) {
+    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).deskShadow(2.dp).background(Paper).border(1.dp, Ink)) {
       TimelineKind.entries.forEachIndexed { index, kind ->
         if (index > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(Ink))
         val selected = only == kind
@@ -312,6 +314,7 @@ private fun DecadeHeading(heading: TimelineItem.Decade, modifier: Modifier = Mod
       TypeTitle("${heading.decade}s", size = 24.sp, modifier = Modifier.weight(1f))
       MonoLabel(countOf(heading.count, "entry", "entries"))
     }
+    SolidRule(color = Rule)
   }
 }
 
@@ -405,6 +408,7 @@ private fun FileLink(caseId: String, picture: CaseRecord?, outline: SheetOutline
       .padding(top = 6.dp)
       .fillMaxWidth()
       .pressable(onClickLabel = "Open file", onClick = onOpen)
+      .deskShadow(2.dp)
       .background(Paper)
       .border(1.dp, Ink),
   ) {
@@ -418,7 +422,7 @@ private fun FileLink(caseId: String, picture: CaseRecord?, outline: SheetOutline
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Text("Open file $caseId", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, color = Ink)
-      Chevron(modifier = Modifier.padding(bottom = 4.dp))
+      Chevron()
     }
   }
 }
